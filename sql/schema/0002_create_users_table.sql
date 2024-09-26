@@ -1,7 +1,7 @@
 -- +goose Up
 CREATE TABLE users (
   id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
-  name VARCHAR,
+  name VARCHAR NOT NULL,
   email VARCHAR UNIQUE NOT NULL,
   "password" TEXT NOT NULL,
   is_verified boolean NOT NULL DEFAULT FALSE,
