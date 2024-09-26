@@ -10,7 +10,7 @@ CREATE TABLE push_tokens (
     provider provider_type NOT NULL,
     user_id UUID NOT NULL REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE,
     created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL
 );
 
 CREATE INDEX idx_push_tokens_fk_user_id ON push_tokens USING btree (user_id);
