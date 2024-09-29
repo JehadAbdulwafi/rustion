@@ -65,15 +65,10 @@ type Server struct {
 	Logger   LoggerServer
 }
 
-// DefaultServiceConfigFromEnv returns the server config as parsed from environment variables
-// and their respective defaults defined below.
-// We don't expect that ENV_VARs change while we are running our application or our tests
-// (and it would be a bad thing to do anyways with parallel testing).
-// Do NOT use os.Setenv / os.Unsetenv in tests utilizing DefaultServiceConfigFromEnv()!
 func DefaultServiceConfigFromEnv() Server {
 	return Server{
 		Database: Database{
-			Host:     util.GetEnv("PGHOST", "postgres"),
+			Host:     util.GetEnv("PGHOST", "localhost"),
 			Port:     util.GetEnvAsInt("PGPORT", 5432),
 			Database: util.GetEnv("PGDATABASE", "rustion"),
 			Username: util.GetEnv("PGUSER", "postgres"),
