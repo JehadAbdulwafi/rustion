@@ -1,0 +1,70 @@
+swagger: "2.0"
+info:
+  title: github.com/JehadAbdulwafi/rustion
+  version: 0.1.0
+responses:
+  InvalidPasswordResponse:
+    description: "PublicHTTPValidationError, type `INVALID_PASSWORD`"
+    schema:
+      $ref: ../definitions/errors.yml#/definitions/PublicHTTPValidationError
+  AuthUnauthorizedResponse:
+    description: PublicHTTPError
+    schema:
+      $ref: ../definitions/errors.yml#/definitions/PublicHTTPError
+  AuthForbiddenResponse:
+    description: "PublicHTTPError, type `USER_DEACTIVATED`/`NOT_LOCAL_USER`"
+    schema:
+      $ref: ../definitions/errors.yml#/definitions/PublicHTTPError
+  ValidationError:
+    description: PublicHTTPValidationError
+    schema:
+      $ref: "../definitions/errors.yml#/definitions/PublicHTTPValidationError"
+paths:
+  /api/v1/auth/login:
+    post:
+      description: Returns an access and refresh token on successful authentication
+      tags:
+        - auth
+      summary: Login with local user
+      operationId: PostLoginRoute
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/auth.yml#/definitions/PostLoginPayload"
+      responses:
+        "200":
+          description: PostLoginResponse
+          schema:
+            $ref: "../definitions/auth.yml#/definitions/PostLoginResponse"
+        "400":
+          $ref: "#/responses/ValidationError"
+        "401":
+          $ref: "#/responses/AuthUnauthorizedResponse"
+        "403":
+          description: "PublicHTTPError, type `USER_DEACTIVATED`"
+          schema:
+            $ref: "../definitions/errors.yml#/definitions/PublicHTTPError"
+  /api/v1/auth/register:
+    post:
+      description: Returns an access and refresh token on successful registration
+      tags:
+        - auth
+      summary: Registers a local user
+      operationId: PostRegisterRoute
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/auth.yml#/definitions/PostRegisterPayload"
+      responses:
+        "200":
+          description: PostLoginResponse
+          schema:
+            $ref: "../definitions/auth.yml#/definitions/PostLoginResponse"
+        "400":
+          $ref: "#/responses/InvalidPasswordResponse"
+        "409":
+          description: "PublicHTTPError, type `USER_ALREADY_EXISTS`"
+          schema:
+            $ref: "../definitions/errors.yml#/definitions/PublicHTTPError"

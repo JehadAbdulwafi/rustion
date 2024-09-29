@@ -1,0 +1,81 @@
+swagger: "2.0"
+info:
+  title: github.com/JehadAbdulwafi/rustion
+  version: 0.1.0
+paths: {}
+definitions:
+  User:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+        format: uuid4
+        description: ID of user
+        example: 891d37d3-c74f-493e-aea8-af73efd92016
+  PostLoginPayload:
+    type: object
+    required:
+      - username
+      - password
+    properties:
+      password:
+        description: Password of user to authenticate as
+        type: string
+        maxLength: 500
+        minLength: 1
+        example: correct horse battery staple
+      username:
+        description: Username of user to authenticate as
+        type: string
+        format: email
+        maxLength: 255
+        minLength: 1
+        example: user@example.com
+  PostLoginResponse:
+    type: object
+    required:
+      - access_token
+      - token_type
+      - expires_in
+      - refresh_token
+    properties:
+      access_token:
+        description: Access token required for accessing protected API endpoints
+        type: string
+        format: uuid4
+        example: c1247d8d-0d65-41c4-bc86-ec041d2ac437
+      expires_in:
+        description: Access token expiry in seconds
+        type: integer
+        format: int64
+        example: 86400
+      refresh_token:
+        description: Refresh token for refreshing the access token once it expires
+        type: string
+        format: uuid4
+        example: 1dadb3bd-50d8-485d-83a3-6111392568f0
+      token_type:
+        description: "Type of access token, will always be `bearer`"
+        type: string
+        example: bearer
+  PostRegisterPayload:
+    type: object
+    required:
+      - username
+      - password
+    properties:
+      password:
+        description: Password to register with
+        type: string
+        maxLength: 500
+        minLength: 1
+        example: correct horse battery staple
+      username:
+        description: Username to register with
+        type: string
+        format: email
+        maxLength: 255
+        minLength: 1
+        example: user@example.com
