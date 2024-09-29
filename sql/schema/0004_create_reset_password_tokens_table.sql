@@ -9,7 +9,6 @@ CREATE TABLE password_reset_tokens (
 
 CREATE INDEX idx_password_reset_tokens_fk_user_uid ON password_reset_tokens USING btree (user_id);
 
-
 -- +goose Down
 DROP TABLE IF EXISTS password_reset_tokens;
 

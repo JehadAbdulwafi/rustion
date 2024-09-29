@@ -1,0 +1,13 @@
+-- +goose Up
+CREATE TABLE IF NOT EXISTS streams (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  app VARCHAR(255) NOT NULL,
+  stream_name VARCHAR(255) NOT NULL,
+  url VARCHAR(255) NOT NULL,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP
+);
+
+-- +goose Down
+DROP TABLE IF EXISTS streams;
