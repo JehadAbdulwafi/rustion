@@ -42,9 +42,9 @@ func VerifyJWT(tokenString string) bool {
 		return false
 	}
 
-	if _, ok := token.Claims.(jwt.Claims); !ok && !token.Valid {
+	if !token.Valid {
 		return false
 	}
 
-	return token.Valid
+	return true
 }
