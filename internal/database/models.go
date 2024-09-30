@@ -55,6 +55,49 @@ func (ns NullProviderType) Value() (driver.Value, error) {
 	return string(ns.ProviderType), nil
 }
 
+type StreamStatusEnum string
+
+const (
+	StreamStatusEnumOnline    StreamStatusEnum = "online"
+	StreamStatusEnumOffline   StreamStatusEnum = "offline"
+	StreamStatusEnumScheduled StreamStatusEnum = "scheduled"
+)
+
+func (e *StreamStatusEnum) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = StreamStatusEnum(s)
+	case string:
+		*e = StreamStatusEnum(s)
+	default:
+		return fmt.Errorf("unsupported scan type for StreamStatusEnum: %T", src)
+	}
+	return nil
+}
+
+type NullStreamStatusEnum struct {
+	StreamStatusEnum StreamStatusEnum
+	Valid            bool // Valid is true if StreamStatusEnum is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullStreamStatusEnum) Scan(value interface{}) error {
+	if value == nil {
+		ns.StreamStatusEnum, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.StreamStatusEnum.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullStreamStatusEnum) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.StreamStatusEnum), nil
+}
+
 type Account struct {
 	ID                int32
 	UserID            uuid.UUID
@@ -82,6 +125,36 @@ type PushToken struct {
 	UserID    uuid.UUID
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+type Stream struct {
+	ID         uuid.UUID
+	App        string
+	StreamName string
+	Url        string
+	UserID     uuid.UUID
+	CreatedAt  sql.NullTime
+	UpdatedAt  sql.NullTime
+}
+
+type StreamDetail struct {
+	ID          uuid.UUID
+	StreamID    uuid.UUID
+	Title       string
+	Description string
+	CreatedAt   sql.NullTime
+	UpdatedAt   sql.NullTime
+}
+
+type StreamStatus struct {
+	ID              uuid.UUID
+	StreamID        uuid.UUID
+	Status          StreamStatusEnum
+	EstStartTime    sql.NullTime
+	LastPublishedAt sql.NullTime
+	ViewersCount    sql.NullInt32
+	CreatedAt       sql.NullTime
+	UpdatedAt       sql.NullTime
 }
 
 type User struct {
