@@ -17,7 +17,7 @@ SELECT * FROM streams WHERE stream_name = $1;
 
 -- name: UpdateStream :one
 UPDATE streams
-SET title = $2, description = $3, updated_at = CURRENT_TIMESTAMP
+SET app = $2, stream_name = $3, url = $4, updated_at = CURRENT_TIMESTAMP
 WHERE id = $1
 RETURNING *;
 
