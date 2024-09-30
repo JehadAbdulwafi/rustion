@@ -39,6 +39,7 @@ type EchoServerSecureMiddleware struct {
 
 type AuthServer struct {
 	AccessTokenValidity                time.Duration
+	RefreshTokenValidity               time.Duration
 	PasswordResetTokenValidity         time.Duration
 	PasswordResetTokenDebounceDuration time.Duration
 	PasswordResetTokenReuseDuration    time.Duration
@@ -108,6 +109,7 @@ func DefaultServiceConfigFromEnv() Server {
 		},
 		Auth: AuthServer{
 			AccessTokenValidity:                time.Second * time.Duration(util.GetEnvAsInt("SERVER_AUTH_ACCESS_TOKEN_VALIDITY", 86400)),
+			RefreshTokenValidity:               time.Second * time.Duration(util.GetEnvAsInt("SERVER_AUTH_ACCESS_TOKEN_VALIDITY", 604800)),
 			PasswordResetTokenValidity:         time.Second * time.Duration(util.GetEnvAsInt("SERVER_AUTH_PASSWORD_RESET_TOKEN_VALIDITY", 900)),
 			PasswordResetTokenDebounceDuration: time.Second * time.Duration(util.GetEnvAsInt("SERVER_AUTH_PASSWORD_RESET_TOKEN_DEBOUNCE_DURATION_SECONDS", 60)),
 			PasswordResetTokenReuseDuration:    time.Second * time.Duration(util.GetEnvAsInt("SERVER_AUTH_PASSWORD_RESET_TOKEN_REUSE_DURATION_SECONDS", 0)),
