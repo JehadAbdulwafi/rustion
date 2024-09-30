@@ -12,5 +12,6 @@ func AttachAllRoutes(s *api.Server) {
 	s.Router.Routes = []*echo.Route{
 		common.GetHealthyRoute(s),
 		auth.PostRegisterRoute(s),
+		auth.PostLoginRoute(s),
 	}
 }
