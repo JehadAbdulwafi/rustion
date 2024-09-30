@@ -20,26 +20,14 @@ import (
 type PostLoginResponse struct {
 
 	// Access token required for accessing protected API endpoints
-	// Example: c1247d8d-0d65-41c4-bc86-ec041d2ac437
+	// Example: eyJhdWQiOiJjdXN0b2...
 	// Required: true
-	// Format: uuid4
-	AccessToken *strfmt.UUID4 `json:"access_token"`
-
-	// Access token expiry in seconds
-	// Example: 86400
-	// Required: true
-	ExpiresIn *int64 `json:"expires_in"`
+	AccessToken *string `json:"access_token"`
 
 	// Refresh token for refreshing the access token once it expires
-	// Example: 1dadb3bd-50d8-485d-83a3-6111392568f0
+	// Example: eyJhdWQiOiJjdXN0b2...
 	// Required: true
-	// Format: uuid4
-	RefreshToken *strfmt.UUID4 `json:"refresh_token"`
-
-	// Type of access token, will always be `bearer`
-	// Example: bearer
-	// Required: true
-	TokenType *string `json:"token_type"`
+	RefreshToken *string `json:"refresh_token"`
 }
 
 // Validate validates this post login response
@@ -50,15 +38,7 @@ func (m *PostLoginResponse) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateExpiresIn(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.validateRefreshToken(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateTokenType(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -74,38 +54,12 @@ func (m *PostLoginResponse) validateAccessToken(formats strfmt.Registry) error {
 		return err
 	}
 
-	if err := validate.FormatOf("access_token", "body", "uuid4", m.AccessToken.String(), formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *PostLoginResponse) validateExpiresIn(formats strfmt.Registry) error {
-
-	if err := validate.Required("expires_in", "body", m.ExpiresIn); err != nil {
-		return err
-	}
-
 	return nil
 }
 
 func (m *PostLoginResponse) validateRefreshToken(formats strfmt.Registry) error {
 
 	if err := validate.Required("refresh_token", "body", m.RefreshToken); err != nil {
-		return err
-	}
-
-	if err := validate.FormatOf("refresh_token", "body", "uuid4", m.RefreshToken.String(), formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *PostLoginResponse) validateTokenType(formats strfmt.Registry) error {
-
-	if err := validate.Required("token_type", "body", m.TokenType); err != nil {
 		return err
 	}
 

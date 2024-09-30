@@ -17,17 +17,17 @@ definitions:
   PostLoginPayload:
     type: object
     required:
-      - username
+      - email
       - password
     properties:
       password:
         description: Password of user to authenticate as
         type: string
-        maxLength: 500
+        maxLength: 255
         minLength: 1
         example: correct horse battery staple
-      username:
-        description: Username of user to authenticate as
+      email:
+        description: Email of user to authenticate as
         type: string
         format: email
         maxLength: 255
@@ -37,45 +37,39 @@ definitions:
     type: object
     required:
       - access_token
-      - token_type
-      - expires_in
       - refresh_token
     properties:
       access_token:
         description: Access token required for accessing protected API endpoints
         type: string
-        format: uuid4
-        example: c1247d8d-0d65-41c4-bc86-ec041d2ac437
-      expires_in:
-        description: Access token expiry in seconds
-        type: integer
-        format: int64
-        example: 86400
+        example: "eyJhdWQiOiJjdXN0b2..."
       refresh_token:
         description: Refresh token for refreshing the access token once it expires
         type: string
-        format: uuid4
-        example: 1dadb3bd-50d8-485d-83a3-6111392568f0
-      token_type:
-        description: "Type of access token, will always be `bearer`"
-        type: string
-        example: bearer
+        example: "eyJhdWQiOiJjdXN0b2..."
   PostRegisterPayload:
     type: object
     required:
-      - username
+      - name
+      - email
       - password
     properties:
       password:
         description: Password to register with
         type: string
-        maxLength: 500
+        maxLength: 255
         minLength: 1
         example: correct horse battery staple
-      username:
-        description: Username to register with
+      email:
+        description: Email to register with
         type: string
         format: email
         maxLength: 255
         minLength: 1
         example: user@example.com
+      name:
+        description: Name to register with
+        type: string
+        maxLength: 255
+        minLength: 1
+        example: John Doe

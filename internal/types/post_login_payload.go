@@ -19,37 +19,58 @@ import (
 // swagger:model postLoginPayload
 type PostLoginPayload struct {
 
-	// Password of user to authenticate as
-	// Example: correct horse battery staple
-	// Required: true
-	// Max Length: 500
-	// Min Length: 1
-	Password *string `json:"password"`
-
-	// Username of user to authenticate as
+	// Email of user to authenticate as
 	// Example: user@example.com
 	// Required: true
 	// Max Length: 255
 	// Min Length: 1
 	// Format: email
-	Username *strfmt.Email `json:"username"`
+	Email *strfmt.Email `json:"email"`
+
+	// Password of user to authenticate as
+	// Example: correct horse battery staple
+	// Required: true
+	// Max Length: 255
+	// Min Length: 1
+	Password *string `json:"password"`
 }
 
 // Validate validates this post login payload
 func (m *PostLoginPayload) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validatePassword(formats); err != nil {
+	if err := m.validateEmail(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.validateUsername(formats); err != nil {
+	if err := m.validatePassword(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *PostLoginPayload) validateEmail(formats strfmt.Registry) error {
+
+	if err := validate.Required("email", "body", m.Email); err != nil {
+		return err
+	}
+
+	if err := validate.MinLength("email", "body", m.Email.String(), 1); err != nil {
+		return err
+	}
+
+	if err := validate.MaxLength("email", "body", m.Email.String(), 255); err != nil {
+		return err
+	}
+
+	if err := validate.FormatOf("email", "body", "email", m.Email.String(), formats); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -63,28 +84,7 @@ func (m *PostLoginPayload) validatePassword(formats strfmt.Registry) error {
 		return err
 	}
 
-	if err := validate.MaxLength("password", "body", *m.Password, 500); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *PostLoginPayload) validateUsername(formats strfmt.Registry) error {
-
-	if err := validate.Required("username", "body", m.Username); err != nil {
-		return err
-	}
-
-	if err := validate.MinLength("username", "body", m.Username.String(), 1); err != nil {
-		return err
-	}
-
-	if err := validate.MaxLength("username", "body", m.Username.String(), 255); err != nil {
-		return err
-	}
-
-	if err := validate.FormatOf("username", "body", "email", m.Username.String(), formats); err != nil {
+	if err := validate.MaxLength("password", "body", *m.Password, 255); err != nil {
 		return err
 	}
 
