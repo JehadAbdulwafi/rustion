@@ -1,27 +1,61 @@
 package main
 
 import (
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"context"
+	"errors"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	"github.com/JehadAbdulwafi/rustion/internal/api"
+	"github.com/JehadAbdulwafi/rustion/internal/api/router"
+	"github.com/JehadAbdulwafi/rustion/internal/config"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 func main() {
-	// Echo instance
-	e := echo.New()
+	config := config.DefaultServiceConfigFromEnv()
 
-	// Middleware
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	zerolog.TimeFieldFormat = time.RFC3339Nano
+	zerolog.SetGlobalLevel(config.Logger.Level)
+	if config.Logger.PrettyPrintConsole {
+		log.Logger = log.Output(zerolog.NewConsoleWriter(func(w *zerolog.ConsoleWriter) {
+			w.TimeFormat = "15:04:05"
+		}))
+	}
 
-	// Routes
-	e.GET("/", hello)
+	s := api.NewServer(config)
 
-	// Start server
-	e.Logger.Fatal(e.Start(":1323"))
-}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	if err := s.InitDB(ctx); err != nil {
+		cancel()
+		log.Fatal().Err(err).Msg("Failed to initialize database")
+	}
+	cancel()
 
-// Handler
-func hello(c echo.Context) error {
-	return c.String(http.StatusOK, "Hello, World!")
+	router.Init(s)
+
+	go func() {
+		if err := s.Start(); err != nil {
+			if errors.Is(err, http.ErrServerClosed) {
+				log.Info().Msg("Server closed")
+			} else {
+				log.Fatal().Err(err).Msg("Failed to start server")
+			}
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
+	<-quit
+
+	ctx, cancel = context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	if err := s.Shutdown(ctx); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		log.Fatal().Err(err).Msg("Failed to gracefully shut down server")
+	}
 }
