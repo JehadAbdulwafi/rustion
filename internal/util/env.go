@@ -5,18 +5,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"sync"
 
 	"github.com/rs/zerolog/log"
-)
-
-const (
-	mgmtSecretLen = 16
-)
-
-var (
-	mgmtSecret     string
-	mgmtSecretOnce sync.Once
 )
 
 func GetEnv(key string, defaultVal string) string {
@@ -131,4 +121,3 @@ func GetEnvAsURL(key string, defaultVal string) *url.URL {
 
 	return u
 }
-
