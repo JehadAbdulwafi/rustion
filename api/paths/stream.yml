@@ -1,0 +1,39 @@
+swagger: "2.0"
+info:
+  title: github.com/JehadAbdulwafi/rustion
+  version: 0.1.0
+paths:
+  /api/v1/stream/publish:
+    post:
+      description: Publishes a stream
+      tags:
+        - stream
+      summary: Publishes a stream
+      operationId: PostPublishRoute
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/stream.yml#/definitions/StreamEvent"
+      responses:
+        "200":
+          description: PostPublishResponse
+          schema:
+            $ref: "../definitions/stream.yml#/definitions/StreamEventResponse"
+  /api/v1/stream/unpublish:
+    post:
+      description: Unpublishes a stream
+      tags:
+        - stream
+      summary: Unpublishes a stream
+      operationId: PostUnpublishRoute
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/stream.yml#/definitions/StreamEvent"
+      responses:
+        "200":
+          description: PostUnpublishResponse
+          schema:
+            $ref: "../definitions/stream.yml#/definitions/StreamEventResponse"

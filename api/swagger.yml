@@ -63,7 +63,78 @@ paths:
             summary: Registers a local user
             tags:
                 - auth
+    /api/v1/auth/userinfo:
+        get:
+            description: |-
+                Returns user information compatible with the OpenID Connect Core 1.0 specification.
+                Information returned depends on the requesting user as some data is only available if an app user profile exists.
+            operationId: GetUserInfoRoute
+            responses:
+                "200":
+                    description: GetUserInfoResponse
+                    schema:
+                        $ref: '#/definitions/getUserInfoResponse'
+            security:
+                - Bearer: []
+            summary: Get user info
+            tags:
+                - auth
+    /api/v1/stream/publish:
+        post:
+            description: Publishes a stream
+            operationId: PostPublishRoute
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/streamEvent'
+            responses:
+                "200":
+                    description: PostPublishResponse
+                    schema:
+                        $ref: '#/definitions/streamEventResponse'
+            summary: Publishes a stream
+            tags:
+                - stream
+    /api/v1/stream/unpublish:
+        post:
+            description: Unpublishes a stream
+            operationId: PostUnpublishRoute
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/streamEvent'
+            responses:
+                "200":
+                    description: PostUnpublishResponse
+                    schema:
+                        $ref: '#/definitions/streamEventResponse'
+            summary: Unpublishes a stream
+            tags:
+                - stream
 definitions:
+    getUserInfoResponse:
+        properties:
+            email:
+                description: Email address of user, if available
+                example: user@example.com
+                format: email
+                maxLength: !!float 255
+                type: string
+            id:
+                description: ID of user
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                type: string
+            name:
+                description: Name of user
+                example: John Doe
+                type: string
+        required:
+            - id
+            - name
+            - email
+        type: object
     httpValidationErrorDetail:
         properties:
             error:
@@ -182,6 +253,69 @@ definitions:
                 type: array
         required:
             - validationErrors
+        type: object
+    streamEvent:
+        properties:
+            action:
+                description: Action performed on stream
+                example: publish
+                type: string
+            app:
+                description: App of stream
+                example: app
+                type: string
+            client_id:
+                description: Client ID of stream
+                example: 891d37d3-c74f-493e-aea8-af73efd92016
+                type: string
+            ip:
+                description: IP address of stream
+                example: 89.207.132.170
+                type: string
+            param:
+                description: Param of stream
+                example: param
+                type: string
+            server_id:
+                description: Server ID of stream
+                example: 891d37d3-c74f-493e-aea8-af73efd92016
+                type: string
+            stream:
+                description: Stream of stream
+                example: stream
+                type: string
+            stream_id:
+                description: Stream ID of stream
+                example: 891d37d3-c74f-493e-aea8-af73efd92016
+                type: string
+            stream_url:
+                description: Stream URL of stream
+                example: stream_url
+                type: string
+            vhost:
+                description: VHost of stream
+                example: vhost
+                type: string
+        required:
+            - action
+            - client_id
+            - ip
+            - vhost
+            - app
+            - stream
+            - param
+            - server_id
+            - stream_id
+            - stream_url
+        type: object
+    streamEventResponse:
+        properties:
+            code:
+                description: Response code
+                example: !!float 0
+                type: integer
+        required:
+            - code
         type: object
 responses:
     AuthForbiddenResponse:

@@ -1,0 +1,106 @@
+swagger: "2.0"
+info:
+  title: github.com/JehadAbdulwafi/rustion
+  version: 0.1.0
+paths: {}
+definitions:
+  Stream:
+    type: object
+    required:
+      - id
+      - app
+      - stream_name
+      - url
+      - user_id
+    properties:
+      id:
+        type: string
+        format: uuid4
+        description: ID of stream
+        example: 891d37d3-c74f-493e-aea8-af73efd92016
+      app:
+        description: App of stream
+        type: string
+        maxLength: 255
+        minLength: 1
+        example: app
+      stream_name:
+        description: Stream name of stream
+        type: string
+        maxLength: 255
+        minLength: 1
+        example: stream_name
+      url:
+        description: URL of stream
+        type: string
+        maxLength: 255
+        minLength: 1
+        example: url
+      user_id:
+        description: User ID of stream
+        type: string
+        format: uuid4
+        example: 891d37d3-c74f-493e-aea8-af73efd92016
+  StreamEvent:
+    type: object
+    required:
+      - action
+      - client_id
+      - ip
+      - vhost
+      - app
+      - stream
+      - param
+      - server_id
+      - stream_id
+      - stream_url
+    properties:
+      action:
+        description: Action performed on stream
+        type: string
+        example: publish
+      client_id:
+        description: Client ID of stream
+        type: string
+        example: 891d37d3-c74f-493e-aea8-af73efd92016
+      ip:
+        description: IP address of stream
+        type: string
+        example: 89.207.132.170
+      vhost:
+        description: VHost of stream
+        type: string
+        example: vhost
+      app:
+        description: App of stream
+        type: string
+        example: app
+      stream:
+        description: Stream of stream
+        type: string
+        example: stream
+      param:
+        description: Param of stream
+        type: string
+        example: param
+      server_id:
+        description: Server ID of stream
+        type: string
+        example: 891d37d3-c74f-493e-aea8-af73efd92016
+      stream_id:
+        description: Stream ID of stream
+        type: string
+        example: 891d37d3-c74f-493e-aea8-af73efd92016
+      stream_url:
+        description: Stream URL of stream
+        type: string
+        example: stream_url
+  StreamEventResponse:
+    type: object
+    required:
+      - code
+    properties:
+      code:
+        description: Response code
+        type: integer
+        example: 0
