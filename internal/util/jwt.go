@@ -2,6 +2,7 @@ package util
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -32,19 +33,19 @@ func GenerateJwt(email string, exp time.Duration) (sql.NullString, error) {
 	return res, nil
 }
 
-func VerifyJWT(tokenString string) bool {
+func VerifyJWT(tokenString string) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secretKey, nil
 
 	})
 
 	if err != nil {
-		return false
+		return jwt.MapClaims{}, err
 	}
 
 	if !token.Valid {
-		return false
+		return jwt.MapClaims{}, errors.New("invalid token")
 	}
 
-	return true
+	return token.Claims.(jwt.MapClaims), nil
 }
