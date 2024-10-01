@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/JehadAbdulwafi/rustion/internal/api"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers"
+	"github.com/JehadAbdulwafi/rustion/internal/api/middleware"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/rs/zerolog/log"
@@ -56,7 +57,23 @@ func Init(s *api.Server) {
 
 	s.Router = &api.Router{
 		Routes: nil, // will be populated by handlers.AttachAllRoutes(s)
-		Root: s.Echo.Group("/api/v1"),
+		Root:   s.Echo.Group("/api/v1"),
+
+		APIV1Auth: s.Echo.Group("/api/v1/auth", middleware.AuthWithConfig(middleware.AuthConfig{
+			S:    s,
+			Mode: middleware.AuthModeRequired,
+			Skipper: func(c echo.Context) bool {
+				switch c.Path() {
+				case "/api/v1/auth/forgot-password",
+					"/api/v1/auth/forgot-password/complete",
+					"/api/v1/auth/login",
+					"/api/v1/auth/refresh",
+					"/api/v1/auth/register":
+					return true
+				}
+				return false
+			},
+		})),
 	}
 
 	handlers.AttachAllRoutes(s)
