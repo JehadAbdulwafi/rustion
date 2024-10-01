@@ -15,6 +15,9 @@ SELECT * FROM accounts WHERE user_id = $1;
 -- name: GetAccountByUserIDAndProviderAccountID :one
 SELECT * FROM accounts WHERE user_id = $1 AND provider_account_id = $2;
 
+-- name: GetAccountByUserIDAndProviderAndProviderAccountID :one
+SELECT * FROM accounts WHERE user_id = $1 AND provider_account_id = $2 AND provider = $3;
+
 -- name: UpdateAccount :one
 UPDATE accounts
 SET refresh_token = $3, access_token = $4, valid_until = $5, scope = $6, token_type = $7

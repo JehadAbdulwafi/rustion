@@ -161,6 +161,33 @@ func (q *Queries) GetAccountByUserIDAndProviderAccountID(ctx context.Context, ar
 	return i, err
 }
 
+const getAccountByUserIDAndProviderAndProviderAccountID = `-- name: GetAccountByUserIDAndProviderAndProviderAccountID :one
+SELECT id, user_id, provider, provider_account_id, refresh_token, access_token, valid_until, scope, token_type FROM accounts WHERE user_id = $1 AND provider_account_id = $2 AND provider = $3
+`
+
+type GetAccountByUserIDAndProviderAndProviderAccountIDParams struct {
+	UserID            uuid.UUID
+	ProviderAccountID string
+	Provider          string
+}
+
+func (q *Queries) GetAccountByUserIDAndProviderAndProviderAccountID(ctx context.Context, arg GetAccountByUserIDAndProviderAndProviderAccountIDParams) (Account, error) {
+	row := q.db.QueryRowContext(ctx, getAccountByUserIDAndProviderAndProviderAccountID, arg.UserID, arg.ProviderAccountID, arg.Provider)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Provider,
+		&i.ProviderAccountID,
+		&i.RefreshToken,
+		&i.AccessToken,
+		&i.ValidUntil,
+		&i.Scope,
+		&i.TokenType,
+	)
+	return i, err
+}
+
 const getAccountsByUserID = `-- name: GetAccountsByUserID :many
 SELECT id, user_id, provider, provider_account_id, refresh_token, access_token, valid_until, scope, token_type FROM accounts WHERE user_id = $1
 `
