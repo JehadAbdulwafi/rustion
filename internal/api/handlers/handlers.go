@@ -13,5 +13,6 @@ func AttachAllRoutes(s *api.Server) {
 		common.GetHealthyRoute(s),
 		auth.PostRegisterRoute(s),
 		auth.PostLoginRoute(s),
+		auth.GetUserInfoRoute(s),
 	}
 }

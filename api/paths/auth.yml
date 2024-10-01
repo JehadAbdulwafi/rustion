@@ -68,3 +68,19 @@ paths:
           description: "PublicHTTPError, type `USER_ALREADY_EXISTS`"
           schema:
             $ref: "../definitions/errors.yml#/definitions/PublicHTTPError"
+  /api/v1/auth/userinfo:
+    get:
+      summary: Get user info
+      description: |-
+        Returns user information compatible with the OpenID Connect Core 1.0 specification.
+        Information returned depends on the requesting user as some data is only available if an app user profile exists.
+      security:
+        - Bearer: []
+      operationId: GetUserInfoRoute
+      tags:
+        - auth
+      responses:
+        "200":
+          description: GetUserInfoResponse
+          schema:
+            $ref: "../definitions/auth.yml#/definitions/GetUserInfoResponse"
