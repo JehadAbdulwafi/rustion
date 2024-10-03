@@ -1,0 +1,11 @@
+services:
+  srs:
+    build:
+      context: ./srs
+    ports:
+      - '1935:1935'
+      - '8080:8080'
+      - '10080:10080/udp'
+    volumes:
+      - ./srs/srs.conf:/usr/local/srs/conf/srs.conf
+
