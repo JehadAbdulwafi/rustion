@@ -37,6 +37,7 @@ func (o *SwaggerSpec) initHandlerCache() {
 	o.Handlers["PATCH"] = make(map[string]bool)
 
 	o.Handlers["GET"]["/api/v1/auth/userinfo"] = true
+	o.Handlers["POST"]["/api/v1/stream"] = true
 	o.Handlers["POST"]["/api/v1/auth/login"] = true
 	o.Handlers["POST"]["/api/v1/stream/publish"] = true
 	o.Handlers["POST"]["/api/v1/auth/register"] = true

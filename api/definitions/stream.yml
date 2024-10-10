@@ -104,3 +104,18 @@ definitions:
         description: Response code
         type: integer
         example: 0
+  CreateStreamResponse:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        description: ID of stream
+        type: string
+        format: uuid4
+        example: 891d37d3-c74f-493e-aea8-af73efd92016
+      url:
+        description: URL of stream
+        type: string
+        example: url
+

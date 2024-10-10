@@ -12,7 +12,7 @@ SELECT * FROM streams WHERE user_id = $1;
 -- name: GetStreamsByApp :many
 SELECT * FROM streams WHERE app = $1;
 
--- name: GetStreamsByStreamName :many
+-- name: GetStreamByStreamName :one
 SELECT * FROM streams WHERE stream_name = $1;
 
 -- name: UpdateStream :one
@@ -43,7 +43,7 @@ UPDATE stream_status
 SET status = 'online', last_published_at = CURRENT_TIMESTAMP
 WHERE stream_id = $1;
 
--- name: StopStream :exec
+-- name: UnpublishStream :exec
 UPDATE stream_status
 SET status = 'offline', last_published_at = CURRENT_TIMESTAMP
 WHERE stream_id = $1;

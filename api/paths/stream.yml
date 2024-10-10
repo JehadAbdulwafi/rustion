@@ -3,6 +3,18 @@ info:
   title: github.com/JehadAbdulwafi/rustion
   version: 0.1.0
 paths:
+  /api/v1/stream:
+    post:
+      description: Creates a stream
+      tags:
+        - stream
+      summary: Creates a stream
+      operationId: PostCreateStreamRoute
+      responses:
+        "200":
+          description: PostCreateStreamResponse
+          schema:
+            $ref: "../definitions/stream.yml#/definitions/CreateStreamResponse"
   /api/v1/stream/publish:
     post:
       description: Publishes a stream
@@ -35,5 +47,39 @@ paths:
       responses:
         "200":
           description: PostUnpublishResponse
+          schema:
+            $ref: "../definitions/stream.yml#/definitions/StreamEventResponse"
+  /api/v1/stream/play:
+    post:
+      description: Plays a stream
+      tags:
+        - stream
+      summary: Plays a stream
+      operationId: PostPlayRoute
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/stream.yml#/definitions/StreamEvent"
+      responses:
+        "200":
+          description: PostPublishResponse
+          schema:
+            $ref: "../definitions/stream.yml#/definitions/StreamEventResponse"
+  /api/v1/stream/stop:
+    post:
+      description: Stops a stream
+      tags:
+        - stream
+      summary: Stops a stream
+      operationId: PostStopRoute
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/stream.yml#/definitions/StreamEvent"
+      responses:
+        "200":
+          description: PostPublishResponse
           schema:
             $ref: "../definitions/stream.yml#/definitions/StreamEventResponse"

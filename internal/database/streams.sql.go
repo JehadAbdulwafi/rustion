@@ -164,6 +164,25 @@ func (q *Queries) GetStream(ctx context.Context, id uuid.UUID) (Stream, error) {
 	return i, err
 }
 
+const getStreamByStreamName = `-- name: GetStreamByStreamName :one
+SELECT id, app, stream_name, url, user_id, created_at, updated_at FROM streams WHERE stream_name = $1
+`
+
+func (q *Queries) GetStreamByStreamName(ctx context.Context, streamName string) (Stream, error) {
+	row := q.db.QueryRowContext(ctx, getStreamByStreamName, streamName)
+	var i Stream
+	err := row.Scan(
+		&i.ID,
+		&i.App,
+		&i.StreamName,
+		&i.Url,
+		&i.UserID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const getStreamDetails = `-- name: GetStreamDetails :one
 SELECT id, stream_id, title, description, created_at, updated_at FROM stream_details WHERE stream_id = $1
 `
@@ -208,41 +227,6 @@ SELECT id, app, stream_name, url, user_id, created_at, updated_at FROM streams W
 
 func (q *Queries) GetStreamsByApp(ctx context.Context, app string) ([]Stream, error) {
 	rows, err := q.db.QueryContext(ctx, getStreamsByApp, app)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Stream
-	for rows.Next() {
-		var i Stream
-		if err := rows.Scan(
-			&i.ID,
-			&i.App,
-			&i.StreamName,
-			&i.Url,
-			&i.UserID,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getStreamsByStreamName = `-- name: GetStreamsByStreamName :many
-SELECT id, app, stream_name, url, user_id, created_at, updated_at FROM streams WHERE stream_name = $1
-`
-
-func (q *Queries) GetStreamsByStreamName(ctx context.Context, streamName string) ([]Stream, error) {
-	rows, err := q.db.QueryContext(ctx, getStreamsByStreamName, streamName)
 	if err != nil {
 		return nil, err
 	}
@@ -345,14 +329,14 @@ func (q *Queries) ScheduleStream(ctx context.Context, arg ScheduleStreamParams) 
 	return err
 }
 
-const stopStream = `-- name: StopStream :exec
+const unpublishStream = `-- name: UnpublishStream :exec
 UPDATE stream_status
 SET status = 'offline', last_published_at = CURRENT_TIMESTAMP
 WHERE stream_id = $1
 `
 
-func (q *Queries) StopStream(ctx context.Context, streamID uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, stopStream, streamID)
+func (q *Queries) UnpublishStream(ctx context.Context, streamID uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, unpublishStream, streamID)
 	return err
 }
 
