@@ -9,6 +9,7 @@ import {
   Easing,
   Dimensions,
 } from "react-native";
+import Controls from "./controls";
 
 export interface ConfigTypes {
   controlTimeoutDelay: number;
@@ -433,6 +434,11 @@ export const VideoPlayer = (props: PlayerProps) => {
           onEnd={events.onEnd}
           style={[styles.video]}
           source={props.source}
+        />
+        <Controls
+          methods={methods}
+          playerState={playerState}
+          animations={animations.current}
         />
       </View>
     </TouchableWithoutFeedback>
