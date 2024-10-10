@@ -9,6 +9,8 @@ import {
   Easing,
   Dimensions,
 } from "react-native";
+import PlayerLoader from "./loader";
+import PlayerError from "./error";
 import Controls from "./controls";
 
 export interface ConfigTypes {
@@ -435,6 +437,8 @@ export const VideoPlayer = (props: PlayerProps) => {
           style={[styles.video]}
           source={props.source}
         />
+        <PlayerError error={playerState.error} />
+        <PlayerLoader loading={playerState.loading} />
         <Controls
           methods={methods}
           playerState={playerState}
