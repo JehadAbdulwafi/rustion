@@ -1,32 +1,36 @@
 import { springConfig } from "@/constants/utils";
 import React, { useEffect } from "react";
 import {
-  ActivityIndicator,
   BackHandler,
   Button,
   Dimensions,
   FlatList,
   Image,
   StyleSheet,
-  Text,
   TouchableOpacity,
-  View,
 } from "react-native";
 import Animated, {
   Extrapolation,
   interpolate,
+  SharedValue,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
 import { videoMinHeight, videoMinWidth } from "@/constants";
+import { View } from "../ui/View";
+import { Text } from "../ui/Text";
+import Player from "../player";
+import Constants from "expo-constants";
 
-const { width } = Dimensions.get("screen");
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 
 const listData = Array(50)
   .fill(null)
   .map((_, i) => `https://picsum.photos/200/300?random=${i}`);
+
+const AnimatedView = Animated.createAnimatedComponent(View);
 
 const ListItem = ({ onSelect }: { onSelect: (item: string) => void }) => (
   <FlatList
@@ -35,7 +39,6 @@ const ListItem = ({ onSelect }: { onSelect: (item: string) => void }) => (
     renderItem={({ item }) => (
       <TouchableOpacity
         key={item}
-        style={styles.row}
         onPress={() => onSelect(item)}
         activeOpacity={0.9}
       >
@@ -56,18 +59,18 @@ const ListItem = ({ onSelect }: { onSelect: (item: string) => void }) => (
 export function VideoPlayerContainer({
   translateY,
   movableHeight,
+  setSelectedItem,
   selectedItem,
-  onSelect,
-  fetching,
+  isFullScreen,
 }: {
-  translateY: any;
-  movableHeight: any;
-  selectedItem: string;
-  onSelect: (item: string | null) => void;
-  fetching: boolean;
+  translateY: SharedValue<number>;
+  movableHeight: number;
+  setSelectedItem: (item: string | null) => void;
+  selectedItem: string | null;
+  isFullScreen: boolean;
 }) {
-  const videoMaxHeight = width * 0.6;
-  const videoMaxWidth = width;
+  const videoMaxHeight = SCREEN_WIDTH * 0.6;
+  const videoMaxWidth = SCREEN_WIDTH;
   const initialTranslateY = useSharedValue(100);
   const finalTranslateY = useSharedValue(0);
   const initialOpacity = useSharedValue(0);
@@ -88,26 +91,31 @@ export function VideoPlayerContainer({
       opacity: initialOpacity.value,
     };
   });
+
   const animatedVideoStyles = useAnimatedStyle(() => {
     return {
-      width: interpolate(
-        translateY.value,
-        [movableHeight - videoMinHeight, movableHeight],
-        [videoMaxWidth, videoMinWidth],
-        {
-          extrapolateLeft: Extrapolation.CLAMP,
-          extrapolateRight: Extrapolation.CLAMP,
-        }
-      ),
-      height: interpolate(
-        translateY.value,
-        [0, movableHeight - videoMinHeight, movableHeight],
-        [videoMaxHeight, videoMinHeight + videoMinHeight, videoMinHeight],
-        {
-          extrapolateLeft: Extrapolation.CLAMP,
-          extrapolateRight: Extrapolation.CLAMP,
-        }
-      ),
+      width: isFullScreen
+        ? SCREEN_HEIGHT - Constants.statusBarHeight
+        : interpolate(
+            translateY.value,
+            [movableHeight - videoMinHeight, movableHeight],
+            [videoMaxWidth, videoMinWidth],
+            {
+              extrapolateLeft: Extrapolation.CLAMP,
+              extrapolateRight: Extrapolation.CLAMP,
+            }
+          ),
+      height: isFullScreen
+        ? SCREEN_WIDTH
+        : interpolate(
+            translateY.value,
+            [0, movableHeight - videoMinHeight, movableHeight],
+            [videoMaxHeight, videoMinHeight + videoMinHeight, videoMinHeight],
+            {
+              extrapolateLeft: Extrapolation.CLAMP,
+              extrapolateRight: Extrapolation.CLAMP,
+            }
+          ),
     };
   });
 
@@ -164,24 +172,31 @@ export function VideoPlayerContainer({
     setTimeout(() => onSelect(null), 150);
   };
 
+  const onSelect = (item: string | null) => {
+    if (!item) {
+      setSelectedItem(null);
+      return;
+    }
+    if (item === selectedItem) {
+      translateY.value = withSpring(0, springConfig(2));
+      return;
+    }
+    translateY.value = withSpring(0, springConfig(2));
+    setSelectedItem(item);
+  };
+
   return (
-    <Animated.View style={[styles.subContainer, animatedContainerStyles]}>
+    <AnimatedView style={[styles.subContainer, animatedContainerStyles]}>
       <GestureDetector gesture={panGesture}>
-        <Animated.View style={styles.fillWidth}>
+        <AnimatedView style={[styles.fillWidth]}>
           <TouchableOpacity
-            style={styles.flexRow}
+            style={[styles.flexRow]}
             activeOpacity={0.9}
             onPress={openVideo}
           >
-            <Animated.View style={[animatedVideoStyles]}>
-              <Image
-                style={styles.tumbnail}
-                source={{
-                  uri: selectedItem,
-                }}
-                resizeMode="cover"
-              />
-            </Animated.View>
+            <AnimatedView style={[animatedVideoStyles]}>
+              <Player />
+            </AnimatedView>
             <View>
               <Text style={styles.title}>Selected title</Text>
               <Text style={styles.subTitle}>Selected description</Text>
@@ -190,28 +205,19 @@ export function VideoPlayerContainer({
           <View style={styles.close}>
             <Button title="close" onPress={onClose} />
           </View>
-        </Animated.View>
+        </AnimatedView>
       </GestureDetector>
-      <View style={styles.selectedItemDetails}>
+      <View>
         <Text style={styles.title}>Selected title</Text>
         <Text style={styles.subTitle}>Selected description</Text>
       </View>
-      {fetching ? (
-        <View
-          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-        >
-          <ActivityIndicator color="#000" size="large" />
-        </View>
-      ) : (
-        <ListItem onSelect={onSelect} />
-      )}
-    </Animated.View>
+      <ListItem onSelect={onSelect} />
+    </AnimatedView>
   );
 }
 
 const styles = StyleSheet.create({
   subContainer: {
-    backgroundColor: "#fff",
     ...StyleSheet.absoluteFillObject,
   },
   fillWidth: {
@@ -222,15 +228,12 @@ const styles = StyleSheet.create({
   flexRow: {
     flexDirection: "row",
   },
-  row: {
-    backgroundColor: "#fff",
-  },
   tumbnail: {
     height: "100%",
     width: "100%",
   },
   videoTumbnail: {
-    height: width / 2,
+    height: SCREEN_WIDTH / 2,
     backgroundColor: "#000",
   },
   title: {
@@ -242,9 +245,6 @@ const styles = StyleSheet.create({
     color: "#aaa",
     marginHorizontal: 20,
     marginBottom: 25,
-  },
-  selectedItemDetails: {
-    backgroundColor: "#fff",
   },
   close: {
     alignSelf: "center",
