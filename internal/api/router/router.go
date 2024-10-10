@@ -74,6 +74,19 @@ func Init(s *api.Server) {
 				return false
 			},
 		})),
+
+		APIV1Streams: s.Echo.Group("/api/v1/streams", middleware.AuthWithConfig(middleware.AuthConfig{
+			S:    s,
+			Mode: middleware.AuthModeOptional,
+			Skipper: func(c echo.Context) bool {
+				switch c.Path() {
+				case "/api/v1/streams/publish",
+					"/api/v1/streams/unpublish":
+					return true
+				}
+				return false
+			},
+		})),
 	}
 
 	handlers.AttachAllRoutes(s)

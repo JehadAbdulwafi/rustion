@@ -19,6 +19,7 @@ type Router struct {
 	Root      *echo.Group
 	APIV1Auth *echo.Group
 	APIV1Push *echo.Group
+	APIV1Streams *echo.Group
 }
 
 type Server struct {
