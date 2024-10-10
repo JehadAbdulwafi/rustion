@@ -83,7 +83,7 @@ func DefaultServiceConfigFromEnv() Server {
 		},
 		Echo: EchoServer{
 			Debug:                          util.GetEnvAsBool("SERVER_ECHO_DEBUG", false),
-			listenaddress:                  util.GetEnv("SERVER_ECHO_LISTEN_ADDRESS", "192.168.1.3:9973"),
+			ListenAddress:                  util.GetEnv("SERVER_ECHO_LISTEN_ADDRESS", "192.168.1.3:9973"),
 			HideInternalServerErrorDetails: util.GetEnvAsBool("SERVER_ECHO_HIDE_INTERNAL_SERVER_ERROR_DETAILS", true),
 			BaseURL:                        util.GetEnv("SERVER_ECHO_BASE_URL", "http://localhost:8080"),
 			EnableCORSMiddleware:           util.GetEnvAsBool("SERVER_ECHO_ENABLE_CORS_MIDDLEWARE", true),
