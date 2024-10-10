@@ -7,6 +7,7 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { navigationHeight } from "@/constants";
+import { View } from "./View";
 
 const tabs = [
   { name: "Home", icon: "home", route: "index" },
@@ -14,12 +15,14 @@ const tabs = [
   { name: "Player", icon: "play", route: "player" },
 ];
 
+const AnimatedView = Animated.createAnimatedComponent(View);
+
 const TabBar = ({
-  translateY,
   movableHeight,
+  translateY,
 }: {
-  translateY: SharedValue<number>;
   movableHeight: number;
+  translateY: SharedValue<number>;
 }) => {
   const navigation = useNavigation();
 
@@ -38,18 +41,18 @@ const TabBar = ({
   });
 
   return (
-    <Animated.View style={[styles.tabBar, rStyle]}>
+    <AnimatedView style={[styles.tabBar, rStyle]}>
       {tabs.map((tab) => (
         <TouchableOpacity
           key={tab.route}
           style={styles.tab}
           onPress={() => navigation.navigate(tab.route as never)}
         >
-          <Ionicons name={tab.icon as any} size={24} color="black" />
+          <Ionicons name={tab.icon as any} size={24} color="white" />
           <Text style={styles.tabText}>{tab.name}</Text>
         </TouchableOpacity>
       ))}
-    </Animated.View>
+    </AnimatedView>
   );
 };
 
@@ -59,14 +62,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     height: navigationHeight,
-    backgroundColor: "#fff",
-    borderTopWidth: 1,
-    borderTopColor: "#ccc",
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
   tab: {
     flex: 1,
@@ -75,7 +70,7 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: 12,
-    color: "black",
+    color: "white",
   },
 });
 
