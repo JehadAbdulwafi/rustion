@@ -1,6 +1,4 @@
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
+import { StyleSheet } from "react-native";
 import Animated, {
   interpolate,
   SharedValue,
@@ -8,12 +6,8 @@ import Animated, {
 } from "react-native-reanimated";
 import { navigationHeight } from "@/constants";
 import { View } from "./View";
-
-const tabs = [
-  { name: "Home", icon: "home", route: "index" },
-  { name: "Explore", icon: "search", route: "explore" },
-  { name: "Player", icon: "play", route: "player" },
-];
+import { useState } from "react";
+import Tabs from "./Tabs";
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
@@ -24,8 +18,6 @@ const TabBar = ({
   movableHeight: number;
   translateY: SharedValue<number>;
 }) => {
-  const navigation = useNavigation();
-
   const rStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -42,16 +34,14 @@ const TabBar = ({
 
   return (
     <AnimatedView style={[styles.tabBar, rStyle]}>
-      {tabs.map((tab) => (
-        <TouchableOpacity
-          key={tab.route}
-          style={styles.tab}
-          onPress={() => navigation.navigate(tab.route as never)}
-        >
-          <Ionicons name={tab.icon as any} size={24} color="white" />
-          <Text style={styles.tabText}>{tab.name}</Text>
-        </TouchableOpacity>
-      ))}
+      <Tabs
+        tabs={[
+          { name: "Home", icon: "House", route: "/" },
+          { name: "Explore", icon: "Search", route: "explore" },
+          { name: "Player", icon: "Play", route: "player" },
+          { name: "Account", icon: "User", route: "account" },
+        ]}
+      />
     </AnimatedView>
   );
 };
@@ -62,15 +52,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     height: navigationHeight,
-  },
-  tab: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  tabText: {
-    fontSize: 12,
-    color: "white",
+    backgroundColor: "#121212",
   },
 });
 
