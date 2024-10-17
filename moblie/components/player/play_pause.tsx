@@ -1,32 +1,52 @@
-import { StyleSheet } from 'react-native';
-import Control from './control';
-import { PauseIcon, PlayIcon } from '../../assets/icons';
-import { ViewStyle } from '@tamagui/core';
+import { Pause, Play } from "lucide-react-native";
+import {
+  View,
+  StyleSheet,
+  ActivityIndicator,
+  TouchableOpacity,
+  Animated,
+} from "react-native";
+import { animationsTypes } from "./player";
 
 type Props = {
-  paused: boolean
-  togglePlayPause: () => void
-  styles: ViewStyle
-}
+  togglePlayPause: () => void;
+  paused: boolean;
+  showControls: boolean;
+  animations: animationsTypes;
+};
 
-export default function PlayPause({ paused, togglePlayPause, styles }: Props) {
-  const style = { ...styles, ...s.playPause };
-  let source =
-    paused === true
-      ? <PlayIcon height={18} width={18} />
-      : <PauseIcon height={18} width={18} />;
+const PlayPause = ({
+  togglePlayPause,
+  paused,
+  showControls,
+  animations,
+}: Props) => {
   return (
-    <Control
-      children={source}
-      callback={togglePlayPause}
-      style={style}
-    />
+    <Animated.View
+      style={[styles.container, { opacity: animations.topControl.opacity }]}
+    >
+      <TouchableOpacity onPress={togglePlayPause} style={styles.button}>
+        {paused ? (
+          <Play size={32} color="white" />
+        ) : (
+          <Pause size={32} color="white" />
+        )}
+      </TouchableOpacity>
+    </Animated.View>
   );
-}
+};
 
-const s = StyleSheet.create({
-  playPause: {
-    position: 'relative',
-    zIndex: 0,
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
-})
+  button: {
+    padding: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    borderRadius: 99,
+  },
+});
+
+export default PlayPause;

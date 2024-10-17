@@ -6,7 +6,11 @@ import { useEffect, useState } from "react";
 import { Accelerometer } from "expo-sensors";
 import { usePlayerContext } from "@/providers/PlayerProvider";
 
-export default function Player() {
+export default function Player({
+  allowFullscreen,
+}: {
+  allowFullscreen: boolean;
+}) {
   const { isFullScreen, setIsFullScreen } = usePlayerContext();
 
   const [isManualToggle, setIsManualToggle] = useState(false);
@@ -35,6 +39,8 @@ export default function Player() {
   useEffect(() => {
     const newSubscription: Orientation.Subscription = Accelerometer.addListener(
       (accelerometerData) => {
+        if (!allowFullscreen) return;
+
         const { x, y } = accelerometerData;
         if (Math.abs(x) > Math.abs(y)) {
           if (x > 0) {
@@ -63,7 +69,7 @@ export default function Player() {
         newSubscription.remove();
       }
     };
-  }, []);
+  }, [isManualToggle]);
 
   return (
     <Animated.View style={[styles.videoContainer]}>

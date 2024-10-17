@@ -1,6 +1,7 @@
 import TopControls from "./top_controls";
 import BottomControls from "./bottom_controls";
 import { PlayerState, animationsTypes } from "./player";
+import PlayPause from "./play_pause";
 
 type Props = {
   playerState: PlayerState;
@@ -11,11 +12,12 @@ type Props = {
 export default function Controls({ playerState, methods, animations }: Props) {
   return (
     <>
-      <TopControls
-        hideControls={methods.hideControls}
+      <TopControls animations={animations} />
+      <PlayPause
+        togglePlayPause={methods.togglePlayPause}
+        paused={playerState.paused}
+        showControls={playerState.showControls}
         animations={animations}
-        toggleFullscreen={methods.toggleFullscreen}
-        isFullScreen={playerState.isFullScreen}
       />
       <BottomControls
         paused={playerState.paused}

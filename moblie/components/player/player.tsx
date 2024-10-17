@@ -5,20 +5,17 @@ import {
   StyleSheet,
   Animated,
   View,
-  PanResponderInstance,
   Easing,
-  Dimensions,
 } from "react-native";
 import PlayerLoader from "./loader";
 import PlayerError from "./error";
 import Controls from "./controls";
+import PlayPause from "./play_pause";
 
 export interface ConfigTypes {
   controlTimeoutDelay: number;
-  volumePanResponder: PanResponderInstance | undefined;
   controlTimeout: NodeJS.Timeout | null | undefined;
   tapActionTimeout: NodeJS.Timeout | null;
-  volumeWidth: number;
   iconOffset: number;
   tapAnywhereToPause: boolean;
 }
@@ -36,8 +33,6 @@ type PlayerProps = {
   muted?: boolean;
   volume?: number;
   rate?: number;
-  showTimeRemaining?: boolean;
-  showHours?: boolean;
   onBack?: () => void;
   onEnd?: () => void;
   onEnterFullscreen?: () => void;
@@ -52,8 +47,6 @@ type PlayerProps = {
   repeat: boolean;
 };
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
-
 export type PlayerState = {
   resizeMode: "contain" | "cover" | "none" | "stretch";
   paused: boolean;
@@ -62,12 +55,7 @@ export type PlayerState = {
   rate: number;
 
   isFullScreen: boolean;
-  volumeTrackWidth: number;
-  volumeFillWidth: number;
   showControls: boolean;
-  volumePosition: number;
-  volumeOffset: number;
-  originallyPaused: boolean;
   loading: boolean;
   error: boolean;
 };
@@ -90,28 +78,8 @@ export type animationsTypes = {
   };
 };
 
-const defaultProps = {
-  toggleResizeModeOnFullscreen: false,
-  controlAnimationTiming: 500,
-  doubleTapTime: 130,
-  playInBackground: false,
-  playWhenInactive: false,
-  resizeMode: "contain",
-  isFullScreen: null,
-  showOnStart: true,
-  paused: false,
-  repeat: false,
-  muted: false,
-  volume: 1,
-  title: "dsaf",
-  rate: 1,
-  showTimeRemaining: true,
-  showHours: false,
-};
-
 export const VideoPlayer = (props: PlayerProps) => {
   const playerRef = useRef<VideoRef | null>(null); // Ensure the ref type matches VideoRef
-  const [mounted, setmounted] = useState(false);
   const [playerState, setPlayerState] = useState<PlayerState>({
     // Video
     resizeMode: props.resizeMode || "contain",
@@ -122,24 +90,17 @@ export const VideoPlayer = (props: PlayerProps) => {
 
     // Controls
     isFullScreen: props.isFullScreen || false,
-    volumeTrackWidth: 0,
-    volumeFillWidth: 0,
     showControls: props.showOnStart || true,
-    volumePosition: 0,
-    volumeOffset: 0,
-    originallyPaused: false,
     loading: false,
     error: false,
   });
 
   const configRef = useRef<ConfigTypes>({
-    controlTimeoutDelay: 4000,
-    volumePanResponder: undefined,
+    controlTimeoutDelay: 5000,
     controlTimeout: null,
     tapActionTimeout: null,
-    volumeWidth: 150,
     iconOffset: 0,
-    tapAnywhereToPause: false,
+    tapAnywhereToPause: true,
   });
 
   const events = {
@@ -157,7 +118,7 @@ export const VideoPlayer = (props: PlayerProps) => {
     onPlay: props.onPlay,
   };
 
-  const initialValue = props.showOnStart ? 1 : 0;
+  const initialValue = 1;
 
   const controlAnimationTiming = 500;
   const doubleTapTime = 130;
@@ -179,6 +140,7 @@ export const VideoPlayer = (props: PlayerProps) => {
       MAX_VALUE: 360,
     },
   });
+
   /**
    * Functions used throughout the application
    */
@@ -196,7 +158,6 @@ export const VideoPlayer = (props: PlayerProps) => {
     }));
 
     () => {
-      setmounted(false);
       clearControlTimeout();
     };
   }, [props.isFullScreen]);
@@ -250,7 +211,11 @@ export const VideoPlayer = (props: PlayerProps) => {
       config.tapActionTimeout = setTimeout(() => {
         if (config.tapAnywhereToPause && playerState.showControls) {
           methods.togglePlayPause();
-          resetControlTimeout();
+          if (!playerState.paused) {
+            resetControlTimeout();
+          } else {
+            methods.toggleControls();
+          }
         } else {
           methods.toggleControls();
         }
@@ -296,7 +261,9 @@ export const VideoPlayer = (props: PlayerProps) => {
    */
   function resetControlTimeout() {
     clearControlTimeout();
-    setControlTimeout();
+    if (playerState.paused) {
+      setControlTimeout();
+    }
   }
 
   /**
@@ -387,10 +354,16 @@ export const VideoPlayer = (props: PlayerProps) => {
     setPlayerState((prev) => ({ ...prev, showControls: !prev.showControls }));
     if (!playerState.showControls) {
       showControlAnimation();
-      setControlTimeout();
+      if (playerState.paused) {
+        clearControlTimeout();
+      } else {
+        setControlTimeout();
+      }
     } else {
+      if (!playerState.paused) {
+        return clearControlTimeout();
+      }
       hideControlAnimation();
-      clearControlTimeout();
     }
   }
 
@@ -413,7 +386,11 @@ export const VideoPlayer = (props: PlayerProps) => {
   }
 
   function togglePlayPause() {
-    setPlayerState((prev) => ({ ...prev, paused: !prev.paused }));
+    setPlayerState((prev) => ({
+      ...prev,
+      paused: !prev.paused,
+      showControls: !prev.paused ? prev.showControls : true, // Keep controls shown if paused
+    }));
   }
 
   return (
