@@ -1,4 +1,4 @@
-import { StyleSheet, Pressable, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import Animated, {
   FadeInLeft,
   FadeOutLeft,
@@ -6,10 +6,9 @@ import Animated, {
   LinearTransition,
 } from "react-native-reanimated";
 import { icons } from "lucide-react-native";
-import { MotiProps, MotiView } from "moti";
+import { MotiProps } from "moti";
 import { motifySvg } from "moti/svg";
 import { useRouter } from "expo-router";
-import { useState } from "react";
 
 type IconNames = keyof typeof icons;
 type Tab = {
@@ -35,10 +34,17 @@ const TAB_COLORS = {
   inactiveBackgroundColor: "#121212",
 };
 
-const Tabs = ({ tabs }: { tabs: Tab[] }) => {
+const Tabs = ({
+  tabs,
+  selectedIndex,
+  setSelectedIndex,
+}: {
+  tabs: Tab[];
+  selectedIndex: number;
+  setSelectedIndex: (index: number) => void;
+}) => {
   const router = useRouter();
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
   return (
     <View style={styles.tabBar}>
       {tabs.map((tab, idx) => {
@@ -111,7 +117,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
   },
-  tabText: {},
 });
 
 export default Tabs;

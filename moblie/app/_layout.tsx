@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 import { Stack } from "expo-router";
 import { PlayerProvider, Provider } from "@/providers";
-import TabContainer from "@/components/TabContainer";
+import TabBar from "@/components/ui/TabBar";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -33,7 +33,7 @@ export default function RootLayout() {
           <Stack.Screen name="+not-found" />
         </Stack>
 
-        <TabContainer />
+        <TabBar />
       </PlayerProvider>
     </Provider>
   );
