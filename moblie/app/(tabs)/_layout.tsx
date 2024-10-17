@@ -7,12 +7,14 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Home",
+          headerShown: false,
         }}
       />
       <Stack.Screen
-        name="player"
+        name="live"
         options={{
-          title: "Player",
+          title: "Live",
+          headerShown: false,
         }}
       />
       <Stack.Screen
