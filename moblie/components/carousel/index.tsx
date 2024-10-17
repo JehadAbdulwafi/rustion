@@ -1,121 +1,93 @@
-import { useState } from 'react'
-import { View } from 'tamagui'
-import {
-  FlatList,
-  Dimensions,
-  StyleSheet,
-} from 'react-native';
+import { useState } from "react";
+import { View } from "tamagui";
+import { Dimensions, StyleSheet } from "react-native";
 
-import {
-  Directions,
-  Gesture,
-  GestureDetector,
-  State,
-} from 'react-native-gesture-handler';
+import { LinearGradient } from "expo-linear-gradient";
 
-import {
+import Animated, {
+  useAnimatedScrollHandler,
   useSharedValue,
-  withSpring
-} from 'react-native-reanimated';
+} from "react-native-reanimated";
 
-import { DATA } from '../../constants/data';
-import CarouselItem from './item';
-import CarouselImg from './img';
+import { DATA } from "../../constants/data";
+import CarouselItem from "./CarouselItem";
+import { COLOR } from "@/constants/Colors";
+import HomeHeader from "../ui/HomeHeader";
+import BackdropImage from "./BackdropImage";
 
-const { width } = Dimensions.get('screen');
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 const SPACING = 10;
-const ITEM_WIDTH = width * 0.76;
-// const VISIBLE_ITEMS = 3;
-const OVERFLOW_HEIGHT = 75;
+const ITEM_WIDTH = SCREEN_WIDTH * 0.85;
+
 const Carousel = () => {
   const [data] = useState(DATA);
-  const [index, setIndex] = useState(0);
-  const scrollXAnimated = useSharedValue(0);
+  const scrollX = useSharedValue(0);
 
-
-  const rFling = Gesture.Fling()
-    .direction(Directions.RIGHT)
-    .onFinalize((event) => {
-      if (event.state === State.ACTIVE) return;
-      if (event.state === State.END) {
-        const nextIndex = Math.round(scrollXAnimated.value + 1);
-        if (nextIndex - 1 >= data.length - 1) {
-          return;
-        }
-        scrollXAnimated.value = withSpring(Math.floor(nextIndex), { damping: 50, stiffness: 100 });
-      }
-    })
-
-
-  const lFling = Gesture.Fling()
-    .direction(Directions.LEFT)
-    .onEnd((event) => {
-      if (event.state === State.ACTIVE) return;
-      if (event.state === State.END) {
-        const prevIndex = Math.round(scrollXAnimated.value - 1)
-        if (prevIndex + 1 <= 0) {
-          return;
-        }
-        scrollXAnimated.value = withSpring(Math.floor(prevIndex), { damping: 50, stiffness: 100 });
-      }
-    });
+  const onScroll = useAnimatedScrollHandler((e) => {
+    scrollX.value = e.contentOffset.x / (ITEM_WIDTH + SPACING);
+  });
 
   return (
-    <GestureDetector gesture={rFling}>
-      <GestureDetector gesture={lFling}>
-        <View style={styles.container}>
-          <FlatList
-            data={data}
-            keyExtractor={(item) => `trans.${item.id}.img`}
-            horizontal
-            inverted
-            contentContainerStyle={{
-              flex: 1,
-              justifyContent: 'center',
-              padding: SPACING * 2,
-            }}
-            scrollEnabled={false}
-            removeClippedSubviews={false}
-            CellRendererComponent={({
-              item,
-              index: idx,
-              children,
-              style,
-              ...props
-            }) => {
-              const newStyle = [style, { zIndex: calculateZIndex(index, idx) }];
-              return (
-                <View style={newStyle} key={idx} {...props}>
-                  {children}
-                </View>
-              );
-            }}
-            renderItem={({ item, index: idx }) => {
-              return (
-                <CarouselImg item={item} idx={idx} scrollXAnimated={scrollXAnimated} />
-              );
-            }}
-          />
-          <CarouselItem data={data} scrollXAnimated={scrollXAnimated} />
-        </View>
-      </GestureDetector>
-    </GestureDetector>
-  )
-}
+    <View style={styles.container}>
+      <View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: "100%",
+          overflow: "hidden",
+        }}
+      >
+        {data.map((item, idx) => {
+          return (
+            <BackdropImage key={idx} item={item} idx={idx} scrollX={scrollX} />
+          );
+        })}
+      </View>
+
+      <HomeHeader />
+      <LinearGradient
+        colors={[COLOR.black0, "#151718"]}
+        start={{ x: 1, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 100,
+        }}
+      />
+
+      <Animated.FlatList
+        data={data}
+        keyExtractor={(item) => `trans.${item.id}.img`}
+        contentContainerStyle={{
+          paddingHorizontal: (SCREEN_WIDTH - ITEM_WIDTH) / 2,
+          gap: SPACING,
+        }}
+        renderItem={({ item, index: idx }) => {
+          return <CarouselItem item={item} idx={idx} scrollX={scrollX} />;
+        }}
+        // scrolling
+        snapToInterval={ITEM_WIDTH + SPACING}
+        decelerationRate={"fast"}
+        showsHorizontalScrollIndicator={false}
+        horizontal
+        // scroll event
+        onScroll={onScroll}
+        scrollEventThrottle={1000 / 60}
+      />
+    </View>
+  );
+};
 
 export default Carousel;
 
-function calculateZIndex(index: number, idx: number) {
-  const distance = Math.abs(index - idx);
-  const baseZIndex = 9999;
-  const zIndexOffset = 99;
-
-  return baseZIndex - zIndexOffset * distance;
-}
-
 const styles = StyleSheet.create({
   container: {
-    height: ITEM_WIDTH + OVERFLOW_HEIGHT + SPACING * 3,
-    justifyContent: 'center',
+    height: SCREEN_HEIGHT / 1.7,
+    justifyContent: "center",
   },
 });
