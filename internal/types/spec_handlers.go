@@ -43,8 +43,14 @@ func (o *SwaggerSpec) initHandlerCache() {
 	o.Handlers["GET"]["/api/v1/featured_sections"] = true
 	o.Handlers["GET"]["/api/v1/news"] = true
 	o.Handlers["GET"]["/api/v1/news/categories/{id}/news"] = true
+	o.Handlers["GET"]["/api/v1/featured_sections/{id}"] = true
 	o.Handlers["GET"]["/api/v1/featured_sections/{id}/articles"] = true
+	o.Handlers["GET"]["/api/v1/news/{id}"] = true
+	o.Handlers["GET"]["/api/v1/news/categories/{id}"] = true
 	o.Handlers["GET"]["/api/v1/auth/userinfo"] = true
+	o.Handlers["POST"]["/api/v1/featured_sections"] = true
+	o.Handlers["POST"]["/api/v1/news"] = true
+	o.Handlers["POST"]["/api/v1/news/categories"] = true
 	o.Handlers["POST"]["/api/v1/stream"] = true
 	o.Handlers["POST"]["/api/v1/auth/login"] = true
 	o.Handlers["POST"]["/api/v1/stream/play"] = true
@@ -52,4 +58,7 @@ func (o *SwaggerSpec) initHandlerCache() {
 	o.Handlers["POST"]["/api/v1/auth/register"] = true
 	o.Handlers["POST"]["/api/v1/stream/stop"] = true
 	o.Handlers["POST"]["/api/v1/stream/unpublish"] = true
+	o.Handlers["PUT"]["/api/v1/featured_sections/{id}"] = true
+	o.Handlers["PUT"]["/api/v1/news/{id}"] = true
+	o.Handlers["PUT"]["/api/v1/news/categories/{id}"] = true
 }

@@ -11,8 +11,6 @@ definitions:
       - title
       - content
       - category_id
-      - created_at
-      - updated_at
     properties:
       id:
         type: integer
@@ -41,27 +39,45 @@ definitions:
         format: date-time
         description: Timestamp when the article was last updated
         example: "2023-10-02T12:00:00Z"
-  CreateNewsArticleResponse:
+  CreateNewsArticleRequest:
     type: object
     required:
-      - id
       - title
       - content
-      - category_id
-      - created_at
-      - updated_at
     properties:
-      id:
-        type: integer
-        description: ID of the created news article
-        example: 1
       title:
         type: string
-        description: Title of the created news article
+        description: Title of the news article
+        maxLength: 255
         example: "Breaking News Title"
       content:
         type: string
-        description: Content of the created news article
+        description: Content of the news article
+        example: "This is the content of the news article."
+      category_id:
+        type: integer
+        description: ID of the category the news article belongs to
+        example: 2
+  CreateNewsArticleResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "Article created successfully."
+  GetNewsArticleResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: ID of the news article
+        example: 1
+      title:
+        type: string
+        description: Title of the news article
+        example: "Breaking News Title"
+      content:
+        type: string
+        description: Content of the news article
         example: "This is the content of the news article."
       category_id:
         type: integer
@@ -77,19 +93,39 @@ definitions:
         format: date-time
         description: Timestamp when the article was last updated
         example: "2023-10-02T12:00:00Z"
-  GetNewsArticleResponse:
+  UpdateNewsArticleRequest:
     type: object
+    required:
+      - title
+      - content
     properties:
-      article:
-        $ref: "#/definitions/NewsArticle"
+      title:
+        type: string
+        description: Title of the news article
+        maxLength: 255
+        example: "Breaking News Title"
+      content:
+        type: string
+      category_id:
+        type: integer
+        description: ID of the category the news article belongs to
+        example: 2
   UpdateNewsArticleResponse:
     type: object
     properties:
-      article:
-        $ref: "#/definitions/NewsArticle"
+      message:
+        type: string
+        example: "Article updated successfully."
   DeleteNewsArticleResponse:
     type: object
     properties:
       message:
         type: string
         example: "Article deleted successfully."
+  GetAllNewsArticleResponse:
+    type: object
+    properties:
+      news:
+        type: array
+        items:
+          $ref: "#/definitions/NewsArticle"

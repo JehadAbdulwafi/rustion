@@ -20,6 +20,17 @@ paths:
           description: CreateFeaturedSectionResponse
           schema:
             $ref: "../definitions/featured_section.yml#/definitions/CreateFeaturedSectionResponse"
+    get:
+      description: Retrieves all featured sections with their associated articles
+      tags:
+        - featured_sections
+      summary: Gets all featured sections with articles
+      operationId: GetAllFeaturedSectionsWithArticles
+      responses:
+        "200":
+          description: List of featured sections with articles
+          schema:
+            $ref: "../definitions/featured_section.yml#/definitions/GetAllFeaturedSectionsWithArticlesResponse"
   /api/v1/featured_sections/{id}:
     get:
       description: Retrieves a featured section by ID
@@ -38,7 +49,6 @@ paths:
           description: GetFeaturedSectionResponse
           schema:
             $ref: "../definitions/featured_section.yml#/definitions/GetFeaturedSectionResponse"
-  /api/v1/featured_sections/{id}:
     put:
       description: Updates a featured section by ID
       tags:
@@ -60,7 +70,6 @@ paths:
           description: UpdateFeaturedSectionResponse
           schema:
             $ref: "../definitions/featured_section.yml#/definitions/UpdateFeaturedSectionResponse"
-  /api/v1/featured_sections/{id}:
     delete:
       description: Deletes a featured section by ID
       tags:
@@ -96,15 +105,3 @@ paths:
           description: GetFeaturedSectionWithArticlesResponse
           schema:
             $ref: "../definitions/featured_section.yml#/definitions/GetFeaturedSectionWithArticlesResponse"
-  /api/v1/featured_sections:
-    get:
-      description: Retrieves all featured sections with their associated articles
-      tags:
-        - featured_sections
-      summary: Gets all featured sections with articles
-      operationId: GetAllFeaturedSectionsWithArticles
-      responses:
-        "200":
-          description: List of featured sections with articles
-          schema:
-            $ref: "../definitions/featured_section.yml#/definitions/GetAllFeaturedSectionsWithArticlesResponse"

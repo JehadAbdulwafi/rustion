@@ -20,6 +20,17 @@ paths:
           description: CreateNewsCategoryResponse
           schema:
             $ref: "../definitions/news_category.yml#/definitions/CreateNewsCategoryResponse"
+    get:
+      description: Retrieves all categories with their associated news articles
+      tags:
+        - news_categories
+      summary: Gets all categories with news
+      operationId: GetAllCategoriesWithNews
+      responses:
+        "200":
+          description: List of categories with news
+          schema:
+            $ref: "../definitions/news_category.yml#/definitions/GetAllCategoriesWithNewsResponse"
   /api/v1/news/categories/{id}:
     get:
       description: Retrieves a news category by ID
@@ -38,7 +49,6 @@ paths:
           description: GetNewsCategoryResponse
           schema:
             $ref: "../definitions/news_category.yml#/definitions/GetNewsCategoryResponse"
-  /api/v1/news/categories/{id}:
     put:
       description: Updates a news category by ID
       tags:
@@ -60,7 +70,6 @@ paths:
           description: UpdateNewsCategoryResponse
           schema:
             $ref: "../definitions/news_category.yml#/definitions/UpdateNewsCategoryResponse"
-  /api/v1/news/categories/{id}:
     delete:
       description: Deletes a news category by ID
       tags:
@@ -96,15 +105,3 @@ paths:
           description: GetCategoryWithNewsResponse
           schema:
             $ref: "../definitions/news_category.yml#/definitions/GetCategoryWithNewsResponse"
-  /api/v1/news/categories:
-    get:
-      description: Retrieves all categories with their associated news articles
-      tags:
-        - news_categories
-      summary: Gets all categories with news
-      operationId: GetAllCategoriesWithNews
-      responses:
-        "200":
-          description: List of categories with news
-          schema:
-            $ref: "../definitions/news_category.yml#/definitions/GetAllCategoriesWithNewsResponse"

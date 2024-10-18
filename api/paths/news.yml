@@ -14,12 +14,23 @@ paths:
         - name: Payload
           in: body
           schema:
-            $ref: "../definitions/news.yml#/definitions/NewsArticle"
+            $ref: "../definitions/news.yml#/definitions/CreateNewsArticleRequest"
       responses:
         "200":
           description: CreateNewsArticleResponse
           schema:
             $ref: "../definitions/news.yml#/definitions/CreateNewsArticleResponse"
+    get:
+      description: Retrieves all news articles
+      tags:
+        - news
+      summary: Gets all news articles
+      operationId: GetAllNewsArticles
+      responses:
+        "200":
+          description: List of news articles
+          schema:
+            $ref: "../definitions/news.yml#/definitions/GetAllNewsArticleResponse"
   /api/v1/news/{id}:
     get:
       description: Retrieves a news article by ID
@@ -38,7 +49,6 @@ paths:
           description: GetNewsArticleResponse
           schema:
             $ref: "../definitions/news.yml#/definitions/GetNewsArticleResponse"
-  /api/v1/news/{id}:
     put:
       description: Updates a news article by ID
       tags:
@@ -54,13 +64,12 @@ paths:
         - name: Payload
           in: body
           schema:
-            $ref: "../definitions/news.yml#/definitions/NewsArticle"
+            $ref: "../definitions/news.yml#/definitions/UpdateNewsArticleRequest"
       responses:
         "200":
           description: UpdateNewsArticleResponse
           schema:
             $ref: "../definitions/news.yml#/definitions/UpdateNewsArticleResponse"
-  /api/v1/news/{id}:
     delete:
       description: Deletes a news article by ID
       tags:
@@ -78,17 +87,3 @@ paths:
           description: DeleteNewsArticleResponse
           schema:
             $ref: "../definitions/news.yml#/definitions/DeleteNewsArticleResponse"
-  /api/v1/news:
-    get:
-      description: Retrieves all news articles
-      tags:
-        - news
-      summary: Gets all news articles
-      operationId: GetAllNewsArticles
-      responses:
-        "200":
-          description: List of news articles
-          schema:
-            type: array
-            items:
-              $ref: "../definitions/news.yml#/definitions/NewsArticle"

@@ -9,8 +9,6 @@ definitions:
     required:
       - id
       - name
-      - created_at
-      - updated_at
     properties:
       id:
         type: integer
@@ -37,8 +35,6 @@ definitions:
       - title
       - content
       - category_id
-      - created_at
-      - updated_at
     properties:
       id:
         type: integer
@@ -72,8 +68,6 @@ definitions:
     required:
       - id
       - name
-      - created_at
-      - updated_at
     properties:
       id:
         type: integer
