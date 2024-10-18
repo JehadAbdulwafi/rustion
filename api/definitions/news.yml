@@ -1,0 +1,95 @@
+swagger: "2.0"
+info:
+  title: github.com/JehadAbdulwafi/news
+  version: 0.1.0
+paths: {}
+definitions:
+  NewsArticle:
+    type: object
+    required:
+      - id
+      - title
+      - content
+      - category_id
+      - created_at
+      - updated_at
+    properties:
+      id:
+        type: integer
+        description: ID of the news article
+        example: 1
+      title:
+        type: string
+        description: Title of the news article
+        maxLength: 255
+        example: "Breaking News Title"
+      content:
+        type: string
+        description: Content of the news article
+        example: "This is the content of the news article."
+      category_id:
+        type: integer
+        description: ID of the category the news article belongs to
+        example: 2
+      created_at:
+        type: string
+        format: date-time
+        description: Timestamp when the article was created
+        example: "2023-10-01T12:00:00Z"
+      updated_at:
+        type: string
+        format: date-time
+        description: Timestamp when the article was last updated
+        example: "2023-10-02T12:00:00Z"
+  CreateNewsArticleResponse:
+    type: object
+    required:
+      - id
+      - title
+      - content
+      - category_id
+      - created_at
+      - updated_at
+    properties:
+      id:
+        type: integer
+        description: ID of the created news article
+        example: 1
+      title:
+        type: string
+        description: Title of the created news article
+        example: "Breaking News Title"
+      content:
+        type: string
+        description: Content of the created news article
+        example: "This is the content of the news article."
+      category_id:
+        type: integer
+        description: ID of the category the news article belongs to
+        example: 2
+      created_at:
+        type: string
+        format: date-time
+        description: Timestamp when the article was created
+        example: "2023-10-01T12:00:00Z"
+      updated_at:
+        type: string
+        format: date-time
+        description: Timestamp when the article was last updated
+        example: "2023-10-02T12:00:00Z"
+  GetNewsArticleResponse:
+    type: object
+    properties:
+      article:
+        $ref: "#/definitions/NewsArticle"
+  UpdateNewsArticleResponse:
+    type: object
+    properties:
+      article:
+        $ref: "#/definitions/NewsArticle"
+  DeleteNewsArticleResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "Article deleted successfully."

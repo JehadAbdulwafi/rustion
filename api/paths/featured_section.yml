@@ -1,0 +1,110 @@
+swagger: "2.0"
+info:
+  title: github.com/JehadAbdulwafi/rustion
+  version: 0.1.0
+paths:
+  /api/v1/featured_sections:
+    post:
+      description: Creates a featured section
+      tags:
+        - featured_sections
+      summary: Creates a featured section
+      operationId: PostCreateFeaturedSection
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/featured_section.yml#/definitions/FeaturedSection"
+      responses:
+        "200":
+          description: CreateFeaturedSectionResponse
+          schema:
+            $ref: "../definitions/featured_section.yml#/definitions/CreateFeaturedSectionResponse"
+  /api/v1/featured_sections/{id}:
+    get:
+      description: Retrieves a featured section by ID
+      tags:
+        - featured_sections
+      summary: Gets a featured section
+      operationId: GetFeaturedSection
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          description: ID of the featured section
+      responses:
+        "200":
+          description: GetFeaturedSectionResponse
+          schema:
+            $ref: "../definitions/featured_section.yml#/definitions/GetFeaturedSectionResponse"
+  /api/v1/featured_sections/{id}:
+    put:
+      description: Updates a featured section by ID
+      tags:
+        - featured_sections
+      summary: Updates a featured section
+      operationId: UpdateFeaturedSection
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          description: ID of the featured section
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/featured_section.yml#/definitions/FeaturedSection"
+      responses:
+        "200":
+          description: UpdateFeaturedSectionResponse
+          schema:
+            $ref: "../definitions/featured_section.yml#/definitions/UpdateFeaturedSectionResponse"
+  /api/v1/featured_sections/{id}:
+    delete:
+      description: Deletes a featured section by ID
+      tags:
+        - featured_sections
+      summary: Deletes a featured section
+      operationId: DeleteFeaturedSection
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          description: ID of the featured section
+      responses:
+        "200":
+          description: DeleteFeaturedSectionResponse
+          schema:
+            $ref: "../definitions/featured_section.yml#/definitions/DeleteFeaturedSectionResponse"
+  /api/v1/featured_sections/{id}/articles:
+    get:
+      description: Retrieves a featured section with its associated articles
+      tags:
+        - featured_sections
+      summary: Gets a featured section with articles
+      operationId: GetFeaturedSectionWithArticles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          description: ID of the featured section
+      responses:
+        "200":
+          description: GetFeaturedSectionWithArticlesResponse
+          schema:
+            $ref: "../definitions/featured_section.yml#/definitions/GetFeaturedSectionWithArticlesResponse"
+  /api/v1/featured_sections:
+    get:
+      description: Retrieves all featured sections with their associated articles
+      tags:
+        - featured_sections
+      summary: Gets all featured sections with articles
+      operationId: GetAllFeaturedSectionsWithArticles
+      responses:
+        "200":
+          description: List of featured sections with articles
+          schema:
+            $ref: "../definitions/featured_section.yml#/definitions/GetAllFeaturedSectionsWithArticlesResponse"
