@@ -110,6 +110,37 @@ type Account struct {
 	TokenType         sql.NullString
 }
 
+type FeaturedArticle struct {
+	ID                int32
+	FeaturedSectionID sql.NullInt32
+	NewsID            sql.NullInt32
+	CreatedAt         sql.NullTime
+	UpdatedAt         sql.NullTime
+}
+
+type FeaturedSection struct {
+	ID        int32
+	Title     string
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
+}
+
+type News struct {
+	ID         int32
+	Title      string
+	Content    string
+	CategoryID sql.NullInt32
+	CreatedAt  sql.NullTime
+	UpdatedAt  sql.NullTime
+}
+
+type NewsCategory struct {
+	ID        int32
+	Name      string
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
+}
+
 type PasswordResetToken struct {
 	Token      uuid.UUID
 	ValidUntil time.Time
