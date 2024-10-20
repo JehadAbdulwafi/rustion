@@ -14,27 +14,27 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// GetFeaturedSectionWithArticlesResponse get featured section with articles response
+// GetCategoryWithArticlesResponse get category with articles response
 //
-// swagger:model getFeaturedSectionWithArticlesResponse
-type GetFeaturedSectionWithArticlesResponse struct {
+// swagger:model getCategoryWithArticlesResponse
+type GetCategoryWithArticlesResponse struct {
 
 	// articles
-	Articles []*GetFeaturedSectionWithArticlesResponseArticlesItems `json:"articles"`
+	Articles []*GetCategoryWithArticlesResponseArticlesItems `json:"articles"`
 
-	// featured section
-	FeaturedSection *FeaturedSection `json:"featured_section,omitempty"`
+	// category
+	Category *Category `json:"category,omitempty"`
 }
 
-// Validate validates this get featured section with articles response
-func (m *GetFeaturedSectionWithArticlesResponse) Validate(formats strfmt.Registry) error {
+// Validate validates this get category with articles response
+func (m *GetCategoryWithArticlesResponse) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateArticles(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.validateFeaturedSection(formats); err != nil {
+	if err := m.validateCategory(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -44,7 +44,7 @@ func (m *GetFeaturedSectionWithArticlesResponse) Validate(formats strfmt.Registr
 	return nil
 }
 
-func (m *GetFeaturedSectionWithArticlesResponse) validateArticles(formats strfmt.Registry) error {
+func (m *GetCategoryWithArticlesResponse) validateArticles(formats strfmt.Registry) error {
 	if swag.IsZero(m.Articles) { // not required
 		return nil
 	}
@@ -70,17 +70,17 @@ func (m *GetFeaturedSectionWithArticlesResponse) validateArticles(formats strfmt
 	return nil
 }
 
-func (m *GetFeaturedSectionWithArticlesResponse) validateFeaturedSection(formats strfmt.Registry) error {
-	if swag.IsZero(m.FeaturedSection) { // not required
+func (m *GetCategoryWithArticlesResponse) validateCategory(formats strfmt.Registry) error {
+	if swag.IsZero(m.Category) { // not required
 		return nil
 	}
 
-	if m.FeaturedSection != nil {
-		if err := m.FeaturedSection.Validate(formats); err != nil {
+	if m.Category != nil {
+		if err := m.Category.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("featured_section")
+				return ve.ValidateName("category")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("featured_section")
+				return ce.ValidateName("category")
 			}
 			return err
 		}
@@ -89,15 +89,15 @@ func (m *GetFeaturedSectionWithArticlesResponse) validateFeaturedSection(formats
 	return nil
 }
 
-// ContextValidate validate this get featured section with articles response based on the context it is used
-func (m *GetFeaturedSectionWithArticlesResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validate this get category with articles response based on the context it is used
+func (m *GetCategoryWithArticlesResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateArticles(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.contextValidateFeaturedSection(ctx, formats); err != nil {
+	if err := m.contextValidateCategory(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -107,7 +107,7 @@ func (m *GetFeaturedSectionWithArticlesResponse) ContextValidate(ctx context.Con
 	return nil
 }
 
-func (m *GetFeaturedSectionWithArticlesResponse) contextValidateArticles(ctx context.Context, formats strfmt.Registry) error {
+func (m *GetCategoryWithArticlesResponse) contextValidateArticles(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.Articles); i++ {
 
@@ -132,19 +132,19 @@ func (m *GetFeaturedSectionWithArticlesResponse) contextValidateArticles(ctx con
 	return nil
 }
 
-func (m *GetFeaturedSectionWithArticlesResponse) contextValidateFeaturedSection(ctx context.Context, formats strfmt.Registry) error {
+func (m *GetCategoryWithArticlesResponse) contextValidateCategory(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.FeaturedSection != nil {
+	if m.Category != nil {
 
-		if swag.IsZero(m.FeaturedSection) { // not required
+		if swag.IsZero(m.Category) { // not required
 			return nil
 		}
 
-		if err := m.FeaturedSection.ContextValidate(ctx, formats); err != nil {
+		if err := m.Category.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("featured_section")
+				return ve.ValidateName("category")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("featured_section")
+				return ce.ValidateName("category")
 			}
 			return err
 		}
@@ -154,7 +154,7 @@ func (m *GetFeaturedSectionWithArticlesResponse) contextValidateFeaturedSection(
 }
 
 // MarshalBinary interface implementation
-func (m *GetFeaturedSectionWithArticlesResponse) MarshalBinary() ([]byte, error) {
+func (m *GetCategoryWithArticlesResponse) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -162,8 +162,8 @@ func (m *GetFeaturedSectionWithArticlesResponse) MarshalBinary() ([]byte, error)
 }
 
 // UnmarshalBinary interface implementation
-func (m *GetFeaturedSectionWithArticlesResponse) UnmarshalBinary(b []byte) error {
-	var res GetFeaturedSectionWithArticlesResponse
+func (m *GetCategoryWithArticlesResponse) UnmarshalBinary(b []byte) error {
+	var res GetCategoryWithArticlesResponse
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

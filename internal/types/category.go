@@ -14,37 +14,35 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// FeaturedSection featured section
+// Category category
 //
-// swagger:model featuredSection
-type FeaturedSection struct {
+// swagger:model category
+type Category struct {
 
-	// Timestamp when the section was created
+	// Timestamp when the category was created
 	// Example: 2023-10-01T12:00:00Z
-	// Required: true
 	// Format: date-time
-	CreatedAt *strfmt.DateTime `json:"created_at"`
+	CreatedAt strfmt.DateTime `json:"created_at,omitempty"`
 
-	// ID of section
+	// ID of category
 	// Example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
 	// Required: true
 	// Format: uuid4
 	ID *strfmt.UUID4 `json:"id"`
 
-	// Title of the featured section
-	// Example: Top Stories
+	// Name of the category
+	// Example: Politics
 	// Required: true
-	Title *string `json:"title"`
+	Name *string `json:"name"`
 
-	// Timestamp when the section was last updated
+	// Timestamp when the category was last updated
 	// Example: 2023-10-02T12:00:00Z
-	// Required: true
 	// Format: date-time
-	UpdatedAt *strfmt.DateTime `json:"updated_at"`
+	UpdatedAt strfmt.DateTime `json:"updated_at,omitempty"`
 }
 
-// Validate validates this featured section
-func (m *FeaturedSection) Validate(formats strfmt.Registry) error {
+// Validate validates this category
+func (m *Category) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateCreatedAt(formats); err != nil {
@@ -55,7 +53,7 @@ func (m *FeaturedSection) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateTitle(formats); err != nil {
+	if err := m.validateName(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -69,10 +67,9 @@ func (m *FeaturedSection) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *FeaturedSection) validateCreatedAt(formats strfmt.Registry) error {
-
-	if err := validate.Required("created_at", "body", m.CreatedAt); err != nil {
-		return err
+func (m *Category) validateCreatedAt(formats strfmt.Registry) error {
+	if swag.IsZero(m.CreatedAt) { // not required
+		return nil
 	}
 
 	if err := validate.FormatOf("created_at", "body", "date-time", m.CreatedAt.String(), formats); err != nil {
@@ -82,7 +79,7 @@ func (m *FeaturedSection) validateCreatedAt(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *FeaturedSection) validateID(formats strfmt.Registry) error {
+func (m *Category) validateID(formats strfmt.Registry) error {
 
 	if err := validate.Required("id", "body", m.ID); err != nil {
 		return err
@@ -95,19 +92,18 @@ func (m *FeaturedSection) validateID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *FeaturedSection) validateTitle(formats strfmt.Registry) error {
+func (m *Category) validateName(formats strfmt.Registry) error {
 
-	if err := validate.Required("title", "body", m.Title); err != nil {
+	if err := validate.Required("name", "body", m.Name); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (m *FeaturedSection) validateUpdatedAt(formats strfmt.Registry) error {
-
-	if err := validate.Required("updated_at", "body", m.UpdatedAt); err != nil {
-		return err
+func (m *Category) validateUpdatedAt(formats strfmt.Registry) error {
+	if swag.IsZero(m.UpdatedAt) { // not required
+		return nil
 	}
 
 	if err := validate.FormatOf("updated_at", "body", "date-time", m.UpdatedAt.String(), formats); err != nil {
@@ -117,13 +113,13 @@ func (m *FeaturedSection) validateUpdatedAt(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this featured section based on context it is used
-func (m *FeaturedSection) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this category based on context it is used
+func (m *Category) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *FeaturedSection) MarshalBinary() ([]byte, error) {
+func (m *Category) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -131,8 +127,8 @@ func (m *FeaturedSection) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *FeaturedSection) UnmarshalBinary(b []byte) error {
-	var res FeaturedSection
+func (m *Category) UnmarshalBinary(b []byte) error {
+	var res Category
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -8,7 +8,6 @@ package types
 import (
 	"context"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -18,75 +17,18 @@ import (
 // swagger:model updateFeaturedSectionResponse
 type UpdateFeaturedSectionResponse struct {
 
-	// section
-	Section *FeaturedSection `json:"section,omitempty"`
+	// message
+	// Example: Featured Section updated successfully.
+	Message string `json:"message,omitempty"`
 }
 
 // Validate validates this update featured section response
 func (m *UpdateFeaturedSectionResponse) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateSection(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
 	return nil
 }
 
-func (m *UpdateFeaturedSectionResponse) validateSection(formats strfmt.Registry) error {
-	if swag.IsZero(m.Section) { // not required
-		return nil
-	}
-
-	if m.Section != nil {
-		if err := m.Section.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("section")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("section")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// ContextValidate validate this update featured section response based on the context it is used
+// ContextValidate validates this update featured section response based on context it is used
 func (m *UpdateFeaturedSectionResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateSection(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *UpdateFeaturedSectionResponse) contextValidateSection(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Section != nil {
-
-		if swag.IsZero(m.Section) { // not required
-			return nil
-		}
-
-		if err := m.Section.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("section")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("section")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
