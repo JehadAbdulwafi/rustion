@@ -1,0 +1,123 @@
+swagger: "2.0"
+info:
+  title: github.com/JehadAbdulwafi/rustion
+  version: 0.1.0
+paths:
+  /api/v1/categories:
+    post:
+      description: Creates a category
+      tags:
+        - categories
+      summary: Creates a category
+      operationId: PostCreateCategory
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/category.yml#/definitions/CreateCategoryRequest"
+      responses:
+        "200":
+          description: CreateCategoryResponse
+          schema:
+            $ref: "../definitions/category.yml#/definitions/CreateCategoryResponse"
+    get:
+      description: Retrieves all categories with their associated articles
+      tags:
+        - categories
+      summary: Gets all categories
+      operationId: GetCategories
+      responses:
+        "200":
+          description: List of categories
+          schema:
+            $ref: "../definitions/category.yml#/definitions/GetCategoriesResponse"
+  /api/v1/categories/{id}:
+    get:
+      description: Retrieves a category by ID
+      tags:
+        - news_categories
+      summary: Gets a category
+      operationId: GetCategory
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid4
+          description: ID of the category
+      responses:
+        "200":
+          description: GetCategoryResponse
+          schema:
+            $ref: "../definitions/category.yml#/definitions/GetCategoryResponse"
+    put:
+      description: Updates a category by ID
+      tags:
+        - news_categories
+      summary: Updates a category
+      operationId: UpdateCategory
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid4
+          description: ID of the category
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/category.yml#/definitions/UpdateCategoryRequest"
+      responses:
+        "200":
+          description: UpdateCategoryResponse
+          schema:
+            $ref: "../definitions/category.yml#/definitions/UpdateCategoryResponse"
+    delete:
+      description: Deletes a category by ID
+      tags:
+        - news_categories
+      summary: Deletes a category
+      operationId: DeleteCategory
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid4
+          description: ID of the category
+      responses:
+        "200":
+          description: DeleteCategoryResponse
+          schema:
+            $ref: "../definitions/category.yml#/definitions/DeleteCategoryResponse"
+  /api/v1/categories/{id}/articles:
+    get:
+      description: Retrieves a category with its associated articles
+      tags:
+        - categories
+      summary: Gets a category with articles 
+      operationId: GetCategoryWithArticles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid4
+          description: ID of the category
+      responses:
+        "200":
+          description: GetCategoryWithArticlesResponse
+          schema:
+            $ref: "../definitions/category.yml#/definitions/GetCategoryWithArticlesResponse"
+  /api/v1/categories/articles:
+    get:
+      description: Retrieves a category with its associated articles
+      tags:
+        - categories
+      summary: Gets a category with articles 
+      operationId: GetCategoryWithArticles
+      responses:
+        "200":
+          description: GetCategoryWithArticlesResponse
+          schema:
+            $ref: "../definitions/category.yml#/definitions/GetCategoriesWithArticlesResponse"

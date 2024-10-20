@@ -9,6 +9,93 @@ info:
     title: github.com/JehadAbdulwafi/rustion
     version: 0.1.0
 paths:
+    /api/v1/articles:
+        get:
+            description: Retrieves all articles
+            operationId: GetAllArticles
+            responses:
+                "200":
+                    description: List of articles
+                    schema:
+                        $ref: '#/definitions/getArticlesResponse'
+            summary: Gets all articles
+            tags:
+                - articles
+        post:
+            description: Creates a article
+            operationId: PostCreateArticle
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/createArticleRequest'
+            responses:
+                "200":
+                    description: CreateArticleResponse
+                    schema:
+                        $ref: '#/definitions/createArticleResponse'
+            summary: Creates a article
+            tags:
+                - articles
+    /api/v1/articles/{id}:
+        delete:
+            description: Deletes a article by ID
+            operationId: DeleteArticle
+            parameters:
+                - description: ID of the article
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: DeleteArticleResponse
+                    schema:
+                        $ref: '#/definitions/deleteArticleResponse'
+            summary: Deletes a article
+            tags:
+                - articles
+        get:
+            description: Retrieves a article by ID
+            operationId: GetArticle
+            parameters:
+                - description: ID of the article
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: GetArticleResponse
+                    schema:
+                        $ref: '#/definitions/getArticleResponse'
+            summary: Gets a article
+            tags:
+                - articles
+        put:
+            description: Updates a article by ID
+            operationId: UpdateArticle
+            parameters:
+                - description: ID of the article
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/updateArticleRequest'
+            responses:
+                "200":
+                    description: UpdateArticleResponse
+                    schema:
+                        $ref: '#/definitions/updateArticleResponse'
+            summary: Updates a article
+            tags:
+                - articles
     /api/v1/auth/login:
         post:
             description: Returns an access and refresh token on successful authentication
@@ -79,6 +166,124 @@ paths:
             summary: Get user info
             tags:
                 - auth
+    /api/v1/categories:
+        get:
+            description: Retrieves all categories with their associated articles
+            operationId: GetCategories
+            responses:
+                "200":
+                    description: List of categories
+                    schema:
+                        $ref: '#/definitions/getCategoriesResponse'
+            summary: Gets all categories
+            tags:
+                - categories
+        post:
+            description: Creates a category
+            operationId: PostCreateCategory
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/createCategoryRequest'
+            responses:
+                "200":
+                    description: CreateCategoryResponse
+                    schema:
+                        $ref: '#/definitions/createCategoryResponse'
+            summary: Creates a category
+            tags:
+                - categories
+    /api/v1/categories/articles:
+        get:
+            description: Retrieves a category with its associated articles
+            operationId: GetCategoryWithArticlesMixin2
+            responses:
+                "200":
+                    description: GetCategoryWithArticlesResponse
+                    schema:
+                        $ref: '#/definitions/getCategoriesWithArticlesResponse'
+            summary: Gets a category with articles
+            tags:
+                - categories
+    /api/v1/categories/{id}:
+        delete:
+            description: Deletes a category by ID
+            operationId: DeleteCategory
+            parameters:
+                - description: ID of the category
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: DeleteCategoryResponse
+                    schema:
+                        $ref: '#/definitions/deleteCategoryResponse'
+            summary: Deletes a category
+            tags:
+                - news_categories
+        get:
+            description: Retrieves a category by ID
+            operationId: GetCategory
+            parameters:
+                - description: ID of the category
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: GetCategoryResponse
+                    schema:
+                        $ref: '#/definitions/getCategoryResponse'
+            summary: Gets a category
+            tags:
+                - news_categories
+        put:
+            description: Updates a category by ID
+            operationId: UpdateCategory
+            parameters:
+                - description: ID of the category
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/updateCategoryRequest'
+            responses:
+                "200":
+                    description: UpdateCategoryResponse
+                    schema:
+                        $ref: '#/definitions/updateCategoryResponse'
+            summary: Updates a category
+            tags:
+                - news_categories
+    /api/v1/categories/{id}/articles:
+        get:
+            description: Retrieves a category with its associated articles
+            operationId: GetCategoryWithArticles
+            parameters:
+                - description: ID of the category
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: GetCategoryWithArticlesResponse
+                    schema:
+                        $ref: '#/definitions/getCategoryWithArticlesResponse'
+            summary: Gets a category with articles
+            tags:
+                - categories
     /api/v1/featured_sections:
         get:
             description: Retrieves all featured sections with their associated articles
@@ -87,7 +292,7 @@ paths:
                 "200":
                     description: List of featured sections with articles
                     schema:
-                        $ref: '#/definitions/getAllFeaturedSectionsWithArticlesResponse'
+                        $ref: '#/definitions/getFeaturedSectionsResponse'
             summary: Gets all featured sections with articles
             tags:
                 - featured_sections
@@ -98,7 +303,7 @@ paths:
                 - in: body
                   name: Payload
                   schema:
-                    $ref: '#/definitions/featuredSection'
+                    $ref: '#/definitions/createFeaturedSectionRequest'
             responses:
                 "200":
                     description: CreateFeaturedSectionResponse
@@ -107,16 +312,29 @@ paths:
             summary: Creates a featured section
             tags:
                 - featured_sections
+    /api/v1/featured_sections/articles:
+        get:
+            description: Retrieves a featured sections with its associated articles
+            operationId: GetFeaturedSectionsWithArticles
+            responses:
+                "200":
+                    description: GetFeaturedSectionWithArticlesResponse
+                    schema:
+                        $ref: '#/definitions/getFeaturedSectionsWithArticlesResponse'
+            summary: Gets a featured sections with articles
+            tags:
+                - featured_sections
     /api/v1/featured_sections/{id}:
         delete:
             description: Deletes a featured section by ID
             operationId: DeleteFeaturedSection
             parameters:
                 - description: ID of the featured section
+                  format: uuid4
                   in: path
                   name: id
                   required: true
-                  type: integer
+                  type: string
             responses:
                 "200":
                     description: DeleteFeaturedSectionResponse
@@ -130,10 +348,11 @@ paths:
             operationId: GetFeaturedSection
             parameters:
                 - description: ID of the featured section
+                  format: uuid4
                   in: path
                   name: id
                   required: true
-                  type: integer
+                  type: string
             responses:
                 "200":
                     description: GetFeaturedSectionResponse
@@ -147,14 +366,15 @@ paths:
             operationId: UpdateFeaturedSection
             parameters:
                 - description: ID of the featured section
+                  format: uuid4
                   in: path
                   name: id
                   required: true
-                  type: integer
+                  type: string
                 - in: body
                   name: Payload
                   schema:
-                    $ref: '#/definitions/featuredSection'
+                    $ref: '#/definitions/updateFeaturedSectionRequest'
             responses:
                 "200":
                     description: UpdateFeaturedSectionResponse
@@ -169,10 +389,11 @@ paths:
             operationId: GetFeaturedSectionWithArticles
             parameters:
                 - description: ID of the featured section
+                  format: uuid4
                   in: path
                   name: id
                   required: true
-                  type: integer
+                  type: string
             responses:
                 "200":
                     description: GetFeaturedSectionWithArticlesResponse
@@ -181,192 +402,6 @@ paths:
             summary: Gets a featured section with articles
             tags:
                 - featured_sections
-    /api/v1/news:
-        get:
-            description: Retrieves all news articles
-            operationId: GetAllNewsArticles
-            responses:
-                "200":
-                    description: List of news articles
-                    schema:
-                        $ref: '#/definitions/getAllNewsArticleResponse'
-            summary: Gets all news articles
-            tags:
-                - news
-        post:
-            description: Creates a news article
-            operationId: PostCreateNewsArticle
-            parameters:
-                - in: body
-                  name: Payload
-                  schema:
-                    $ref: '#/definitions/createNewsArticleRequest'
-            responses:
-                "200":
-                    description: CreateNewsArticleResponse
-                    schema:
-                        $ref: '#/definitions/createNewsArticleResponse'
-            summary: Creates a news article
-            tags:
-                - news
-    /api/v1/news/categories:
-        get:
-            description: Retrieves all categories with their associated news articles
-            operationId: GetAllCategoriesWithNews
-            responses:
-                "200":
-                    description: List of categories with news
-                    schema:
-                        $ref: '#/definitions/getAllCategoriesWithNewsResponse'
-            summary: Gets all categories with news
-            tags:
-                - news_categories
-        post:
-            description: Creates a news category
-            operationId: PostCreateNewsCategory
-            parameters:
-                - in: body
-                  name: Payload
-                  schema:
-                    $ref: '#/definitions/newsCategory'
-            responses:
-                "200":
-                    description: CreateNewsCategoryResponse
-                    schema:
-                        $ref: '#/definitions/createNewsCategoryResponse'
-            summary: Creates a news category
-            tags:
-                - news_categories
-    /api/v1/news/categories/{id}:
-        delete:
-            description: Deletes a news category by ID
-            operationId: DeleteNewsCategory
-            parameters:
-                - description: ID of the news category
-                  in: path
-                  name: id
-                  required: true
-                  type: integer
-            responses:
-                "200":
-                    description: DeleteNewsCategoryResponse
-                    schema:
-                        $ref: '#/definitions/deleteNewsCategoryResponse'
-            summary: Deletes a news category
-            tags:
-                - news_categories
-        get:
-            description: Retrieves a news category by ID
-            operationId: GetNewsCategory
-            parameters:
-                - description: ID of the news category
-                  in: path
-                  name: id
-                  required: true
-                  type: integer
-            responses:
-                "200":
-                    description: GetNewsCategoryResponse
-                    schema:
-                        $ref: '#/definitions/getNewsCategoryResponse'
-            summary: Gets a news category
-            tags:
-                - news_categories
-        put:
-            description: Updates a news category by ID
-            operationId: UpdateNewsCategory
-            parameters:
-                - description: ID of the news category
-                  in: path
-                  name: id
-                  required: true
-                  type: integer
-                - in: body
-                  name: Payload
-                  schema:
-                    $ref: '#/definitions/newsCategory'
-            responses:
-                "200":
-                    description: UpdateNewsCategoryResponse
-                    schema:
-                        $ref: '#/definitions/updateNewsCategoryResponse'
-            summary: Updates a news category
-            tags:
-                - news_categories
-    /api/v1/news/categories/{id}/news:
-        get:
-            description: Retrieves a category with its associated news articles
-            operationId: GetCategoryWithNews
-            parameters:
-                - description: ID of the news category
-                  in: path
-                  name: id
-                  required: true
-                  type: integer
-            responses:
-                "200":
-                    description: GetCategoryWithNewsResponse
-                    schema:
-                        $ref: '#/definitions/getCategoryWithNewsResponse'
-            summary: Gets a category with news
-            tags:
-                - news_categories
-    /api/v1/news/{id}:
-        delete:
-            description: Deletes a news article by ID
-            operationId: DeleteNewsArticle
-            parameters:
-                - description: ID of the news article
-                  in: path
-                  name: id
-                  required: true
-                  type: integer
-            responses:
-                "200":
-                    description: DeleteNewsArticleResponse
-                    schema:
-                        $ref: '#/definitions/deleteNewsArticleResponse'
-            summary: Deletes a news article
-            tags:
-                - news
-        get:
-            description: Retrieves a news article by ID
-            operationId: GetNewsArticle
-            parameters:
-                - description: ID of the news article
-                  in: path
-                  name: id
-                  required: true
-                  type: integer
-            responses:
-                "200":
-                    description: GetNewsArticleResponse
-                    schema:
-                        $ref: '#/definitions/getNewsArticleResponse'
-            summary: Gets a news article
-            tags:
-                - news
-        put:
-            description: Updates a news article by ID
-            operationId: UpdateNewsArticle
-            parameters:
-                - description: ID of the news article
-                  in: path
-                  name: id
-                  required: true
-                  type: integer
-                - in: body
-                  name: Payload
-                  schema:
-                    $ref: '#/definitions/updateNewsArticleRequest'
-            responses:
-                "200":
-                    description: UpdateNewsArticleResponse
-                    schema:
-                        $ref: '#/definitions/updateNewsArticleResponse'
-            summary: Updates a news article
-            tags:
-                - news
     /api/v1/stream:
         post:
             description: Creates a stream
@@ -448,58 +483,44 @@ paths:
             tags:
                 - stream
 definitions:
-    createFeaturedSectionResponse:
+    article:
         properties:
+            category_id:
+                description: ID of article
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                format: uuid4
+                type: string
+            content:
+                description: Content of the article
+                example: This is the content of the article.
+                type: string
             created_at:
-                description: Timestamp when the section was created
+                description: Timestamp when the article was created
                 example: "2023-10-01T12:00:00Z"
                 format: date-time
                 type: string
             id:
-                description: ID of the created featured section
-                example: !!float 1
-                type: integer
+                description: ID of article
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                format: uuid4
+                type: string
             title:
-                description: Title of the created featured section
-                example: Top Stories
+                description: Title of the article
+                example: Article Title
+                maxLength: !!float 255
                 type: string
             updated_at:
-                description: Timestamp when the section was last updated
+                description: Timestamp when the article was last updated
                 example: "2023-10-02T12:00:00Z"
                 format: date-time
                 type: string
         required:
             - id
             - title
-            - created_at
-            - updated_at
-        type: object
-    createNewsArticleRequest:
-        properties:
-            category_id:
-                description: ID of the category the news article belongs to
-                example: !!float 2
-                type: integer
-            content:
-                description: Content of the news article
-                example: This is the content of the news article.
-                type: string
-            title:
-                description: Title of the news article
-                example: Breaking News Title
-                maxLength: !!float 255
-                type: string
-        required:
-            - title
             - content
+            - category_id
         type: object
-    createNewsArticleResponse:
-        properties:
-            message:
-                example: Article created successfully.
-                type: string
-        type: object
-    createNewsCategoryResponse:
+    category:
         properties:
             created_at:
                 description: Timestamp when the category was created
@@ -507,11 +528,12 @@ definitions:
                 format: date-time
                 type: string
             id:
-                description: ID of the created news category
-                example: !!float 1
-                type: integer
+                description: ID of category
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                format: uuid4
+                type: string
             name:
-                description: Name of the created news category
+                description: Name of the category
                 example: Politics
                 type: string
             updated_at:
@@ -522,6 +544,61 @@ definitions:
         required:
             - id
             - name
+        type: object
+    createArticleRequest:
+        properties:
+            category_id:
+                description: ID of category
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                format: uuid4
+                type: string
+            content:
+                description: Content of the article
+                example: This is the content of the article.
+                type: string
+            title:
+                description: Title of the article
+                example: Article Title
+                maxLength: !!float 255
+                type: string
+        required:
+            - title
+            - content
+        type: object
+    createArticleResponse:
+        properties:
+            message:
+                example: Article created successfully.
+                type: string
+        type: object
+    createCategoryRequest:
+        properties:
+            name:
+                description: Name of the category
+                example: Politics
+                type: string
+        required:
+            - name
+        type: object
+    createCategoryResponse:
+        properties:
+            message:
+                example: Category created successfully.
+                type: string
+        type: object
+    createFeaturedSectionRequest:
+        properties:
+            title:
+                description: Title of the featured section
+                type: string
+        required:
+            - title
+        type: object
+    createFeaturedSectionResponse:
+        properties:
+            message:
+                example: Featured section created successfully.
+                type: string
         type: object
     createStreamResponse:
         properties:
@@ -537,54 +614,23 @@ definitions:
         required:
             - id
         type: object
-    deleteFeaturedSectionResponse:
-        properties:
-            message:
-                example: Section deleted successfully.
-                type: string
-        type: object
-    deleteNewsArticleResponse:
+    deleteArticleResponse:
         properties:
             message:
                 example: Article deleted successfully.
                 type: string
         type: object
-    deleteNewsCategoryResponse:
+    deleteCategoryResponse:
         properties:
             message:
                 example: Category deleted successfully.
                 type: string
         type: object
-    featuredArticle:
+    deleteFeaturedSectionResponse:
         properties:
-            created_at:
-                description: Timestamp when the article was created
-                example: "2023-10-01T12:00:00Z"
-                format: date-time
+            message:
+                example: Section deleted successfully.
                 type: string
-            featured_section_id:
-                description: ID of the featured section
-                example: !!float 1
-                type: integer
-            id:
-                description: ID of the featured article
-                example: !!float 1
-                type: integer
-            news_id:
-                description: ID of the news article
-                example: !!float 1
-                type: integer
-            updated_at:
-                description: Timestamp when the article was last updated
-                example: "2023-10-02T12:00:00Z"
-                format: date-time
-                type: string
-        required:
-            - id
-            - featured_section_id
-            - news_id
-            - created_at
-            - updated_at
         type: object
     featuredSection:
         properties:
@@ -594,9 +640,10 @@ definitions:
                 format: date-time
                 type: string
             id:
-                description: ID of the featured section
-                example: !!float 1
-                type: integer
+                description: ID of section
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                format: uuid4
+                type: string
             title:
                 description: Title of the featured section
                 example: Top Stories
@@ -612,118 +659,82 @@ definitions:
             - created_at
             - updated_at
         type: object
-    getAllCategoriesWithNewsResponse:
-        items:
-            properties:
-                category_id:
-                    example: !!float 1
-                    type: integer
-                category_name:
-                    example: Politics
-                    type: string
-                news_content:
-                    example: This is the content of the news article.
-                    type: string
-                news_created_at:
-                    example: "2023-10-01T12:00:00Z"
-                    format: date-time
-                    type: string
-                news_id:
-                    example: !!float 1
-                    type: integer
-                news_title:
-                    example: Breaking News Title
-                    type: string
-                news_updated_at:
-                    example: "2023-10-02T12:00:00Z"
-                    format: date-time
-                    type: string
-            type: object
-        type: array
-    getAllFeaturedSectionsWithArticlesResponse:
-        items:
-            properties:
-                featured_article_created_at:
-                    example: "2023-10-01T12:00:00Z"
-                    format: date-time
-                    type: string
-                featured_article_id:
-                    example: !!float 1
-                    type: integer
-                featured_article_updated_at:
-                    example: "2023-10-02T12:00:00Z"
-                    format: date-time
-                    type: string
-                news_content:
-                    example: This is the content of the news article.
-                    type: string
-                news_id:
-                    example: !!float 1
-                    type: integer
-                news_title:
-                    example: Breaking News Title
-                    type: string
-                section_id:
-                    example: !!float 1
-                    type: integer
-                section_title:
-                    example: Top Stories
-                    type: string
-            type: object
-        type: array
-    getAllNewsArticleResponse:
+    getArticleResponse:
         properties:
-            news:
-                items:
-                    $ref: '#/definitions/newsArticle'
-                type: array
+            article:
+                $ref: '#/definitions/article'
         type: object
-    getCategoryWithNewsResponse:
+    getArticlesResponse:
+        items:
+            $ref: '#/definitions/article'
+        type: array
+    getCategoriesResponse:
+        items:
+            $ref: '#/definitions/category'
+        type: array
+    getCategoriesWithArticlesResponse:
+        items:
+            properties:
+                articles:
+                    items:
+                        $ref: '#/definitions/getCategoryWithArticlesResponseArticlesItems'
+                    type: array
+                category:
+                    $ref: '#/definitions/category'
+            type: object
+        type: array
+    getCategoryResponse:
+        properties:
+            category:
+                $ref: '#/definitions/category'
+        type: object
+    getCategoryWithArticlesResponse:
+        properties:
+            articles:
+                items:
+                    $ref: '#/definitions/getCategoryWithArticlesResponseArticlesItems'
+                type: array
+            category:
+                $ref: '#/definitions/category'
+        type: object
+    getCategoryWithArticlesResponseArticlesItems:
         properties:
             category_id:
-                example: !!float 1
-                type: integer
-            category_name:
-                example: Politics
+                description: ID of category
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                format: uuid4
                 type: string
-            news:
-                items:
-                    properties:
-                        category_id:
-                            description: ID of the category the news article belongs to
-                            example: !!float 2
-                            type: integer
-                        content:
-                            description: Content of the news article
-                            example: This is the content of the news article.
-                            type: string
-                        created_at:
-                            description: Timestamp when the article was created
-                            example: "2023-10-01T12:00:00Z"
-                            format: date-time
-                            type: string
-                        id:
-                            description: ID of the news article
-                            example: !!float 1
-                            type: integer
-                        title:
-                            description: Title of the news article
-                            example: Breaking News Title
-                            maxLength: !!float 255
-                            type: string
-                        updated_at:
-                            description: Timestamp when the article was last updated
-                            example: "2023-10-02T12:00:00Z"
-                            format: date-time
-                            type: string
-                    required:
-                        - id
-                        - title
-                        - content
-                        - category_id
-                    type: object
-                type: array
+            content:
+                description: Content of the article
+                example: This is the content of the article.
+                type: string
+            created_at:
+                description: Timestamp when the article was created
+                example: "2023-10-01T12:00:00Z"
+                format: date-time
+                type: string
+            id:
+                description: ID of article
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                format: uuid4
+                type: string
+            title:
+                description: Title of the article
+                example: Article Title
+                maxLength: !!float 255
+                type: string
+            updated_at:
+                description: Timestamp when the article was last updated
+                example: "2023-10-02T12:00:00Z"
+                format: date-time
+                type: string
+        required:
+            - id
+            - title
+            - content
+            - category_id
         type: object
+        x-go-gen-location: models
     getFeaturedSectionResponse:
         properties:
             section:
@@ -733,49 +744,59 @@ definitions:
         properties:
             articles:
                 items:
-                    $ref: '#/definitions/featuredArticle'
+                    $ref: '#/definitions/getFeaturedSectionWithArticlesResponseArticlesItems'
                 type: array
-            section_id:
-                example: !!float 1
-                type: integer
-            section_title:
-                example: Top Stories
-                type: string
+            featured_section:
+                $ref: '#/definitions/featuredSection'
         type: object
-    getNewsArticleResponse:
+    getFeaturedSectionWithArticlesResponseArticlesItems:
         properties:
-            category_id:
-                description: ID of the category the news article belongs to
-                example: !!float 2
-                type: integer
-            content:
-                description: Content of the news article
-                example: This is the content of the news article.
+            article_id:
+                description: ID of the article
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
                 type: string
             created_at:
                 description: Timestamp when the article was created
                 example: "2023-10-01T12:00:00Z"
                 format: date-time
                 type: string
+            featured_section_id:
+                description: ID of the featured section
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                type: string
             id:
-                description: ID of the news article
-                example: !!float 1
-                type: integer
-            title:
-                description: Title of the news article
-                example: Breaking News Title
+                description: ID of the featured article
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                format: uuid4
                 type: string
             updated_at:
                 description: Timestamp when the article was last updated
                 example: "2023-10-02T12:00:00Z"
                 format: date-time
                 type: string
+        required:
+            - id
+            - featured_section_id
+            - article_id
+            - created_at
+            - updated_at
         type: object
-    getNewsCategoryResponse:
-        properties:
-            category:
-                $ref: '#/definitions/newsCategory'
-        type: object
+        x-go-gen-location: models
+    getFeaturedSectionsResponse:
+        items:
+            $ref: '#/definitions/featuredSection'
+        type: array
+    getFeaturedSectionsWithArticlesResponse:
+        items:
+            properties:
+                articles:
+                    items:
+                        $ref: '#/definitions/getFeaturedSectionWithArticlesResponseArticlesItems'
+                    type: array
+                featured_section:
+                    $ref: '#/definitions/featuredSection'
+            type: object
+        type: array
     getUserInfoResponse:
         properties:
             email:
@@ -812,65 +833,6 @@ definitions:
             - key
             - in
             - error
-        type: object
-    newsArticle:
-        properties:
-            category_id:
-                description: ID of the category the news article belongs to
-                example: !!float 2
-                type: integer
-            content:
-                description: Content of the news article
-                example: This is the content of the news article.
-                type: string
-            created_at:
-                description: Timestamp when the article was created
-                example: "2023-10-01T12:00:00Z"
-                format: date-time
-                type: string
-            id:
-                description: ID of the news article
-                example: !!float 1
-                type: integer
-            title:
-                description: Title of the news article
-                example: Breaking News Title
-                maxLength: !!float 255
-                type: string
-            updated_at:
-                description: Timestamp when the article was last updated
-                example: "2023-10-02T12:00:00Z"
-                format: date-time
-                type: string
-        required:
-            - id
-            - title
-            - content
-            - category_id
-        type: object
-    newsCategory:
-        properties:
-            created_at:
-                description: Timestamp when the category was created
-                example: "2023-10-01T12:00:00Z"
-                format: date-time
-                type: string
-            id:
-                description: ID of the news category
-                example: !!float 1
-                type: integer
-            name:
-                description: Name of the news category
-                example: Politics
-                type: string
-            updated_at:
-                description: Timestamp when the category was last updated
-                example: "2023-10-02T12:00:00Z"
-                format: date-time
-                type: string
-        required:
-            - id
-            - name
         type: object
     orderDir:
         enum:
@@ -1038,38 +1000,60 @@ definitions:
         required:
             - code
         type: object
-    updateFeaturedSectionResponse:
-        properties:
-            section:
-                $ref: '#/definitions/featuredSection'
-        type: object
-    updateNewsArticleRequest:
+    updateArticleRequest:
         properties:
             category_id:
-                description: ID of the category the news article belongs to
-                example: !!float 2
-                type: integer
+                description: ID of category
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                format: uuid4
+                type: string
             content:
+                description: Content of the article
+                example: This is the content of the article.
                 type: string
             title:
-                description: Title of the news article
-                example: Breaking News Title
+                description: Title of the article
+                example: Article Title
                 maxLength: !!float 255
                 type: string
         required:
             - title
             - content
         type: object
-    updateNewsArticleResponse:
+    updateArticleResponse:
         properties:
             message:
                 example: Article updated successfully.
                 type: string
         type: object
-    updateNewsCategoryResponse:
+    updateCategoryRequest:
         properties:
-            category:
-                $ref: '#/definitions/newsCategory'
+            name:
+                description: Name of the category
+                example: Politics
+                type: string
+        required:
+            - name
+        type: object
+    updateCategoryResponse:
+        properties:
+            message:
+                example: Category updated successfully.
+                type: string
+        type: object
+    updateFeaturedSectionRequest:
+        properties:
+            title:
+                description: Title of the featured section
+                type: string
+        required:
+            - title
+        type: object
+    updateFeaturedSectionResponse:
+        properties:
+            message:
+                example: Featured Section updated successfully.
+                type: string
         type: object
 responses:
     AuthForbiddenResponse:

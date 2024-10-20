@@ -14,7 +14,7 @@ paths:
         - name: Payload
           in: body
           schema:
-            $ref: "../definitions/featured_section.yml#/definitions/FeaturedSection"
+            $ref: "../definitions/featured_section.yml#/definitions/CreateFeaturedSectionRequest"
       responses:
         "200":
           description: CreateFeaturedSectionResponse
@@ -30,7 +30,7 @@ paths:
         "200":
           description: List of featured sections with articles
           schema:
-            $ref: "../definitions/featured_section.yml#/definitions/GetAllFeaturedSectionsWithArticlesResponse"
+            $ref: "../definitions/featured_section.yml#/definitions/GetFeaturedSectionsResponse"
   /api/v1/featured_sections/{id}:
     get:
       description: Retrieves a featured section by ID
@@ -42,7 +42,8 @@ paths:
         - name: id
           in: path
           required: true
-          type: integer
+          type: string
+          format: uuid4
           description: ID of the featured section
       responses:
         "200":
@@ -59,12 +60,13 @@ paths:
         - name: id
           in: path
           required: true
-          type: integer
+          type: string
+          format: uuid4
           description: ID of the featured section
         - name: Payload
           in: body
           schema:
-            $ref: "../definitions/featured_section.yml#/definitions/FeaturedSection"
+            $ref: "../definitions/featured_section.yml#/definitions/UpdateFeaturedSectionRequest"
       responses:
         "200":
           description: UpdateFeaturedSectionResponse
@@ -80,7 +82,8 @@ paths:
         - name: id
           in: path
           required: true
-          type: integer
+          type: string
+          format: uuid4
           description: ID of the featured section
       responses:
         "200":
@@ -98,10 +101,23 @@ paths:
         - name: id
           in: path
           required: true
-          type: integer
+          type: string
+          format: uuid4
           description: ID of the featured section
       responses:
         "200":
           description: GetFeaturedSectionWithArticlesResponse
           schema:
             $ref: "../definitions/featured_section.yml#/definitions/GetFeaturedSectionWithArticlesResponse"
+  /api/v1/featured_sections/articles:
+    get:
+      description: Retrieves a featured sections with its associated articles
+      tags:
+        - featured_sections
+      summary: Gets a featured sections with articles
+      operationId: GetFeaturedSectionsWithArticles
+      responses:
+        "200":
+          description: GetFeaturedSectionWithArticlesResponse
+          schema:
+            $ref: "../definitions/featured_section.yml#/definitions/GetFeaturedSectionsWithArticlesResponse"

@@ -1,0 +1,92 @@
+swagger: "2.0"
+info:
+  title: github.com/JehadAbdulwafi/rustion
+  version: 0.1.0
+paths:
+  /api/v1/articles:
+    post:
+      description: Creates a article
+      tags:
+        - articles
+      summary: Creates a article
+      operationId: PostCreateArticle
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/article.yml#/definitions/CreateArticleRequest"
+      responses:
+        "200":
+          description: CreateArticleResponse
+          schema:
+            $ref: "../definitions/article.yml#/definitions/CreateArticleResponse"
+    get:
+      description: Retrieves all articles
+      tags:
+        - articles
+      summary: Gets all articles
+      operationId: GetAllArticles
+      responses:
+        "200":
+          description: List of articles
+          schema:
+            $ref: "../definitions/article.yml#/definitions/GetArticlesResponse"
+  /api/v1/articles/{id}:
+    get:
+      description: Retrieves a article by ID
+      tags:
+        - articles
+      summary: Gets a article
+      operationId: GetArticle
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid4
+          description: ID of the article
+      responses:
+        "200":
+          description: GetArticleResponse
+          schema:
+            $ref: "../definitions/article.yml#/definitions/GetArticleResponse"
+    put:
+      description: Updates a article by ID
+      tags:
+        - articles
+      summary: Updates a article
+      operationId: UpdateArticle
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid4
+          description: ID of the article
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/article.yml#/definitions/UpdateArticleRequest"
+      responses:
+        "200":
+          description: UpdateArticleResponse
+          schema:
+            $ref: "../definitions/article.yml#/definitions/UpdateArticleResponse"
+    delete:
+      description: Deletes a article by ID
+      tags:
+        - articles
+      summary: Deletes a article
+      operationId: DeleteArticle
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid4
+          description: ID of the article
+      responses:
+        "200":
+          description: DeleteArticleResponse
+          schema:
+            $ref: "../definitions/article.yml#/definitions/DeleteArticleResponse"
