@@ -110,33 +110,33 @@ type Account struct {
 	TokenType         sql.NullString
 }
 
+type Article struct {
+	ID         uuid.UUID
+	Title      string
+	Content    string
+	CategoryID uuid.NullUUID
+	CreatedAt  sql.NullTime
+	UpdatedAt  sql.NullTime
+}
+
+type Category struct {
+	ID        uuid.UUID
+	Name      string
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
+}
+
 type FeaturedArticle struct {
-	ID                int32
-	FeaturedSectionID sql.NullInt32
-	NewsID            sql.NullInt32
+	ID                uuid.UUID
+	FeaturedSectionID uuid.NullUUID
+	ArticleID         uuid.NullUUID
 	CreatedAt         sql.NullTime
 	UpdatedAt         sql.NullTime
 }
 
 type FeaturedSection struct {
-	ID        int32
+	ID        uuid.UUID
 	Title     string
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
-}
-
-type News struct {
-	ID         int32
-	Title      string
-	Content    string
-	CategoryID sql.NullInt32
-	CreatedAt  sql.NullTime
-	UpdatedAt  sql.NullTime
-}
-
-type NewsCategory struct {
-	ID        int32
-	Name      string
 	CreatedAt sql.NullTime
 	UpdatedAt sql.NullTime
 }

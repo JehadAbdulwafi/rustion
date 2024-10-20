@@ -1,15 +1,15 @@
 -- +goose Up
-CREATE TABLE featured_articles (
-    id SERIAL PRIMARY KEY,
-    featured_section_id INT REFERENCES featured_sections(id) ON DELETE CASCADE,
-    news_id INT REFERENCES news(id) ON DELETE CASCADE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP
+CREATE TABLE IF NOT EXISTS featured_articles (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  featured_section_id UUID REFERENCES featured_sections(id) ON DELETE CASCADE,
+  article_id UUID REFERENCES articles(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP
 );
 
 CREATE INDEX idx_featured_section ON featured_articles(featured_section_id);
-CREATE INDEX idx_news ON featured_articles(news_id);
+CREATE INDEX idx_article ON featured_articles(article_id);
 
 -- +goose Down
-DROP TABLE featured_articles;
+DROP TABLE IF EXISTS featured_articles;
 
