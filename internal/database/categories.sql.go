@@ -7,7 +7,6 @@ package database
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/google/uuid"
 )
@@ -40,50 +39,24 @@ func (q *Queries) DeleteCategory(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
-const getAllCategoriesWithArticles = `-- name: GetAllCategoriesWithArticles :many
-SELECT 
-    c.id AS category_id,
-    c.name AS category_name,
-    a.id AS article_id,
-    a.title AS article_title,
-    a.content AS article_content,
-    a.created_at AS article_created_at,
-    a.updated_at AS article_updated_at
-FROM 
-    categories c
-LEFT JOIN 
-    articles a ON c.id = a.category_id
-ORDER BY 
-    c.name, a.created_at DESC
+const getCategories = `-- name: GetCategories :many
+SELECT id, name, created_at, updated_at FROM categories
 `
 
-type GetAllCategoriesWithArticlesRow struct {
-	CategoryID       uuid.UUID
-	CategoryName     string
-	ArticleID        uuid.NullUUID
-	ArticleTitle     sql.NullString
-	ArticleContent   sql.NullString
-	ArticleCreatedAt sql.NullTime
-	ArticleUpdatedAt sql.NullTime
-}
-
-func (q *Queries) GetAllCategoriesWithArticles(ctx context.Context) ([]GetAllCategoriesWithArticlesRow, error) {
-	rows, err := q.db.QueryContext(ctx, getAllCategoriesWithArticles)
+func (q *Queries) GetCategories(ctx context.Context) ([]Category, error) {
+	rows, err := q.db.QueryContext(ctx, getCategories)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []GetAllCategoriesWithArticlesRow
+	var items []Category
 	for rows.Next() {
-		var i GetAllCategoriesWithArticlesRow
+		var i Category
 		if err := rows.Scan(
-			&i.CategoryID,
-			&i.CategoryName,
-			&i.ArticleID,
-			&i.ArticleTitle,
-			&i.ArticleContent,
-			&i.ArticleCreatedAt,
-			&i.ArticleUpdatedAt,
+			&i.ID,
+			&i.Name,
+			&i.CreatedAt,
+			&i.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -112,50 +85,6 @@ func (q *Queries) GetCategory(ctx context.Context, id uuid.UUID) (Category, erro
 		&i.Name,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-	)
-	return i, err
-}
-
-const getCategoryWithArticles = `-- name: GetCategoryWithArticles :one
-SELECT 
-    c.id AS category_id,
-    c.name AS category_name,
-    a.id AS article_id,
-    a.title AS article_title,
-    a.content AS article_content,
-    a.created_at AS article_created_at,
-    a.updated_at AS article_updated_at
-FROM 
-    categories c
-LEFT JOIN 
-    articles a ON c.id = a.category_id
-WHERE 
-    c.id = $1  -- Pass the category ID as a parameter
-ORDER BY 
-    a.created_at DESC
-`
-
-type GetCategoryWithArticlesRow struct {
-	CategoryID       uuid.UUID
-	CategoryName     string
-	ArticleID        uuid.NullUUID
-	ArticleTitle     sql.NullString
-	ArticleContent   sql.NullString
-	ArticleCreatedAt sql.NullTime
-	ArticleUpdatedAt sql.NullTime
-}
-
-func (q *Queries) GetCategoryWithArticles(ctx context.Context, id uuid.UUID) (GetCategoryWithArticlesRow, error) {
-	row := q.db.QueryRowContext(ctx, getCategoryWithArticles, id)
-	var i GetCategoryWithArticlesRow
-	err := row.Scan(
-		&i.CategoryID,
-		&i.CategoryName,
-		&i.ArticleID,
-		&i.ArticleTitle,
-		&i.ArticleContent,
-		&i.ArticleCreatedAt,
-		&i.ArticleUpdatedAt,
 	)
 	return i, err
 }

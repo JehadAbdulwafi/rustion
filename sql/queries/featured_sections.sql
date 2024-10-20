@@ -18,6 +18,10 @@ RETURNING id, title, created_at, updated_at;
 DELETE FROM featured_sections
 WHERE id = $1;
 
+-- name: GetFeaturedSections :many
+SELECT id, title, created_at, updated_at
+FROM featured_sections;
+
 -- name: CreateFeaturedArticle :one
 INSERT INTO featured_articles (featured_section_id, article_id)
 VALUES ($1, $2)
@@ -38,49 +42,15 @@ RETURNING id, featured_section_id, article_id, created_at, updated_at;
 DELETE FROM featured_articles
 WHERE id = $1;
 
--- name: GetFeaturedArticlesBySection :many
+-- name: GetFeaturedArticlesBySectionID :many
 SELECT id, featured_section_id, article_id, created_at, updated_at
 FROM featured_articles
 WHERE featured_section_id = $1;
 
--- name: GetFeaturedSectionWithArticles :one
-SELECT 
-    fs.id AS section_id,
-    fs.title AS section_title,
-    fa.id AS featured_article_id,
-    fa.article_id AS article_id,
-    a.title AS article_title,
-    a.content AS article_content,
-    fa.created_at AS featured_article_created_at,
-    fa.updated_at AS featured_article_updated_at
-FROM 
-    featured_sections fs
-LEFT JOIN 
-    featured_articles fa ON fs.id = fa.featured_section_id
-LEFT JOIN 
-    articles a ON fa.article_id = a.id
-WHERE 
-    fs.id = $1  -- Pass the featured section ID as a parameter
-ORDER BY 
-    fa.created_at DESC;
-
--- name: GetAllFeaturedSectionsWithArticles :many
-SELECT 
-    fs.id AS section_id,
-    fs.title AS section_title,
-    fa.id AS featured_article_id,
-    fa.article_id AS article_id,
-    a.title AS article_title,
-    a.content AS article_content,
-    fa.created_at AS featured_article_created_at,
-    fa.updated_at AS featured_article_updated_at
-FROM 
-    featured_sections fs
-LEFT JOIN 
-    featured_articles fa ON fs.id = fa.featured_section_id
-LEFT JOIN 
-    articles a ON fa.article_id = a.id
-ORDER BY 
-    fs.title, fa.created_at DESC;
+-- name: GetArticlesBySectionID :many
+SELECT a.* FROM articles a
+JOIN featured_articles fa ON a.id = fa.article_id
+JOIN featured_sections fs ON fs.id = fa.featured_section_id
+WHERE fs.id = $1;
 
 

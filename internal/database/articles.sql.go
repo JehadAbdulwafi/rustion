@@ -103,6 +103,43 @@ func (q *Queries) GetArticle(ctx context.Context, id uuid.UUID) (Article, error)
 	return i, err
 }
 
+const getArticlesByCategoryID = `-- name: GetArticlesByCategoryID :many
+SELECT id, title, content, category_id, created_at, updated_at
+FROM articles 
+WHERE category_id = $1
+ORDER BY created_at DESC
+`
+
+func (q *Queries) GetArticlesByCategoryID(ctx context.Context, categoryID uuid.NullUUID) ([]Article, error) {
+	rows, err := q.db.QueryContext(ctx, getArticlesByCategoryID, categoryID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Article
+	for rows.Next() {
+		var i Article
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.Content,
+			&i.CategoryID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateArticle = `-- name: UpdateArticle :one
 UPDATE articles
 SET title = $1, content = $2, category_id = $3, updated_at = CURRENT_TIMESTAMP

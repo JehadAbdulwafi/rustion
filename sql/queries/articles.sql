@@ -22,3 +22,9 @@ WHERE id = $1;
 SELECT id, title, content, category_id, created_at, updated_at
 FROM articles
 ORDER BY created_at DESC;
+
+-- name: GetArticlesByCategoryID :many
+SELECT id, title, content, category_id, created_at, updated_at
+FROM articles 
+WHERE category_id = $1
+ORDER BY created_at DESC;
