@@ -21,9 +21,8 @@ type FeaturedSection struct {
 
 	// Timestamp when the section was created
 	// Example: 2023-10-01T12:00:00Z
-	// Required: true
 	// Format: date-time
-	CreatedAt *strfmt.DateTime `json:"created_at"`
+	CreatedAt strfmt.DateTime `json:"created_at,omitempty"`
 
 	// ID of section
 	// Example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
@@ -38,9 +37,8 @@ type FeaturedSection struct {
 
 	// Timestamp when the section was last updated
 	// Example: 2023-10-02T12:00:00Z
-	// Required: true
 	// Format: date-time
-	UpdatedAt *strfmt.DateTime `json:"updated_at"`
+	UpdatedAt strfmt.DateTime `json:"updated_at,omitempty"`
 }
 
 // Validate validates this featured section
@@ -70,9 +68,8 @@ func (m *FeaturedSection) Validate(formats strfmt.Registry) error {
 }
 
 func (m *FeaturedSection) validateCreatedAt(formats strfmt.Registry) error {
-
-	if err := validate.Required("created_at", "body", m.CreatedAt); err != nil {
-		return err
+	if swag.IsZero(m.CreatedAt) { // not required
+		return nil
 	}
 
 	if err := validate.FormatOf("created_at", "body", "date-time", m.CreatedAt.String(), formats); err != nil {
@@ -105,9 +102,8 @@ func (m *FeaturedSection) validateTitle(formats strfmt.Registry) error {
 }
 
 func (m *FeaturedSection) validateUpdatedAt(formats strfmt.Registry) error {
-
-	if err := validate.Required("updated_at", "body", m.UpdatedAt); err != nil {
-		return err
+	if swag.IsZero(m.UpdatedAt) { // not required
+		return nil
 	}
 
 	if err := validate.FormatOf("updated_at", "body", "date-time", m.UpdatedAt.String(), formats); err != nil {

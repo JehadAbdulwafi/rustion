@@ -9,8 +9,6 @@ definitions:
     required:
       - id
       - title
-      - created_at
-      - updated_at
     properties:
       id:
         type: string
@@ -31,6 +29,44 @@ definitions:
         format: date-time
         description: Timestamp when the section was last updated
         example: "2023-10-02T12:00:00Z"
+  Article:
+    type: object
+    required:
+      - id
+      - title
+      - content
+      - category_id
+    properties:
+      id:
+        type: string
+        format: uuid4
+        description: ID of article
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      title:
+        type: string
+        description: Title of the article
+        maxLength: 255
+        example: "Article Title"
+      content:
+        type: string
+        description: Content of the article
+        example: "This is the content of the article."
+      category_id:
+        type: string
+        format: uuid4
+        description: ID of article
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      created_at:
+        type: string
+        format: date-time
+        description: Timestamp when the article was created
+        example: "2023-10-01T12:00:00Z"
+      updated_at:
+        type: string
+        format: date-time
+        description: Timestamp when the article was last updated
+        example: "2023-10-02T12:00:00Z"
+
   CreateFeaturedSectionRequest:
     type: object
     required:
@@ -74,38 +110,6 @@ definitions:
       message:
         type: string
         example: "Section deleted successfully."
-  Article:
-    type: object
-    required:
-      - id
-      - featured_section_id
-      - article_id
-      - created_at
-      - updated_at
-    properties:
-      id:
-        type: string
-        format: uuid4
-        description: ID of the featured article
-        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-      featured_section_id:
-        type: string
-        description: ID of the featured section
-        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-      article_id:
-        type: string
-        description: ID of the article
-        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-      created_at:
-        type: string
-        format: date-time
-        description: Timestamp when the article was created
-        example: "2023-10-01T12:00:00Z"
-      updated_at:
-        type: string
-        format: date-time
-        description: Timestamp when the article was last updated
-        example: "2023-10-02T12:00:00Z"
   GetFeaturedSectionWithArticlesResponse:
     type: object
     properties:
@@ -119,11 +123,4 @@ definitions:
   GetFeaturedSectionsWithArticlesResponse:
     type: array
     items:
-      type: object
-      properties:
-        featured_section:
-          $ref: "#/definitions/FeaturedSection"
-        articles:
-          type: array
-          items:
-            $ref: "#/definitions/Article"
+      $ref: "#/definitions/GetFeaturedSectionWithArticlesResponse"

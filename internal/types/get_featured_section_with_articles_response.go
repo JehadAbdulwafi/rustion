@@ -12,6 +12,7 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // GetFeaturedSectionWithArticlesResponse get featured section with articles response
@@ -20,7 +21,7 @@ import (
 type GetFeaturedSectionWithArticlesResponse struct {
 
 	// articles
-	Articles []*GetFeaturedSectionWithArticlesResponseArticlesItems `json:"articles"`
+	Articles []*GetFeaturedSectionWithArticlesResponseArticlesItems0 `json:"articles"`
 
 	// featured section
 	FeaturedSection *FeaturedSection `json:"featured_section,omitempty"`
@@ -164,6 +165,174 @@ func (m *GetFeaturedSectionWithArticlesResponse) MarshalBinary() ([]byte, error)
 // UnmarshalBinary interface implementation
 func (m *GetFeaturedSectionWithArticlesResponse) UnmarshalBinary(b []byte) error {
 	var res GetFeaturedSectionWithArticlesResponse
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*m = res
+	return nil
+}
+
+// GetFeaturedSectionWithArticlesResponseArticlesItems0 get featured section with articles response articles items0
+//
+// swagger:model GetFeaturedSectionWithArticlesResponseArticlesItems0
+type GetFeaturedSectionWithArticlesResponseArticlesItems0 struct {
+
+	// ID of article
+	// Example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+	// Required: true
+	// Format: uuid4
+	CategoryID *strfmt.UUID4 `json:"category_id"`
+
+	// Content of the article
+	// Example: This is the content of the article.
+	// Required: true
+	Content *string `json:"content"`
+
+	// Timestamp when the article was created
+	// Example: 2023-10-01T12:00:00Z
+	// Format: date-time
+	CreatedAt strfmt.DateTime `json:"created_at,omitempty"`
+
+	// ID of article
+	// Example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+	// Required: true
+	// Format: uuid4
+	ID *strfmt.UUID4 `json:"id"`
+
+	// Title of the article
+	// Example: Article Title
+	// Required: true
+	// Max Length: 255
+	Title *string `json:"title"`
+
+	// Timestamp when the article was last updated
+	// Example: 2023-10-02T12:00:00Z
+	// Format: date-time
+	UpdatedAt strfmt.DateTime `json:"updated_at,omitempty"`
+}
+
+// Validate validates this get featured section with articles response articles items0
+func (m *GetFeaturedSectionWithArticlesResponseArticlesItems0) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateCategoryID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateContent(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateCreatedAt(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateTitle(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateUpdatedAt(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *GetFeaturedSectionWithArticlesResponseArticlesItems0) validateCategoryID(formats strfmt.Registry) error {
+
+	if err := validate.Required("category_id", "body", m.CategoryID); err != nil {
+		return err
+	}
+
+	if err := validate.FormatOf("category_id", "body", "uuid4", m.CategoryID.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *GetFeaturedSectionWithArticlesResponseArticlesItems0) validateContent(formats strfmt.Registry) error {
+
+	if err := validate.Required("content", "body", m.Content); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *GetFeaturedSectionWithArticlesResponseArticlesItems0) validateCreatedAt(formats strfmt.Registry) error {
+	if swag.IsZero(m.CreatedAt) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("created_at", "body", "date-time", m.CreatedAt.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *GetFeaturedSectionWithArticlesResponseArticlesItems0) validateID(formats strfmt.Registry) error {
+
+	if err := validate.Required("id", "body", m.ID); err != nil {
+		return err
+	}
+
+	if err := validate.FormatOf("id", "body", "uuid4", m.ID.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *GetFeaturedSectionWithArticlesResponseArticlesItems0) validateTitle(formats strfmt.Registry) error {
+
+	if err := validate.Required("title", "body", m.Title); err != nil {
+		return err
+	}
+
+	if err := validate.MaxLength("title", "body", *m.Title, 255); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *GetFeaturedSectionWithArticlesResponseArticlesItems0) validateUpdatedAt(formats strfmt.Registry) error {
+	if swag.IsZero(m.UpdatedAt) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("updated_at", "body", "date-time", m.UpdatedAt.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this get featured section with articles response articles items0 based on context it is used
+func (m *GetFeaturedSectionWithArticlesResponseArticlesItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (m *GetFeaturedSectionWithArticlesResponseArticlesItems0) MarshalBinary() ([]byte, error) {
+	if m == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(m)
+}
+
+// UnmarshalBinary interface implementation
+func (m *GetFeaturedSectionWithArticlesResponseArticlesItems0) UnmarshalBinary(b []byte) error {
+	var res GetFeaturedSectionWithArticlesResponseArticlesItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

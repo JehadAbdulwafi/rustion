@@ -53,8 +53,8 @@ definitions:
         example: "This is the content of the article."
       category_id:
         type: string
-        description: ID of category
         format: uuid4
+        description: ID of article
         example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
       created_at:
         type: string
@@ -124,11 +124,4 @@ definitions:
   GetCategoriesWithArticlesResponse:
     type: array
     items:
-      type: object
-      properties:
-        category:
-          $ref: "#/definitions/Category"
-        articles:
-          type: array
-          items:
-            $ref: "#/definitions/Article"
+      $ref: "#/definitions/GetCategoryWithArticlesResponse"

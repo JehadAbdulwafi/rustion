@@ -656,8 +656,6 @@ definitions:
         required:
             - id
             - title
-            - created_at
-            - updated_at
         type: object
     getArticleResponse:
         properties:
@@ -674,14 +672,7 @@ definitions:
         type: array
     getCategoriesWithArticlesResponse:
         items:
-            properties:
-                articles:
-                    items:
-                        $ref: '#/definitions/getCategoryWithArticlesResponseArticlesItems'
-                    type: array
-                category:
-                    $ref: '#/definitions/category'
-            type: object
+            $ref: '#/definitions/getCategoryWithArticlesResponse'
         type: array
     getCategoryResponse:
         properties:
@@ -692,49 +683,46 @@ definitions:
         properties:
             articles:
                 items:
-                    $ref: '#/definitions/getCategoryWithArticlesResponseArticlesItems'
+                    properties:
+                        category_id:
+                            description: ID of article
+                            example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                            format: uuid4
+                            type: string
+                        content:
+                            description: Content of the article
+                            example: This is the content of the article.
+                            type: string
+                        created_at:
+                            description: Timestamp when the article was created
+                            example: "2023-10-01T12:00:00Z"
+                            format: date-time
+                            type: string
+                        id:
+                            description: ID of article
+                            example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                            format: uuid4
+                            type: string
+                        title:
+                            description: Title of the article
+                            example: Article Title
+                            maxLength: !!float 255
+                            type: string
+                        updated_at:
+                            description: Timestamp when the article was last updated
+                            example: "2023-10-02T12:00:00Z"
+                            format: date-time
+                            type: string
+                    required:
+                        - id
+                        - title
+                        - content
+                        - category_id
+                    type: object
                 type: array
             category:
                 $ref: '#/definitions/category'
         type: object
-    getCategoryWithArticlesResponseArticlesItems:
-        properties:
-            category_id:
-                description: ID of category
-                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-                format: uuid4
-                type: string
-            content:
-                description: Content of the article
-                example: This is the content of the article.
-                type: string
-            created_at:
-                description: Timestamp when the article was created
-                example: "2023-10-01T12:00:00Z"
-                format: date-time
-                type: string
-            id:
-                description: ID of article
-                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-                format: uuid4
-                type: string
-            title:
-                description: Title of the article
-                example: Article Title
-                maxLength: !!float 255
-                type: string
-            updated_at:
-                description: Timestamp when the article was last updated
-                example: "2023-10-02T12:00:00Z"
-                format: date-time
-                type: string
-        required:
-            - id
-            - title
-            - content
-            - category_id
-        type: object
-        x-go-gen-location: models
     getFeaturedSectionResponse:
         properties:
             section:
@@ -744,58 +732,53 @@ definitions:
         properties:
             articles:
                 items:
-                    $ref: '#/definitions/getFeaturedSectionWithArticlesResponseArticlesItems'
+                    properties:
+                        category_id:
+                            description: ID of article
+                            example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                            format: uuid4
+                            type: string
+                        content:
+                            description: Content of the article
+                            example: This is the content of the article.
+                            type: string
+                        created_at:
+                            description: Timestamp when the article was created
+                            example: "2023-10-01T12:00:00Z"
+                            format: date-time
+                            type: string
+                        id:
+                            description: ID of article
+                            example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                            format: uuid4
+                            type: string
+                        title:
+                            description: Title of the article
+                            example: Article Title
+                            maxLength: !!float 255
+                            type: string
+                        updated_at:
+                            description: Timestamp when the article was last updated
+                            example: "2023-10-02T12:00:00Z"
+                            format: date-time
+                            type: string
+                    required:
+                        - id
+                        - title
+                        - content
+                        - category_id
+                    type: object
                 type: array
             featured_section:
                 $ref: '#/definitions/featuredSection'
         type: object
-    getFeaturedSectionWithArticlesResponseArticlesItems:
-        properties:
-            article_id:
-                description: ID of the article
-                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-                type: string
-            created_at:
-                description: Timestamp when the article was created
-                example: "2023-10-01T12:00:00Z"
-                format: date-time
-                type: string
-            featured_section_id:
-                description: ID of the featured section
-                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-                type: string
-            id:
-                description: ID of the featured article
-                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-                format: uuid4
-                type: string
-            updated_at:
-                description: Timestamp when the article was last updated
-                example: "2023-10-02T12:00:00Z"
-                format: date-time
-                type: string
-        required:
-            - id
-            - featured_section_id
-            - article_id
-            - created_at
-            - updated_at
-        type: object
-        x-go-gen-location: models
     getFeaturedSectionsResponse:
         items:
             $ref: '#/definitions/featuredSection'
         type: array
     getFeaturedSectionsWithArticlesResponse:
         items:
-            properties:
-                articles:
-                    items:
-                        $ref: '#/definitions/getFeaturedSectionWithArticlesResponseArticlesItems'
-                    type: array
-                featured_section:
-                    $ref: '#/definitions/featuredSection'
-            type: object
+            $ref: '#/definitions/getFeaturedSectionWithArticlesResponse'
         type: array
     getUserInfoResponse:
         properties:
