@@ -13,9 +13,10 @@ definitions:
       - updated_at
     properties:
       id:
-        type: integer
-        description: ID of the featured section
-        example: 1
+        type: string
+        description: ID of section
+        format: uuid4
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
       title:
         type: string
         description: Title of the featured section
@@ -30,69 +31,71 @@ definitions:
         format: date-time
         description: Timestamp when the section was last updated
         example: "2023-10-02T12:00:00Z"
-  CreateFeaturedSectionResponse:
+  CreateFeaturedSectionRequest:
     type: object
     required:
-      - id
       - title
-      - created_at
-      - updated_at
     properties:
-      id:
-        type: integer
-        description: ID of the created featured section
-        example: 1
       title:
         type: string
-        description: Title of the created featured section
-        example: "Top Stories"
-      created_at:
+        description: Title of the featured section
+  CreateFeaturedSectionResponse:
+    type: object
+    properties:
+      message:
         type: string
-        format: date-time
-        description: Timestamp when the section was created
-        example: "2023-10-01T12:00:00Z"
-      updated_at:
-        type: string
-        format: date-time
-        description: Timestamp when the section was last updated
-        example: "2023-10-02T12:00:00Z"
+        example: "Featured section created successfully."
   GetFeaturedSectionResponse:
     type: object
     properties:
       section:
         $ref: "#/definitions/FeaturedSection"
+  GetFeaturedSectionsResponse:
+    type: array
+    items:
+      $ref: "#/definitions/FeaturedSection"
+  UpdateFeaturedSectionRequest:
+    type: object
+    required:
+      - title
+    properties:
+      title:
+        type: string
+        description: Title of the featured section
   UpdateFeaturedSectionResponse:
     type: object
     properties:
-      section:
-        $ref: "#/definitions/FeaturedSection"
+      message:
+        type: string
+        example: "Featured Section updated successfully."
   DeleteFeaturedSectionResponse:
     type: object
     properties:
       message:
         type: string
         example: "Section deleted successfully."
-  FeaturedArticle:
+  Article:
     type: object
     required:
       - id
       - featured_section_id
-      - news_id
+      - article_id
       - created_at
       - updated_at
     properties:
       id:
-        type: integer
+        type: string
+        format: uuid4
         description: ID of the featured article
-        example: 1
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
       featured_section_id:
-        type: integer
+        type: string
         description: ID of the featured section
-        example: 1
-      news_id:
-        type: integer
-        description: ID of the news article
-        example: 1
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      article_id:
+        type: string
+        description: ID of the article
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
       created_at:
         type: string
         format: date-time
@@ -106,44 +109,21 @@ definitions:
   GetFeaturedSectionWithArticlesResponse:
     type: object
     properties:
-      section_id:
-        type: integer
-        example: 1
-      section_title:
-        type: string
-        example: "Top Stories"
+      featured_section:
+        type: object
+        $ref: "#/definitions/FeaturedSection"
       articles:
         type: array
         items:
-          $ref: "#/definitions/FeaturedArticle"
-  GetAllFeaturedSectionsWithArticlesResponse:
+          $ref: "#/definitions/Article"
+  GetFeaturedSectionsWithArticlesResponse:
     type: array
     items:
       type: object
       properties:
-        section_id:
-          type: integer
-          example: 1
-        section_title:
-          type: string
-          example: "Top Stories"
-        featured_article_id:
-          type: integer
-          example: 1
-        news_id:
-          type: integer
-          example: 1
-        news_title:
-          type: string
-          example: "Breaking News Title"
-        news_content:
-          type: string
-          example: "This is the content of the news article."
-        featured_article_created_at:
-          type: string
-          format: date-time
-          example: "2023-10-01T12:00:00Z"
-        featured_article_updated_at:
-          type: string
-          format: date-time
-          example: "2023-10-02T12:00:00Z"
+        featured_section:
+          $ref: "#/definitions/FeaturedSection"
+        articles:
+          type: array
+          items:
+            $ref: "#/definitions/Article"

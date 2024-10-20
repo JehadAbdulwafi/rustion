@@ -1,0 +1,110 @@
+swagger: "2.0"
+info:
+  title: github.com/JehadAbdulwafi/article
+  version: 0.1.0
+paths: {}
+definitions:
+  Article:
+    type: object
+    required:
+      - id
+      - title
+      - content
+      - category_id
+    properties:
+      id:
+        type: string
+        format: uuid4
+        description: ID of article
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      title:
+        type: string
+        description: Title of the article
+        maxLength: 255
+        example: "Article Title"
+      content:
+        type: string
+        description: Content of the article
+        example: "This is the content of the article."
+      category_id:
+        type: string
+        format: uuid4
+        description: ID of article
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      created_at:
+        type: string
+        format: date-time
+        description: Timestamp when the article was created
+        example: "2023-10-01T12:00:00Z"
+      updated_at:
+        type: string
+        format: date-time
+        description: Timestamp when the article was last updated
+        example: "2023-10-02T12:00:00Z"
+  CreateArticleRequest:
+    type: object
+    required:
+      - title
+      - content
+    properties:
+      title:
+        type: string
+        description: Title of the article
+        maxLength: 255
+        example: "Article Title"
+      content:
+        type: string
+        description: Content of the article
+        example: "This is the content of the article."
+      category_id:
+        type: string
+        format: uuid4
+        description: ID of category
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+  CreateArticleResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "Article created successfully."
+  GetArticleResponse:
+    type: object
+    properties:
+      article:
+        $ref: "#/definitions/Article"
+  GetArticlesResponse:
+    type: array
+    items:
+      $ref: "#/definitions/Article"
+  UpdateArticleRequest:
+    type: object
+    required:
+      - title
+      - content
+    properties:
+      title:
+        type: string
+        description: Title of the article
+        maxLength: 255
+        example: "Article Title"
+      content:
+        type: string
+        description: Content of the article
+        example: "This is the content of the article."
+      category_id:
+        type: string
+        format: uuid4
+        description: ID of category
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+  UpdateArticleResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "Article updated successfully."
+  DeleteArticleResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "Article deleted successfully."

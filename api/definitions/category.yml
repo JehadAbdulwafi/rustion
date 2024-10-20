@@ -1,0 +1,134 @@
+swagger: "2.0"
+info:
+  title: github.com/JehadAbdulwafi/rustion
+  version: 0.1.0
+paths: {}
+definitions:
+  Category:
+    type: object
+    required:
+      - id
+      - name
+    properties:
+      id:
+        type: string
+        format: uuid4
+        description: ID of category
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      name:
+        type: string
+        description: Name of the category
+        example: "Politics"
+      created_at:
+        type: string
+        format: date-time
+        description: Timestamp when the category was created
+        example: "2023-10-01T12:00:00Z"
+      updated_at:
+        type: string
+        format: date-time
+        description: Timestamp when the category was last updated
+        example: "2023-10-02T12:00:00Z"
+  Article:
+    type: object
+    required:
+      - id
+      - title
+      - content
+      - category_id
+    properties:
+      id:
+        type: string
+        format: uuid4
+        description: ID of article
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      title:
+        type: string
+        description: Title of the article
+        maxLength: 255
+        example: "Article Title"
+      content:
+        type: string
+        description: Content of the article
+        example: "This is the content of the article."
+      category_id:
+        type: string
+        description: ID of category
+        format: uuid4
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      created_at:
+        type: string
+        format: date-time
+        description: Timestamp when the article was created
+        example: "2023-10-01T12:00:00Z"
+      updated_at:
+        type: string
+        format: date-time
+        description: Timestamp when the article was last updated
+        example: "2023-10-02T12:00:00Z"
+  CreateCategoryRequest:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        description: Name of the category
+        example: "Politics"
+  UpdateCategoryRequest:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        description: Name of the category
+        example: "Politics"
+  CreateCategoryResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "Category created successfully."
+  GetCategoryResponse:
+    type: object
+    properties:
+      category:
+        $ref: "#/definitions/Category"
+  GetCategoriesResponse:
+    type: array
+    items:
+      $ref: "#/definitions/Category"
+  UpdateCategoryResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "Category updated successfully."
+  DeleteCategoryResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "Category deleted successfully."
+  GetCategoryWithArticlesResponse:
+    type: object
+    properties:
+      category:
+        type: object
+        $ref: "#/definitions/Category"
+      articles:
+        type: array
+        items:
+          $ref: "#/definitions/Article"
+  GetCategoriesWithArticlesResponse:
+    type: array
+    items:
+      type: object
+      properties:
+        category:
+          $ref: "#/definitions/Category"
+        articles:
+          type: array
+          items:
+            $ref: "#/definitions/Article"
