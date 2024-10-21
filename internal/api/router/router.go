@@ -1,6 +1,8 @@
 package router
 
 import (
+	"net/http"
+
 	"github.com/JehadAbdulwafi/rustion/internal/api"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers"
 	"github.com/JehadAbdulwafi/rustion/internal/api/middleware"
@@ -83,6 +85,24 @@ func Init(s *api.Server) {
 				case "/api/v1/streams/publish",
 					"/api/v1/streams/unpublish":
 					return true
+				}
+				return false
+			},
+		})),
+
+		APIV1Articles: s.Echo.Group("/api/v1/articles", middleware.AuthWithConfig(middleware.AuthConfig{
+			S:    s,
+			Mode: middleware.AuthModeOptional,
+			Skipper: func(c echo.Context) bool {
+				switch c.Path() {
+				case "/api/v1/articles/:id":
+					return false
+				case "/api/v1/articles":
+					switch c.Request().Method {
+					case http.MethodPost:
+						return true
+					}
+					return false
 				}
 				return false
 			},

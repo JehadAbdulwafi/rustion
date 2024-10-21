@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/JehadAbdulwafi/rustion/internal/api"
+	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/articles"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/auth"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/common"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/stream"
@@ -20,5 +21,10 @@ func AttachAllRoutes(s *api.Server) {
 		stream.PostUnpublishStreamRoute(s),
 		stream.PostStopStreamRoute(s),
 		stream.PostPlayStreamRoute(s),
+		articles.PostCreateArticleRoute(s),
+		articles.GetArticleRoute(s),
+		articles.GetArticlesRoute(s),
+		articles.UpdateArticleRoute(s),
+		articles.DeleteArticleRoute(s),
 	}
 }

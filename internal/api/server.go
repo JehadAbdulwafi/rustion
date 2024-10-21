@@ -15,15 +15,16 @@ import (
 )
 
 type Router struct {
-	Routes    []*echo.Route
-	Root      *echo.Group
-	APIV1Auth *echo.Group
-	APIV1Push *echo.Group
-	APIV1Streams *echo.Group
+	Routes                []*echo.Route
+	Root                  *echo.Group
+	APIV1Auth             *echo.Group
+	APIV1Push             *echo.Group
+	APIV1Streams          *echo.Group
+	APIV1Articles         *echo.Group
 }
 
 type Server struct {
-	Config config.Server
+	Config  config.Server
 	DB      *sql.DB
 	Queries *database.Queries
 	Echo    *echo.Echo
