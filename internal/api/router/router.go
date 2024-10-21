@@ -96,13 +96,15 @@ func Init(s *api.Server) {
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
 				case "/api/v1/articles/:id":
-					return false
-				case "/api/v1/articles":
-					switch c.Request().Method {
-					case http.MethodPost:
+					if c.Request().Method == http.MethodGet {
 						return true
 					}
 					return false
+				case "/api/v1/articles":
+					if c.Request().Method == http.MethodPost {
+						return false
+					}
+					return true
 				}
 				return false
 			},
@@ -114,13 +116,35 @@ func Init(s *api.Server) {
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
 				case "/api/v1/categories/:id":
-					return false
-				case "/api/v1/categories":
-					switch c.Request().Method {
-					case http.MethodPost:
+					if c.Request().Method == http.MethodGet {
 						return true
 					}
 					return false
+				case "/api/v1/categories":
+					if c.Request().Method == http.MethodPost {
+						return false
+					}
+					return true
+				}
+				return false
+			},
+		})),
+
+		APIV1FeaturedSections: s.Echo.Group("/api/v1/featured-sections", middleware.AuthWithConfig(middleware.AuthConfig{
+			S:    s,
+			Mode: middleware.AuthModeOptional,
+			Skipper: func(c echo.Context) bool {
+				switch c.Path() {
+				case "/api/v1/featured-sections/:id":
+					if c.Request().Method == http.MethodGet {
+						return true
+					}
+					return false
+				case "/api/v1/featured-sections":
+					if c.Request().Method == http.MethodPost {
+						return false
+					}
+					return true
 				}
 				return false
 			},

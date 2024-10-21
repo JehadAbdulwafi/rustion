@@ -22,6 +22,7 @@ type Router struct {
 	APIV1Streams          *echo.Group
 	APIV1Articles         *echo.Group
 	APIV1Categories       *echo.Group
+	APIV1FeaturedSections *echo.Group
 }
 
 type Server struct {
