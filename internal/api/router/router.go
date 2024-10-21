@@ -107,6 +107,24 @@ func Init(s *api.Server) {
 				return false
 			},
 		})),
+
+		APIV1Categories: s.Echo.Group("/api/v1/categories", middleware.AuthWithConfig(middleware.AuthConfig{
+			S:    s,
+			Mode: middleware.AuthModeOptional,
+			Skipper: func(c echo.Context) bool {
+				switch c.Path() {
+				case "/api/v1/categories/:id":
+					return false
+				case "/api/v1/categories":
+					switch c.Request().Method {
+					case http.MethodPost:
+						return true
+					}
+					return false
+				}
+				return false
+			},
+		})),
 	}
 
 	handlers.AttachAllRoutes(s)
