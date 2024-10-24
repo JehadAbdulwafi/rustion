@@ -6,7 +6,6 @@ import (
 	"log"
 
 	"github.com/JehadAbdulwafi/rustion/scripts/internal/handlers"
-	"github.com/JehadAbdulwafi/rustion/scripts/internal/util"
 	"github.com/spf13/cobra"
 )
 

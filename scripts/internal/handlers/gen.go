@@ -79,8 +79,6 @@ type TempateData struct {
 func GenHandlers(printOnly bool) {
 	funcs := []ResolvedFunction{}
 
-	fmt.Printf("path %q\n", util.GetProjectRootDir())
-
 	baseModuleName, err := util.GetModuleName(pathModFile)
 
 	if err != nil {
