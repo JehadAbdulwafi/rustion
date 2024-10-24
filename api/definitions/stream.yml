@@ -118,4 +118,3 @@ definitions:
         description: URL of stream
         type: string
         example: url
-

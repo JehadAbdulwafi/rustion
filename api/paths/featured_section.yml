@@ -3,7 +3,7 @@ info:
   title: github.com/JehadAbdulwafi/rustion
   version: 0.1.0
 paths:
-  /api/v1/featured_sections:
+  /api/v1/featured-sections:
     post:
       description: Creates a featured section
       tags:
@@ -31,7 +31,7 @@ paths:
           description: List of featured sections with articles
           schema:
             $ref: "../definitions/featured_section.yml#/definitions/GetFeaturedSectionsResponse"
-  /api/v1/featured_sections/{id}:
+  /api/v1/featured-sections/{id}:
     get:
       description: Retrieves a featured section by ID
       tags:
@@ -90,7 +90,7 @@ paths:
           description: DeleteFeaturedSectionResponse
           schema:
             $ref: "../definitions/featured_section.yml#/definitions/DeleteFeaturedSectionResponse"
-  /api/v1/featured_sections/{id}/articles:
+  /api/v1/featured-sections/{id}/articles:
     get:
       description: Retrieves a featured section with its associated articles
       tags:
@@ -109,7 +109,7 @@ paths:
           description: GetFeaturedSectionWithArticlesResponse
           schema:
             $ref: "../definitions/featured_section.yml#/definitions/GetFeaturedSectionWithArticlesResponse"
-  /api/v1/featured_sections/articles:
+  /api/v1/featured-sections/articles:
     get:
       description: Retrieves a featured sections with its associated articles
       tags:

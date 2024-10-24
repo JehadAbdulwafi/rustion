@@ -284,7 +284,7 @@ paths:
             summary: Gets a category with articles
             tags:
                 - categories
-    /api/v1/featured_sections:
+    /api/v1/featured-sections:
         get:
             description: Retrieves all featured sections with their associated articles
             operationId: GetAllFeaturedSectionsWithArticles
@@ -312,7 +312,7 @@ paths:
             summary: Creates a featured section
             tags:
                 - featured_sections
-    /api/v1/featured_sections/articles:
+    /api/v1/featured-sections/articles:
         get:
             description: Retrieves a featured sections with its associated articles
             operationId: GetFeaturedSectionsWithArticles
@@ -324,7 +324,7 @@ paths:
             summary: Gets a featured sections with articles
             tags:
                 - featured_sections
-    /api/v1/featured_sections/{id}:
+    /api/v1/featured-sections/{id}:
         delete:
             description: Deletes a featured section by ID
             operationId: DeleteFeaturedSection
@@ -383,7 +383,7 @@ paths:
             summary: Updates a featured section
             tags:
                 - featured_sections
-    /api/v1/featured_sections/{id}/articles:
+    /api/v1/featured-sections/{id}/articles:
         get:
             description: Retrieves a featured section with its associated articles
             operationId: GetFeaturedSectionWithArticles
@@ -402,7 +402,23 @@ paths:
             summary: Gets a featured section with articles
             tags:
                 - featured_sections
-    /api/v1/stream:
+    /api/v1/healthy:
+        get:
+            description: |-
+                This endpoint returns 200 when the service is healthy.
+                Returns an human readable string about the current service status.
+            operationId: GetHealthyRoute
+            produces:
+                - text/plain
+            responses:
+                "200":
+                    description: Ready.
+                "521":
+                    description: Not ready.
+            summary: Get healthy
+            tags:
+                - common
+    /api/v1/streams:
         post:
             description: Creates a stream
             operationId: PostCreateStreamRoute
@@ -414,10 +430,10 @@ paths:
             summary: Creates a stream
             tags:
                 - stream
-    /api/v1/stream/play:
+    /api/v1/streams/play:
         post:
             description: Plays a stream
-            operationId: PostPlayRoute
+            operationId: PostPlayStreamRoute
             parameters:
                 - in: body
                   name: Payload
@@ -431,10 +447,10 @@ paths:
             summary: Plays a stream
             tags:
                 - stream
-    /api/v1/stream/publish:
+    /api/v1/streams/publish:
         post:
             description: Publishes a stream
-            operationId: PostPublishRoute
+            operationId: PostPublishStreamRoute
             parameters:
                 - in: body
                   name: Payload
@@ -448,10 +464,10 @@ paths:
             summary: Publishes a stream
             tags:
                 - stream
-    /api/v1/stream/stop:
+    /api/v1/streams/stop:
         post:
             description: Stops a stream
-            operationId: PostStopRoute
+            operationId: PostStopStreamRoute
             parameters:
                 - in: body
                   name: Payload
@@ -459,16 +475,16 @@ paths:
                     $ref: '#/definitions/streamEvent'
             responses:
                 "200":
-                    description: PostPublishResponse
+                    description: PostStopStreamResponse
                     schema:
                         $ref: '#/definitions/streamEventResponse'
             summary: Stops a stream
             tags:
                 - stream
-    /api/v1/stream/unpublish:
+    /api/v1/streams/unpublish:
         post:
             description: Unpublishes a stream
-            operationId: PostUnpublishRoute
+            operationId: PostUnpublishStreamRoute
             parameters:
                 - in: body
                   name: Payload
@@ -482,6 +498,32 @@ paths:
             summary: Unpublishes a stream
             tags:
                 - stream
+    /api/v1/version:
+        get:
+            description: This endpoint returns the module name, commit and build-date baked into the app binary.
+            operationId: GetVersionRoute
+            produces:
+                - text/plain
+            responses:
+                "200":
+                    description: ModuleName @ Commit (BuildDate)
+            summary: Get version
+            tags:
+                - common
+    /swagger.yml:
+        get:
+            description: |-
+                OpenAPI Specification ver. 2 (fka Swagger)
+                Returns our handcrafted and validated `swagger.yml`.
+            operationId: GetSwaggerRoute
+            produces:
+                - text/plain
+            responses:
+                "200":
+                    description: OK
+            summary: Get swagger.yml
+            tags:
+                - common
 definitions:
     article:
         properties:

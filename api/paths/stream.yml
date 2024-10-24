@@ -3,7 +3,7 @@ info:
   title: github.com/JehadAbdulwafi/rustion
   version: 0.1.0
 paths:
-  /api/v1/stream:
+  /api/v1/streams:
     post:
       description: Creates a stream
       tags:
@@ -15,13 +15,13 @@ paths:
           description: PostCreateStreamResponse
           schema:
             $ref: "../definitions/stream.yml#/definitions/CreateStreamResponse"
-  /api/v1/stream/publish:
+  /api/v1/streams/publish:
     post:
       description: Publishes a stream
       tags:
         - stream
       summary: Publishes a stream
-      operationId: PostPublishRoute
+      operationId: PostPublishStreamRoute
       parameters:
         - name: Payload
           in: body
@@ -32,13 +32,13 @@ paths:
           description: PostPublishResponse
           schema:
             $ref: "../definitions/stream.yml#/definitions/StreamEventResponse"
-  /api/v1/stream/unpublish:
+  /api/v1/streams/unpublish:
     post:
       description: Unpublishes a stream
       tags:
         - stream
       summary: Unpublishes a stream
-      operationId: PostUnpublishRoute
+      operationId: PostUnpublishStreamRoute
       parameters:
         - name: Payload
           in: body
@@ -49,13 +49,13 @@ paths:
           description: PostUnpublishResponse
           schema:
             $ref: "../definitions/stream.yml#/definitions/StreamEventResponse"
-  /api/v1/stream/play:
+  /api/v1/streams/play:
     post:
       description: Plays a stream
       tags:
         - stream
       summary: Plays a stream
-      operationId: PostPlayRoute
+      operationId: PostPlayStreamRoute
       parameters:
         - name: Payload
           in: body
@@ -66,13 +66,13 @@ paths:
           description: PostPublishResponse
           schema:
             $ref: "../definitions/stream.yml#/definitions/StreamEventResponse"
-  /api/v1/stream/stop:
+  /api/v1/streams/stop:
     post:
       description: Stops a stream
       tags:
         - stream
       summary: Stops a stream
-      operationId: PostStopRoute
+      operationId: PostStopStreamRoute
       parameters:
         - name: Payload
           in: body
@@ -80,6 +80,6 @@ paths:
             $ref: "../definitions/stream.yml#/definitions/StreamEvent"
       responses:
         "200":
-          description: PostPublishResponse
+          description: PostStopStreamResponse
           schema:
             $ref: "../definitions/stream.yml#/definitions/StreamEventResponse"
