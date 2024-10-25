@@ -11,7 +11,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func UpdateCategoryRoute(s *api.Server) *echo.Route {
+func PutUpdateCategoryRoute(s *api.Server) *echo.Route {
 	return s.Router.APIV1Categories.PUT("/:id", updateCategoryHandler(s))
 }
 

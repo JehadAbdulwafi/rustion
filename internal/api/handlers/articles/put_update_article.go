@@ -11,7 +11,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func UpdateArticleRoute(s *api.Server) *echo.Route {
+func PutUpdateArticleRoute(s *api.Server) *echo.Route {
 	return s.Router.APIV1Articles.PUT("/:id", updateArticleHandler(s))
 }
 

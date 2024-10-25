@@ -1,4 +1,4 @@
-package stream
+package streams
 
 import (
 	"fmt"
@@ -53,4 +53,3 @@ func postCreateStreamHandler(s *api.Server) echo.HandlerFunc {
 		return util.ValidateAndReturn(c, http.StatusCreated, res)
 	}
 }
-

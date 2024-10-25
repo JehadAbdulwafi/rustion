@@ -12,7 +12,7 @@ import (
 )
 
 func PostLoginRoute(s *api.Server) *echo.Route {
-	return s.Router.Root.POST("/login", postLoginHandler(s))
+	return s.Router.APIV1Auth.POST("/login", postLoginHandler(s))
 }
 
 func postLoginHandler(s *api.Server) echo.HandlerFunc {

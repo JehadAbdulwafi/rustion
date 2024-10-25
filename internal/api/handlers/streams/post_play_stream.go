@@ -1,4 +1,4 @@
-package stream
+package streams
 
 import (
 	"net/http"
@@ -10,11 +10,11 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func PostStopStreamRoute(s *api.Server) *echo.Route {
-	return s.Router.APIV1Streams.POST("/stop", postPublishStreamHandler(s))
+func PostPlayStreamRoute(s *api.Server) *echo.Route {
+	return s.Router.APIV1Streams.POST("/play", postPlayStreamHandler(s))
 }
 
-func postStopStreamHandler(s *api.Server) echo.HandlerFunc {
+func postPlayStreamHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var body types.StreamEvent
 		if err := util.BindAndValidateBody(c, &body); err != nil {
@@ -26,7 +26,7 @@ func postStopStreamHandler(s *api.Server) echo.HandlerFunc {
 			Code: &code,
 		}
 
-		log.Debug().Msgf("Stop stream %s", *body.Stream)
+		log.Debug().Msgf("Play stream %s", *body.Stream)
 
 		return util.ValidateAndReturn(c, http.StatusOK, res)
 	}
