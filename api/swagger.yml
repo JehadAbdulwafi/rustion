@@ -197,7 +197,7 @@ paths:
     /api/v1/categories/articles:
         get:
             description: Retrieves a category with its associated articles
-            operationId: GetCategoryWithArticlesMixin2
+            operationId: GetCategoryWithArticles
             responses:
                 "200":
                     description: GetCategoryWithArticlesResponse
@@ -268,7 +268,7 @@ paths:
     /api/v1/categories/{id}/articles:
         get:
             description: Retrieves a category with its associated articles
-            operationId: GetCategoryWithArticles
+            operationId: GetCategoryWithArticlesMixin2
             parameters:
                 - description: ID of the category
                   format: uuid4

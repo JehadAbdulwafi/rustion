@@ -11,7 +11,6 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
-	"github.com/go-openapi/validate"
 )
 
 // NewGetCategoryWithArticlesParams creates a new GetCategoryWithArticlesParams object
@@ -29,12 +28,6 @@ type GetCategoryWithArticlesParams struct {
 
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
-
-	/*ID of the category
-	  Required: true
-	  In: path
-	*/
-	ID strfmt.UUID4 `param:"id"`
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -46,11 +39,6 @@ func (o *GetCategoryWithArticlesParams) BindRequest(r *http.Request, route *midd
 
 	o.HTTPRequest = r
 
-	rID, rhkID, _ := route.Params.GetOK("id")
-	if err := o.bindID(rID, rhkID, route.Formats); err != nil {
-		res = append(res, err)
-	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -60,49 +48,8 @@ func (o *GetCategoryWithArticlesParams) BindRequest(r *http.Request, route *midd
 func (o *GetCategoryWithArticlesParams) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	// id
-	// Required: true
-	// Parameter is provided by construction from the route
-
-	if err := o.validateID(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-// bindID binds and validates parameter ID from path.
-func (o *GetCategoryWithArticlesParams) bindID(rawData []string, hasKey bool, formats strfmt.Registry) error {
-	var raw string
-	if len(rawData) > 0 {
-		raw = rawData[len(rawData)-1]
-	}
-
-	// Required: true
-	// Parameter is provided by construction from the route
-
-	// Format: uuid4
-	value, err := formats.Parse("uuid4", raw)
-	if err != nil {
-		return errors.InvalidType("id", "path", "strfmt.UUID4", raw)
-	}
-	o.ID = *(value.(*strfmt.UUID4))
-
-	if err := o.validateID(formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// validateID carries on validations for parameter ID
-func (o *GetCategoryWithArticlesParams) validateID(formats strfmt.Registry) error {
-
-	if err := validate.FormatOf("id", "path", "uuid4", o.ID.String(), formats); err != nil {
-		return err
 	}
 	return nil
 }
