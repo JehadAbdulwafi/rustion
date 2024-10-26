@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
+	"github.com/JehadAbdulwafi/rustion/internal/database"
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/labstack/echo/v4"
@@ -20,18 +21,33 @@ func postPublishStreamHandler(s *api.Server) echo.HandlerFunc {
 		if err := util.BindAndValidateBody(c, &body); err != nil {
 			return err
 		}
+		log.Debug().Interface("body", body).Msg("stream event")
+
+		if *body.Action != "publish" {
+			return echo.NewHTTPError(http.StatusBadRequest, "Invalid action")
+		}
 
 		// check if stream exists
 		stream, err := s.Queries.GetStreamByStreamName(c.Request().Context(), *body.Stream)
 		if err != nil {
-			return err
+			return echo.NewHTTPError(http.StatusNotFound, "Stream not found")
 		}
+		log.Debug().Interface("stream", stream).Msg("db stream")
+
+		streamStatus, err := s.Queries.GetStreamStatus(c.Request().Context(), stream.ID)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusNotFound, "Stream Status not found")
+		}
+		log.Debug().Interface("streamStatus", streamStatus).Msg("db stream status")
 
 		// TODO: check if stream belongs to user
+		if streamStatus.Status == database.StreamStatusEnumOnline {
+			return echo.NewHTTPError(http.StatusForbidden, "Stream is live")
+		}
 
 		err = s.Queries.PublishStream(c.Request().Context(), stream.ID)
 		if err != nil {
-			return err
+			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to publish stream")
 		}
 
 		code := int64(0)
@@ -39,11 +55,6 @@ func postPublishStreamHandler(s *api.Server) echo.HandlerFunc {
 			Code: &code,
 		}
 
-		log.Debug().Msgf("Published stream %s", *body.Stream)
-		log.Debug().Interface("stream", body).Msgf("Published stream %s", *body.Stream)
-
 		return util.ValidateAndReturn(c, http.StatusOK, res)
 	}
 }
-
-

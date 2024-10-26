@@ -80,6 +80,21 @@ func ApplyTestFixtures(ctx context.Context, t *testing.T, db *sql.DB) (countFixt
 				`, v.UserID, v.Provider, v.ProviderAccountID, v.RefreshToken, v.AccessToken, v.ValidUntil, v.Scope, v.TokenType); err != nil {
 					return fmt.Errorf("failed to insert account fixture: %w", err)
 				}
+
+			case *database.Stream:
+				if _, err := db.Exec(`INSERT INTO streams
+				(id, user_id, app, stream_name, url)
+				VALUES ($1, $2, $3, $4, $5)
+				`, v.ID, v.UserID, v.App, v.StreamName, v.Url); err != nil {
+					return fmt.Errorf("failed to insert stream fixture: %w", err)
+				}
+			case *database.StreamStatus:
+				if _, err := db.Exec(`INSERT INTO stream_status
+				(id, stream_id, status, last_published_at, viewers_count)
+				VALUES ($1, $2, $3, $4, $5)
+				`, v.ID, v.StreamID, v.Status, v.LastPublishedAt.Time, v.ViewersCount.Int32); err != nil {
+					return fmt.Errorf("failed to insert stream_status fixture: %w", err)
+				}
 			}
 		}
 		return nil

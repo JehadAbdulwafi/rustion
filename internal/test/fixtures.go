@@ -23,6 +23,12 @@ type FixtureMap struct {
 	User2Account           *database.Account
 	UserDeactivated        *database.User
 	UserDeactivatedAccount *database.Account
+	Stream1                *database.Stream
+	StreamStatus1          *database.StreamStatus
+	Stream2                *database.Stream
+	StreamStatus2          *database.StreamStatus
+	Stream3                *database.Stream
+	StreamStatus3          *database.StreamStatus
 }
 
 // Fixtures returns a function wrapping our fixtures, which tests are allowed to manipulate.
@@ -115,6 +121,72 @@ func Fixtures() FixtureMap {
 		},
 	}
 
+	f.Stream1 = &database.Stream{
+		ID:         uuid.MustParse("8f866d1a-a9ae-4bf1-8198-0fbd2646a7c4"),
+		App:        "live",
+		StreamName: "cFwLFDa329",
+		Url:        "http://localhost:2022/live/cFwLFDa329",
+		UserID:     uuid.MustParse("6c46cdec-4fd3-4d25-8218-3b75df65f8ab"),
+	}
+
+	f.StreamStatus1 = &database.StreamStatus{
+		ID:           uuid.New(),
+		StreamID:     f.Stream1.ID,
+		Status:       "online",
+		EstStartTime: sql.NullTime{},
+		LastPublishedAt: sql.NullTime{
+			Time:  time.Now(),
+			Valid: true,
+		},
+		ViewersCount: sql.NullInt32{},
+		CreatedAt:    sql.NullTime{},
+		UpdatedAt:    sql.NullTime{},
+	}
+
+	f.Stream2 = &database.Stream{
+		ID:         uuid.MustParse("e4762503-d387-48d6-b417-283cd14ebaf0"),
+		App:        "live",
+		StreamName: "y6N3dLPYtx",
+		Url:        "http://localhost:2022/live/y6N3dLPYtx",
+		UserID:     uuid.MustParse("bafe468f-f756-499e-bd95-9a2980fd164e"),
+	}
+
+	f.StreamStatus2 = &database.StreamStatus{
+		ID:           uuid.New(),
+		StreamID:     f.Stream2.ID,
+		Status:       "offline",
+		EstStartTime: sql.NullTime{},
+		LastPublishedAt: sql.NullTime{
+			Time:  time.Now().AddDate(0, 0, -7),
+			Valid: true,
+		},
+		ViewersCount: sql.NullInt32{},
+		CreatedAt:    sql.NullTime{},
+		UpdatedAt:    sql.NullTime{},
+	}
+
+	f.Stream3 = &database.Stream{
+		ID:         uuid.MustParse("47658727-adbd-4e06-84ec-0ba2043973e5"),
+		App:        "live",
+		StreamName: "h2NSaFwRww",
+		Url:        "http://localhost:2022/live/h2NSaFwRww",
+		UserID:     uuid.MustParse("19211b77-c579-4e6e-95c1-35735fcaaae1"),
+	}
+
+	f.StreamStatus3 = &database.StreamStatus{
+		ID:           uuid.New(),
+		StreamID:     f.Stream3.ID,
+		Status:       "offline",
+		EstStartTime: sql.NullTime{},
+		LastPublishedAt: sql.NullTime{
+			Time:  time.Now().AddDate(0, 0, -7),
+			Valid: true,
+		},
+		ViewersCount: sql.NullInt32{},
+		CreatedAt:    sql.NullTime{},
+		UpdatedAt:    sql.NullTime{},
+	}
+
 	return f
 }
 
@@ -131,6 +203,13 @@ func Inserts() []Insertable {
 	inserts = append(inserts, fix.User2Account)
 	inserts = append(inserts, fix.UserDeactivated)
 	inserts = append(inserts, fix.UserDeactivatedAccount)
+
+	inserts = append(inserts, fix.Stream1)
+	inserts = append(inserts, fix.StreamStatus1)
+	inserts = append(inserts, fix.Stream2)
+	inserts = append(inserts, fix.StreamStatus2)
+	inserts = append(inserts, fix.Stream3)
+	inserts = append(inserts, fix.StreamStatus3)
 
 	log.Debug().Int("count", len(inserts)).Msg("Number of insertable fixtures found")
 

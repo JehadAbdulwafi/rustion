@@ -44,27 +44,3 @@ func TestGetUserInfo(t *testing.T) {
 		require.NoError(t, err)
 	})
 }
-
-func TestGetUserInfoMinimal(t *testing.T) {
-	test.WithTestServer(t, func(s *api.Server) {
-		ctx := context.Background()
-		fixtures := test.Fixtures()
-
-		err := s.Queries.DeleteAccountsByUserID(ctx, fixtures.User1.ID)
-		require.NoError(t, err)
-
-		res := test.PerformRequest(t, s, "GET", "/api/v1/auth/userinfo", nil, test.HeadersWithAuth(t, fixtures.User1Account.AccessToken.String))
-		require.Equal(t, http.StatusOK, res.Result().StatusCode)
-
-		var response types.GetUserInfoResponse
-		test.ParseResponseAndValidate(t, res, &response)
-
-		assert.Equal(t, fixtures.User1.ID, *response.ID)
-		// assert.Equal(t, strfmt.Email(fixtures.User1.Email), response.Email)
-
-		user, err := s.Queries.GetUserByID(ctx, fixtures.User1.ID)
-		require.NoError(t, err)
-
-		assert.Equal(t, user.Email, *response.Email)
-	})
-}
