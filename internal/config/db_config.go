@@ -44,10 +44,10 @@ func (c Database) ConnectionString() string {
 	return b.String()
 }
 
-// ConnectionString generates a connection string to be passed to sql.Open or equivalents, assuming Postgres syntax
+// TestConnectionString generates a connection string to be passed to sql.Open or equivalents, assuming Postgres syntax
 func (c Database) TestConnectionString() string {
 	var b strings.Builder
-	b.WriteString(fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s", c.Host, c.Port, c.Username, "test", "test"))
+	b.WriteString(fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s", c.Host, c.Port, c.Username, c.Password, "test_rustion"))
 
 	if _, ok := c.AdditionalParams["sslmode"]; !ok {
 		b.WriteString(" sslmode=disable")
