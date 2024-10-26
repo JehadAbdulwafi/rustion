@@ -8,7 +8,6 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/labstack/echo/v4"
-	"github.com/rs/zerolog/log"
 )
 
 func PostPublishStreamRoute(s *api.Server) *echo.Route {
@@ -21,7 +20,6 @@ func postPublishStreamHandler(s *api.Server) echo.HandlerFunc {
 		if err := util.BindAndValidateBody(c, &body); err != nil {
 			return err
 		}
-		log.Debug().Interface("body", body).Msg("stream event")
 
 		if *body.Action != "publish" {
 			return echo.NewHTTPError(http.StatusBadRequest, "Invalid action")
@@ -32,13 +30,11 @@ func postPublishStreamHandler(s *api.Server) echo.HandlerFunc {
 		if err != nil {
 			return echo.NewHTTPError(http.StatusNotFound, "Stream not found")
 		}
-		log.Debug().Interface("stream", stream).Msg("db stream")
 
 		streamStatus, err := s.Queries.GetStreamStatus(c.Request().Context(), stream.ID)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusNotFound, "Stream Status not found")
 		}
-		log.Debug().Interface("streamStatus", streamStatus).Msg("db stream status")
 
 		// TODO: check if stream belongs to user
 		if streamStatus.Status == database.StreamStatusEnumOnline {

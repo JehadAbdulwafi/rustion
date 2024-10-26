@@ -4,10 +4,10 @@ import (
 	"net/http"
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
+	"github.com/JehadAbdulwafi/rustion/internal/database"
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/labstack/echo/v4"
-	"github.com/rs/zerolog/log"
 )
 
 func PostStopStreamRoute(s *api.Server) *echo.Route {
@@ -21,12 +21,36 @@ func postStopStreamHandler(s *api.Server) echo.HandlerFunc {
 			return err
 		}
 
+		if *body.Action != "stop" {
+			return echo.NewHTTPError(http.StatusBadRequest, "Invalid action")
+		}
+
+		// check if stream exists
+		stream, err := s.Queries.GetStreamByStreamName(c.Request().Context(), *body.Stream)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusNotFound, "Stream not found")
+		}
+
+		streamStatus, err := s.Queries.GetStreamStatus(c.Request().Context(), stream.ID)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusNotFound, "Stream Status not found")
+		}
+
+		// TODO: check if stream belongs to user
+		if streamStatus.Status == database.StreamStatusEnumOffline {
+			return echo.NewHTTPError(http.StatusForbidden, "Stream is not live")
+		}
+
+		err = s.Queries.DecrementStreamStatusViewersCount(c.Request().Context(), stream.ID)
+
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to decrement stream viewers count")
+		}
+
 		code := int64(0)
 		res := &types.StreamEventResponse{
 			Code: &code,
 		}
-
-		log.Debug().Msgf("Stop stream %s", *body.Stream)
 
 		return util.ValidateAndReturn(c, http.StatusOK, res)
 	}
