@@ -54,7 +54,7 @@ func convertDBCategoryAndArticlesToCategoryWithArticles(category database.Catego
 	res := types.GetCategoryWithArticlesResponse{
 		Category: &types.Category{
 			ID:        (*strfmt.UUID4)(swag.String(category.ID.String())),
-			Name:      &category.Name,
+			Title:     &category.Title,
 			CreatedAt: strfmt.DateTime(category.CreatedAt.Time),
 			UpdatedAt: strfmt.DateTime(category.UpdatedAt.Time),
 		},
@@ -68,12 +68,14 @@ func convertDBArticlesToArticles(articles []database.Article) []*types.GetCatego
 	var res []*types.GetCategoryWithArticlesResponseArticlesItems0
 	for _, article := range articles {
 		articleRes := &types.GetCategoryWithArticlesResponseArticlesItems0{
-			ID:         (*strfmt.UUID4)(swag.String(article.ID.String())),
-			Title:      &article.Title,
-			Content:    &article.Content,
-			CategoryID: (*strfmt.UUID4)(swag.String(article.CategoryID.UUID.String())),
-			CreatedAt:  strfmt.DateTime(article.CreatedAt.Time),
-			UpdatedAt:  strfmt.DateTime(article.UpdatedAt.Time),
+			ID:          (*strfmt.UUID4)(swag.String(article.ID.String())),
+			Title:       &article.Title,
+			Content:     &article.Content,
+			Image:       &article.Image,
+			Description: article.Description.String,
+			CategoryID:  (*strfmt.UUID4)(swag.String(article.CategoryID.UUID.String())),
+			CreatedAt:   strfmt.DateTime(article.CreatedAt.Time),
+			UpdatedAt:   strfmt.DateTime(article.UpdatedAt.Time),
 		}
 
 		res = append(res, articleRes)

@@ -18,8 +18,8 @@ RETURNING id, featured_section_id, article_id, created_at, updated_at
 `
 
 type CreateFeaturedArticleParams struct {
-	FeaturedSectionID uuid.NullUUID
-	ArticleID         uuid.NullUUID
+	FeaturedSectionID uuid.UUID
+	ArticleID         uuid.UUID
 }
 
 func (q *Queries) CreateFeaturedArticle(ctx context.Context, arg CreateFeaturedArticleParams) (FeaturedArticle, error) {
@@ -74,7 +74,7 @@ func (q *Queries) DeleteFeaturedSection(ctx context.Context, id uuid.UUID) error
 }
 
 const getArticlesBySectionID = `-- name: GetArticlesBySectionID :many
-SELECT a.id, a.title, a.content, a.category_id, a.created_at, a.updated_at FROM articles a
+SELECT a.id, a.title, a.description, a.content, a.image, a.category_id, a.created_at, a.updated_at FROM articles a
 JOIN featured_articles fa ON a.id = fa.article_id
 JOIN featured_sections fs ON fs.id = fa.featured_section_id
 WHERE fs.id = $1
@@ -92,7 +92,9 @@ func (q *Queries) GetArticlesBySectionID(ctx context.Context, id uuid.UUID) ([]A
 		if err := rows.Scan(
 			&i.ID,
 			&i.Title,
+			&i.Description,
 			&i.Content,
+			&i.Image,
 			&i.CategoryID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
@@ -135,7 +137,7 @@ FROM featured_articles
 WHERE featured_section_id = $1
 `
 
-func (q *Queries) GetFeaturedArticlesBySectionID(ctx context.Context, featuredSectionID uuid.NullUUID) ([]FeaturedArticle, error) {
+func (q *Queries) GetFeaturedArticlesBySectionID(ctx context.Context, featuredSectionID uuid.UUID) ([]FeaturedArticle, error) {
 	rows, err := q.db.QueryContext(ctx, getFeaturedArticlesBySectionID, featuredSectionID)
 	if err != nil {
 		return nil, err
@@ -223,8 +225,8 @@ RETURNING id, featured_section_id, article_id, created_at, updated_at
 `
 
 type UpdateFeaturedArticleParams struct {
-	FeaturedSectionID uuid.NullUUID
-	ArticleID         uuid.NullUUID
+	FeaturedSectionID uuid.UUID
+	ArticleID         uuid.UUID
 	ID                uuid.UUID
 }
 

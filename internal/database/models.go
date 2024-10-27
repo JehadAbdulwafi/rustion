@@ -111,25 +111,27 @@ type Account struct {
 }
 
 type Article struct {
-	ID         uuid.UUID
-	Title      string
-	Content    string
-	CategoryID uuid.NullUUID
-	CreatedAt  sql.NullTime
-	UpdatedAt  sql.NullTime
+	ID          uuid.UUID
+	Title       string
+	Description sql.NullString
+	Content     string
+	Image       string
+	CategoryID  uuid.NullUUID
+	CreatedAt   sql.NullTime
+	UpdatedAt   sql.NullTime
 }
 
 type Category struct {
 	ID        uuid.UUID
-	Name      string
+	Title     string
 	CreatedAt sql.NullTime
 	UpdatedAt sql.NullTime
 }
 
 type FeaturedArticle struct {
 	ID                uuid.UUID
-	FeaturedSectionID uuid.NullUUID
-	ArticleID         uuid.NullUUID
+	FeaturedSectionID uuid.UUID
+	ArticleID         uuid.UUID
 	CreatedAt         sql.NullTime
 	UpdatedAt         sql.NullTime
 }

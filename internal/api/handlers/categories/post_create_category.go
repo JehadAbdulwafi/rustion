@@ -21,7 +21,7 @@ func createCategoryHandler(s *api.Server) echo.HandlerFunc {
 			return err
 		}
 
-		_, err := s.Queries.CreateCategory(ctx, *body.Name)
+		_, err := s.Queries.CreateCategory(ctx, *body.Title)
 
 		if err != nil {
 			return err

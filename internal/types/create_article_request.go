@@ -29,6 +29,15 @@ type CreateArticleRequest struct {
 	// Required: true
 	Content *string `json:"content"`
 
+	// Description of the article
+	// Example: This is the description of the article.
+	Description string `json:"description,omitempty"`
+
+	// Image of the article
+	// Example: https://example.com/article-image.jpg
+	// Required: true
+	Image *string `json:"image"`
+
 	// Title of the article
 	// Example: Article Title
 	// Required: true
@@ -45,6 +54,10 @@ func (m *CreateArticleRequest) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateContent(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateImage(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -73,6 +86,15 @@ func (m *CreateArticleRequest) validateCategoryID(formats strfmt.Registry) error
 func (m *CreateArticleRequest) validateContent(formats strfmt.Registry) error {
 
 	if err := validate.Required("content", "body", m.Content); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *CreateArticleRequest) validateImage(formats strfmt.Registry) error {
+
+	if err := validate.Required("image", "body", m.Image); err != nil {
 		return err
 	}
 

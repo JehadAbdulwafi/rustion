@@ -1,8 +1,8 @@
 -- +goose Up
 CREATE TABLE IF NOT EXISTS featured_articles (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  featured_section_id UUID REFERENCES featured_sections(id) ON DELETE CASCADE,
-  article_id UUID REFERENCES articles(id) ON DELETE CASCADE,
+  featured_section_id UUID NOT NULL REFERENCES featured_sections(id) ON DELETE CASCADE,
+  article_id UUID NOT NULL REFERENCES articles(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP
 );

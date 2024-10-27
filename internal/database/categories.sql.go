@@ -12,17 +12,17 @@ import (
 )
 
 const createCategory = `-- name: CreateCategory :one
-INSERT INTO categories (name)
+INSERT INTO categories (title)
 VALUES ($1)
-RETURNING id, name, created_at, updated_at
+RETURNING id, title, created_at, updated_at
 `
 
-func (q *Queries) CreateCategory(ctx context.Context, name string) (Category, error) {
-	row := q.db.QueryRowContext(ctx, createCategory, name)
+func (q *Queries) CreateCategory(ctx context.Context, title string) (Category, error) {
+	row := q.db.QueryRowContext(ctx, createCategory, title)
 	var i Category
 	err := row.Scan(
 		&i.ID,
-		&i.Name,
+		&i.Title,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -40,7 +40,7 @@ func (q *Queries) DeleteCategory(ctx context.Context, id uuid.UUID) error {
 }
 
 const getCategories = `-- name: GetCategories :many
-SELECT id, name, created_at, updated_at FROM categories
+SELECT id, title, created_at, updated_at FROM categories
 `
 
 func (q *Queries) GetCategories(ctx context.Context) ([]Category, error) {
@@ -54,7 +54,7 @@ func (q *Queries) GetCategories(ctx context.Context) ([]Category, error) {
 		var i Category
 		if err := rows.Scan(
 			&i.ID,
-			&i.Name,
+			&i.Title,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -72,7 +72,7 @@ func (q *Queries) GetCategories(ctx context.Context) ([]Category, error) {
 }
 
 const getCategory = `-- name: GetCategory :one
-SELECT id, name, created_at, updated_at
+SELECT id, title, created_at, updated_at
 FROM categories
 WHERE id = $1
 `
@@ -82,7 +82,7 @@ func (q *Queries) GetCategory(ctx context.Context, id uuid.UUID) (Category, erro
 	var i Category
 	err := row.Scan(
 		&i.ID,
-		&i.Name,
+		&i.Title,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -91,22 +91,22 @@ func (q *Queries) GetCategory(ctx context.Context, id uuid.UUID) (Category, erro
 
 const updateCategory = `-- name: UpdateCategory :one
 UPDATE categories
-SET name = $1, updated_at = CURRENT_TIMESTAMP
+SET title = $1, updated_at = CURRENT_TIMESTAMP
 WHERE id = $2
-RETURNING id, name, created_at, updated_at
+RETURNING id, title, created_at, updated_at
 `
 
 type UpdateCategoryParams struct {
-	Name string
-	ID   uuid.UUID
+	Title string
+	ID    uuid.UUID
 }
 
 func (q *Queries) UpdateCategory(ctx context.Context, arg UpdateCategoryParams) (Category, error) {
-	row := q.db.QueryRowContext(ctx, updateCategory, arg.Name, arg.ID)
+	row := q.db.QueryRowContext(ctx, updateCategory, arg.Title, arg.ID)
 	var i Category
 	err := row.Scan(
 		&i.ID,
-		&i.Name,
+		&i.Title,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

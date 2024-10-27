@@ -53,7 +53,7 @@ func convertDBCategoryAndArticlesToCategoriesWithArticles(category database.Cate
 	res := types.GetCategoryWithArticlesResponse{
 		Category: &types.Category{
 			ID:        (*strfmt.UUID4)(swag.String(category.ID.String())),
-			Name:      &category.Name,
+			Title:      &category.Title,
 			CreatedAt: strfmt.DateTime(category.CreatedAt.Time),
 			UpdatedAt: strfmt.DateTime(category.UpdatedAt.Time),
 		},

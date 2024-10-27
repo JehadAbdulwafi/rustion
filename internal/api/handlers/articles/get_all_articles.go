@@ -33,12 +33,14 @@ func convertDBArticlesToArticles(articles []database.Article) types.GetArticlesR
 	var res types.GetArticlesResponse
 	for _, article := range articles {
 		articleRes := &types.Article{
-			ID:         (*strfmt.UUID4)(swag.String(article.ID.String())),
-			Title:      &article.Title,
-			Content:    &article.Content,
-			CategoryID: (*strfmt.UUID4)(swag.String(article.CategoryID.UUID.String())),
-			CreatedAt:  strfmt.DateTime(article.CreatedAt.Time),
-			UpdatedAt:  strfmt.DateTime(article.UpdatedAt.Time),
+			ID:          (*strfmt.UUID4)(swag.String(article.ID.String())),
+			Title:       &article.Title,
+			Content:     &article.Content,
+			Image:       &article.Image,
+			Description: article.Description.String,
+			CategoryID:  (*strfmt.UUID4)(swag.String(article.CategoryID.UUID.String())),
+			CreatedAt:   strfmt.DateTime(article.CreatedAt.Time),
+			UpdatedAt:   strfmt.DateTime(article.UpdatedAt.Time),
 		}
 
 		res = append(res, articleRes)

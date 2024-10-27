@@ -22,14 +22,14 @@ type UpdateCategoryRequest struct {
 	// Name of the category
 	// Example: Politics
 	// Required: true
-	Name *string `json:"name"`
+	Title *string `json:"title"`
 }
 
 // Validate validates this update category request
 func (m *UpdateCategoryRequest) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateName(formats); err != nil {
+	if err := m.validateTitle(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -39,9 +39,9 @@ func (m *UpdateCategoryRequest) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *UpdateCategoryRequest) validateName(formats strfmt.Registry) error {
+func (m *UpdateCategoryRequest) validateTitle(formats strfmt.Registry) error {
 
-	if err := validate.Required("name", "body", m.Name); err != nil {
+	if err := validate.Required("title", "body", m.Title); err != nil {
 		return err
 	}
 

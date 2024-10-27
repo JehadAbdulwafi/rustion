@@ -40,7 +40,7 @@ func updateCategoryHandler(s *api.Server) echo.HandlerFunc {
 		}
 
 		_, err = s.Queries.UpdateCategory(ctx, database.UpdateCategoryParams{
-			Name: *body.Name,
+			Title: *body.Title,
 			ID:   ID,
 		})
 

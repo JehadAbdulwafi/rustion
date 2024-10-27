@@ -36,6 +36,7 @@ definitions:
       - title
       - content
       - category_id
+      - image
     properties:
       id:
         type: string
@@ -56,6 +57,14 @@ definitions:
         format: uuid4
         description: ID of article
         example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      image:
+        type: string
+        description: Image of the article
+        example: "https://example.com/article-image.jpg"
+      description:
+        type: string
+        description: Description of the article
+        example: "This is the description of the article."
       created_at:
         type: string
         format: date-time
@@ -66,7 +75,6 @@ definitions:
         format: date-time
         description: Timestamp when the article was last updated
         example: "2023-10-02T12:00:00Z"
-
   CreateFeaturedSectionRequest:
     type: object
     required:

@@ -33,7 +33,7 @@ type Category struct {
 	// Name of the category
 	// Example: Politics
 	// Required: true
-	Name *string `json:"name"`
+	Title *string `json:"title"`
 
 	// Timestamp when the category was last updated
 	// Example: 2023-10-02T12:00:00Z
@@ -53,7 +53,7 @@ func (m *Category) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateName(formats); err != nil {
+	if err := m.validateTitle(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -92,9 +92,9 @@ func (m *Category) validateID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Category) validateName(formats strfmt.Registry) error {
+func (m *Category) validateTitle(formats strfmt.Registry) error {
 
-	if err := validate.Required("name", "body", m.Name); err != nil {
+	if err := validate.Required("title", "body", m.Title); err != nil {
 		return err
 	}
 

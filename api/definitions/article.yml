@@ -11,6 +11,7 @@ definitions:
       - title
       - content
       - category_id
+      - image
     properties:
       id:
         type: string
@@ -26,11 +27,19 @@ definitions:
         type: string
         description: Content of the article
         example: "This is the content of the article."
+      description:
+        type: string
+        description: Description of the article
+        example: "This is the description of the article."
       category_id:
         type: string
         format: uuid4
         description: ID of article
         example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      image:
+        type: string
+        description: Image of the article
+        example: "https://example.com/article-image.jpg"
       created_at:
         type: string
         format: date-time
@@ -46,6 +55,7 @@ definitions:
     required:
       - title
       - content
+      - image
     properties:
       title:
         type: string
@@ -61,6 +71,14 @@ definitions:
         format: uuid4
         description: ID of category
         example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      image:
+        type: string
+        description: Image of the article
+        example: "https://example.com/article-image.jpg"
+      description:
+        type: string
+        description: Description of the article
+        example: "This is the description of the article."
   CreateArticleResponse:
     type: object
     properties:
@@ -81,6 +99,7 @@ definitions:
     required:
       - title
       - content
+      - image
     properties:
       title:
         type: string
@@ -96,6 +115,14 @@ definitions:
         format: uuid4
         description: ID of category
         example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      image:
+        type: string
+        description: Image of the article
+        example: "https://example.com/article-image.jpg"
+      description:
+        type: string
+        description: Description of the article
+        example: "This is the description of the article."
   UpdateArticleResponse:
     type: object
     properties:

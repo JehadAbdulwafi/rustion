@@ -1,6 +1,7 @@
 package articles
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
@@ -39,6 +40,11 @@ func updateArticleHandler(s *api.Server) echo.HandlerFunc {
 			Title:      *body.Title,
 			Content:    *body.Content,
 			CategoryID: CategoryID,
+			Description: sql.NullString{
+				String: body.Description,
+				Valid:  body.Description != "",
+			},
+			Image: *body.Image,
 		})
 
 		if err != nil {

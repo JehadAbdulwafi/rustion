@@ -197,7 +197,7 @@ paths:
     /api/v1/categories/articles:
         get:
             description: Retrieves a category with its associated articles
-            operationId: GetCategoryWithArticles
+            operationId: GetCategoryWithArticlesMixin2
             responses:
                 "200":
                     description: GetCategoryWithArticlesResponse
@@ -268,7 +268,7 @@ paths:
     /api/v1/categories/{id}/articles:
         get:
             description: Retrieves a category with its associated articles
-            operationId: GetCategoryWithArticlesMixin2
+            operationId: GetCategoryWithArticles
             parameters:
                 - description: ID of the category
                   format: uuid4
@@ -541,10 +541,18 @@ definitions:
                 example: "2023-10-01T12:00:00Z"
                 format: date-time
                 type: string
+            description:
+                description: Description of the article
+                example: This is the description of the article.
+                type: string
             id:
                 description: ID of article
                 example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
                 format: uuid4
+                type: string
+            image:
+                description: Image of the article
+                example: https://example.com/article-image.jpg
                 type: string
             title:
                 description: Title of the article
@@ -561,6 +569,7 @@ definitions:
             - title
             - content
             - category_id
+            - image
         type: object
     category:
         properties:
@@ -574,7 +583,7 @@ definitions:
                 example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
                 format: uuid4
                 type: string
-            name:
+            title:
                 description: Name of the category
                 example: Politics
                 type: string
@@ -585,7 +594,7 @@ definitions:
                 type: string
         required:
             - id
-            - name
+            - title
         type: object
     createArticleRequest:
         properties:
@@ -598,6 +607,14 @@ definitions:
                 description: Content of the article
                 example: This is the content of the article.
                 type: string
+            description:
+                description: Description of the article
+                example: This is the description of the article.
+                type: string
+            image:
+                description: Image of the article
+                example: https://example.com/article-image.jpg
+                type: string
             title:
                 description: Title of the article
                 example: Article Title
@@ -606,6 +623,7 @@ definitions:
         required:
             - title
             - content
+            - image
         type: object
     createArticleResponse:
         properties:
@@ -615,12 +633,12 @@ definitions:
         type: object
     createCategoryRequest:
         properties:
-            name:
+            title:
                 description: Name of the category
                 example: Politics
                 type: string
         required:
-            - name
+            - title
         type: object
     createCategoryResponse:
         properties:
@@ -740,10 +758,18 @@ definitions:
                             example: "2023-10-01T12:00:00Z"
                             format: date-time
                             type: string
+                        description:
+                            description: Description of the article
+                            example: This is the description of the article.
+                            type: string
                         id:
                             description: ID of article
                             example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
                             format: uuid4
+                            type: string
+                        image:
+                            description: Image of the article
+                            example: https://example.com/article-image.jpg
                             type: string
                         title:
                             description: Title of the article
@@ -760,6 +786,7 @@ definitions:
                         - title
                         - content
                         - category_id
+                        - image
                     type: object
                 type: array
             category:
@@ -789,10 +816,18 @@ definitions:
                             example: "2023-10-01T12:00:00Z"
                             format: date-time
                             type: string
+                        description:
+                            description: Description of the article
+                            example: This is the description of the article.
+                            type: string
                         id:
                             description: ID of article
                             example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
                             format: uuid4
+                            type: string
+                        image:
+                            description: Image of the article
+                            example: https://example.com/article-image.jpg
                             type: string
                         title:
                             description: Title of the article
@@ -809,6 +844,7 @@ definitions:
                         - title
                         - content
                         - category_id
+                        - image
                     type: object
                 type: array
             featured_section:
@@ -1036,6 +1072,14 @@ definitions:
                 description: Content of the article
                 example: This is the content of the article.
                 type: string
+            description:
+                description: Description of the article
+                example: This is the description of the article.
+                type: string
+            image:
+                description: Image of the article
+                example: https://example.com/article-image.jpg
+                type: string
             title:
                 description: Title of the article
                 example: Article Title
@@ -1044,6 +1088,7 @@ definitions:
         required:
             - title
             - content
+            - image
         type: object
     updateArticleResponse:
         properties:
@@ -1053,12 +1098,12 @@ definitions:
         type: object
     updateCategoryRequest:
         properties:
-            name:
+            title:
                 description: Name of the category
                 example: Politics
                 type: string
         required:
-            - name
+            - title
         type: object
     updateCategoryResponse:
         properties:

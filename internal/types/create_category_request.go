@@ -22,14 +22,14 @@ type CreateCategoryRequest struct {
 	// Name of the category
 	// Example: Politics
 	// Required: true
-	Name *string `json:"name"`
+	Title *string `json:"title"`
 }
 
 // Validate validates this create category request
 func (m *CreateCategoryRequest) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateName(formats); err != nil {
+	if err := m.validateTitle(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -39,9 +39,9 @@ func (m *CreateCategoryRequest) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *CreateCategoryRequest) validateName(formats strfmt.Registry) error {
+func (m *CreateCategoryRequest) validateTitle(formats strfmt.Registry) error {
 
-	if err := validate.Required("name", "body", m.Name); err != nil {
+	if err := validate.Required("title", "body", m.Title); err != nil {
 		return err
 	}
 

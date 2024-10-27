@@ -37,7 +37,7 @@ func convertDBCategoriesToCategories(categoryies []database.Category) *types.Get
 	for _, category := range categoryies {
 		item := &types.Category{
 			ID:        (*strfmt.UUID4)(swag.String(category.ID.String())),
-			Name:      &category.Name,
+			Title:      &category.Title,
 			CreatedAt: strfmt.DateTime(category.CreatedAt.Time),
 			UpdatedAt: strfmt.DateTime(category.UpdatedAt.Time),
 		}

@@ -8,14 +8,14 @@ definitions:
     type: object
     required:
       - id
-      - name
+      - title
     properties:
       id:
         type: string
         format: uuid4
         description: ID of category
         example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-      name:
+      title:
         type: string
         description: Name of the category
         example: "Politics"
@@ -36,6 +36,7 @@ definitions:
       - title
       - content
       - category_id
+      - image
     properties:
       id:
         type: string
@@ -56,6 +57,14 @@ definitions:
         format: uuid4
         description: ID of article
         example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      image:
+        type: string
+        description: Image of the article
+        example: "https://example.com/article-image.jpg"
+      description:
+        type: string
+        description: Description of the article
+        example: "This is the description of the article."
       created_at:
         type: string
         format: date-time
@@ -69,18 +78,18 @@ definitions:
   CreateCategoryRequest:
     type: object
     required:
-      - name
+      - title
     properties:
-      name:
+      title:
         type: string
         description: Name of the category
         example: "Politics"
   UpdateCategoryRequest:
     type: object
     required:
-      - name
+      - title
     properties:
-      name:
+      title:
         type: string
         description: Name of the category
         example: "Politics"

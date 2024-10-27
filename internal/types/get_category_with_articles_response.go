@@ -193,11 +193,20 @@ type GetCategoryWithArticlesResponseArticlesItems0 struct {
 	// Format: date-time
 	CreatedAt strfmt.DateTime `json:"created_at,omitempty"`
 
+	// Description of the article
+	// Example: This is the description of the article.
+	Description string `json:"description,omitempty"`
+
 	// ID of article
 	// Example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
 	// Required: true
 	// Format: uuid4
 	ID *strfmt.UUID4 `json:"id"`
+
+	// Image of the article
+	// Example: https://example.com/article-image.jpg
+	// Required: true
+	Image *string `json:"image"`
 
 	// Title of the article
 	// Example: Article Title
@@ -228,6 +237,10 @@ func (m *GetCategoryWithArticlesResponseArticlesItems0) Validate(formats strfmt.
 	}
 
 	if err := m.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateImage(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -286,6 +299,15 @@ func (m *GetCategoryWithArticlesResponseArticlesItems0) validateID(formats strfm
 	}
 
 	if err := validate.FormatOf("id", "body", "uuid4", m.ID.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *GetCategoryWithArticlesResponseArticlesItems0) validateImage(formats strfmt.Registry) error {
+
+	if err := validate.Required("image", "body", m.Image); err != nil {
 		return err
 	}
 

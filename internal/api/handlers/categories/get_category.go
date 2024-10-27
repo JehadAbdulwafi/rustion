@@ -38,7 +38,7 @@ func getCategoryHandler(s *api.Server) echo.HandlerFunc {
 		res := &types.GetCategoryResponse{
 			Category: &types.Category{
 				ID:        (*strfmt.UUID4)(swag.String(Category.ID.String())),
-				Name:      &Category.Name,
+				Title:      &Category.Title,
 				CreatedAt: strfmt.DateTime(Category.CreatedAt.Time),
 				UpdatedAt: strfmt.DateTime(Category.UpdatedAt.Time),
 			},
