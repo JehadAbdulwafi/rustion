@@ -13,7 +13,7 @@ export class APIV1Client {
     route: string,
     options: SendOptions
   ): Promise<TData> {
-    const url = new URL(`${Config.api.origin}/--/api/v1/${route}`);
+    const url = new URL(`${Config.api.origin}/api/v1/${route}`);
     if (options.searchParams) {
       url.search = new URLSearchParams(options?.searchParams).toString();
     }
@@ -31,8 +31,7 @@ export class APIV1Client {
       });
     } catch (error) {
       throw new GenericError(
-        `Something went wrong when connecting to ${Config.api.origin}: ${
-          (error as Error).message
+        `Something went wrong when connecting to ${Config.api.origin}: ${(error as Error).message
         }.`
       );
     }
@@ -42,8 +41,7 @@ export class APIV1Client {
       text = await response.text();
     } catch (error) {
       throw new GenericError(
-        `Something went wrong when reading the response (HTTP ${
-          response.status
+        `Something went wrong when reading the response (HTTP ${response.status
         }) Error: ${(error as Error).message}.`
       );
     }
