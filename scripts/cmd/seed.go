@@ -5,8 +5,8 @@ package cmd
 import (
 	"log"
 
-	"github.com/spf13/cobra"
 	"github.com/JehadAbdulwafi/rustion/scripts/internal/seed"
+	"github.com/spf13/cobra"
 )
 
 var seedCmd = &cobra.Command{
@@ -23,3 +23,4 @@ var seedCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(seedCmd)
 }
+
