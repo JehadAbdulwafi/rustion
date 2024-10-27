@@ -8,6 +8,7 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/labstack/echo/v4"
+	"github.com/rs/zerolog/log"
 )
 
 func PostPublishStreamRoute(s *api.Server) *echo.Route {
@@ -21,7 +22,9 @@ func postPublishStreamHandler(s *api.Server) echo.HandlerFunc {
 			return err
 		}
 
-		if *body.Action != "publish" {
+		log.Debug().Interface("body", body).Msg("body")
+
+		if *body.Action != util.StreamActionPublish {
 			return echo.NewHTTPError(http.StatusBadRequest, "Invalid action")
 		}
 

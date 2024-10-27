@@ -21,7 +21,7 @@ func postStopStreamHandler(s *api.Server) echo.HandlerFunc {
 			return err
 		}
 
-		if *body.Action != "stop" {
+		if *body.Action != util.StreamActionStop {
 			return echo.NewHTTPError(http.StatusBadRequest, "Invalid action")
 		}
 

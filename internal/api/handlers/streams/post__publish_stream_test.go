@@ -7,6 +7,7 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/api"
 	"github.com/JehadAbdulwafi/rustion/internal/test"
 	"github.com/JehadAbdulwafi/rustion/internal/types"
+	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -19,7 +20,7 @@ func TestPostPublishStream(t *testing.T) {
 			"app":        "live",
 			"stream":     fixtures.Stream1.StreamName,
 			"vhost":      "localhost",
-			"action":     "publish",
+			"action":     util.StreamActionPublish,
 			"client_id":  "1234567890",
 			"server_id":  "1234567890",
 			"ip":         "192.168.1.6",

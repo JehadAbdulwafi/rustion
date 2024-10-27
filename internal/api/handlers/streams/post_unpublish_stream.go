@@ -21,7 +21,7 @@ func postUnpublishStreamHandler(s *api.Server) echo.HandlerFunc {
 			return err
 		}
 
-		if *body.Action != "unpublish" {
+		if *body.Action != util.StreamActionUnpublish {
 			return echo.NewHTTPError(http.StatusBadRequest, "Invalid action")
 		}
 

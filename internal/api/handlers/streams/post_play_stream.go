@@ -8,6 +8,7 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/labstack/echo/v4"
+	"github.com/rs/zerolog/log"
 )
 
 func PostPlayStreamRoute(s *api.Server) *echo.Route {
@@ -21,29 +22,34 @@ func postPlayStreamHandler(s *api.Server) echo.HandlerFunc {
 			return err
 		}
 
-		if *body.Action != "play" {
+		if *body.Action != util.StreamActionPlay {
+			log.Debug().Msg("Invalid action")
 			return echo.NewHTTPError(http.StatusBadRequest, "Invalid action")
 		}
 
 		// check if stream exists
 		stream, err := s.Queries.GetStreamByStreamName(c.Request().Context(), *body.Stream)
 		if err != nil {
+			log.Debug().Msg("Stream not found")
 			return echo.NewHTTPError(http.StatusNotFound, "Stream not found")
 		}
 
 		streamStatus, err := s.Queries.GetStreamStatus(c.Request().Context(), stream.ID)
 		if err != nil {
+			log.Debug().Msg("Stream Status not found")
 			return echo.NewHTTPError(http.StatusNotFound, "Stream Status not found")
 		}
 
 		// TODO: check if stream belongs to user
 		if streamStatus.Status == database.StreamStatusEnumOffline {
+			log.Debug().Msg("Stream is not live")
 			return echo.NewHTTPError(http.StatusForbidden, "Stream is not live")
 		}
 
 		err = s.Queries.IncrementStreamStatusViewersCount(c.Request().Context(), stream.ID)
 
 		if err != nil {
+			log.Debug().Msg("Failed to increment stream viewers count")
 			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to increment stream viewers count")
 		}
 
