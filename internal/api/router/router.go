@@ -18,12 +18,6 @@ func Init(s *api.Server) {
 	s.Echo.HideBanner = true
 	s.Echo.Logger.SetOutput(&echoLogger{level: s.Config.Logger.RequestLevel, log: log.With().Str("component", "echo").Logger()})
 
-	// ---
-	// General middleware
-	log.Warn().Msg("Disabling trailing slash middleware due to environment config")
-
-	log.Warn().Msg("Disabling recover middleware due to environment config")
-
 	if s.Config.Echo.EnableSecureMiddleware {
 		s.Echo.Use(echoMiddleware.SecureWithConfig(echoMiddleware.SecureConfig{
 			Skipper:               echoMiddleware.DefaultSecureConfig.Skipper,
@@ -47,15 +41,13 @@ func Init(s *api.Server) {
 		log.Warn().Msg("Disabling request ID middleware due to environment config")
 	}
 
-	log.Warn().Msg("Disabling logger middleware due to environment config")
-
 	if s.Config.Echo.EnableCORSMiddleware {
 		s.Echo.Use(echoMiddleware.CORS())
 	} else {
 		log.Warn().Msg("Disabling CORS middleware due to environment config")
 	}
 
-	log.Warn().Msg("Disabling cache control middleware due to environment config")
+	s.Echo.Static("/assets", "assets")
 
 	s.Router = &api.Router{
 		Routes: nil, // will be populated by handlers.AttachAllRoutes(s)
