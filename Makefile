@@ -35,6 +35,9 @@ vendor:
 # --- SQL
 ### -----------------------
 
+go-test:
+	gotestsum --format pkgname-and-test-fails --format-hide-empty-pkg
+
 sql-reset: 
 	@echo "DROP & CREATE database:"
 	@echo "  PGHOST=${PGHOST} PGDATABASE=${PGDATABASE}" PGUSER=${PGUSER}
