@@ -29,12 +29,45 @@ type FixtureMap struct {
 	StreamStatus2          *database.StreamStatus
 	Stream3                *database.Stream
 	StreamStatus3          *database.StreamStatus
+	Article1               *database.Article
+	Article2               *database.Article
+	Article3               *database.Article
+	Article4               *database.Article
+	Article5               *database.Article
+	Article6               *database.Article
+	Category1              *database.Category
+	Category2              *database.Category
+	Category3              *database.Category
+	FeaturedSection1       *database.FeaturedSection
+	FeaturedSection2       *database.FeaturedSection
+	FeaturedSection3       *database.FeaturedSection
+	FeaturedArticle1       *database.FeaturedArticle
+	FeaturedArticle2       *database.FeaturedArticle
+	FeaturedArticle3       *database.FeaturedArticle
+	FeaturedArticle4       *database.FeaturedArticle
+	FeaturedArticle5       *database.FeaturedArticle
+	FeaturedArticle6       *database.FeaturedArticle
 }
 
 // Fixtures returns a function wrapping our fixtures, which tests are allowed to manipulate.
 func Fixtures() FixtureMap {
 	now := time.Now()
 	f := FixtureMap{}
+
+	categoryID1 := uuid.New()
+	categoryID2 := uuid.New()
+	categoryID3 := uuid.New()
+
+	featuredSectionID1 := uuid.New()
+	featuredSectionID2 := uuid.New()
+	featuredSectionID3 := uuid.New()
+
+	articleID1 := uuid.New()
+	articleID2 := uuid.New()
+	articleID3 := uuid.New()
+	articleID4 := uuid.New()
+	articleID5 := uuid.New()
+	articleID6 := uuid.New()
 
 	f.User1 = &database.User{
 		ID:         uuid.MustParse("6c46cdec-4fd3-4d25-8218-3b75df65f8ab"),
@@ -187,6 +220,162 @@ func Fixtures() FixtureMap {
 		UpdatedAt:    sql.NullTime{},
 	}
 
+	f.Category1 = &database.Category{
+		ID:    categoryID1,
+		Title: "Category Title",
+	}
+
+	f.Category2 = &database.Category{
+		ID:    categoryID2,
+		Title: "Category Title",
+	}
+
+	f.Category3 = &database.Category{
+		ID:    categoryID3,
+		Title: "Category Title",
+	}
+
+	f.FeaturedSection1 = &database.FeaturedSection{
+		ID:    featuredSectionID1,
+		Title: "Latest Articles",
+	}
+
+	f.FeaturedSection2 = &database.FeaturedSection{
+		ID:    featuredSectionID2,
+		Title: "Trending Articles",
+	}
+
+	f.FeaturedSection3 = &database.FeaturedSection{
+		ID:    featuredSectionID3,
+		Title: "Popular Articles",
+	}
+
+	f.Article1 = &database.Article{
+		ID:      articleID1,
+		Title:   "Article Title",
+		Content: "Article Content",
+		CategoryID: uuid.NullUUID{
+			UUID:  categoryID1,
+			Valid: true,
+		},
+		Description: sql.NullString{
+			String: "Article Description",
+			Valid:  true,
+		},
+		Image: "https://th.bing.com/th/id/OIP.EKxkhulCPo2M5eP6LEOAHAHaLL",
+	}
+
+	f.Article2 = &database.Article{
+		ID:      articleID2,
+		Title:   "Article Title",
+		Content: "Article Content",
+		CategoryID: uuid.NullUUID{
+			UUID:  categoryID1,
+			Valid: true,
+		},
+		Description: sql.NullString{
+			String: "Article Description",
+			Valid:  true,
+		},
+		Image: "https://i.pinimg.com/736x/79/84/2f/79842f01e8b3773916823961d6650605.jpg",
+	}
+
+	f.Article3 = &database.Article{
+		ID:      articleID3,
+		Title:   "Article Title",
+		Content: "Article Content",
+		CategoryID: uuid.NullUUID{
+			UUID:  categoryID2,
+			Valid: true,
+		},
+		Description: sql.NullString{
+			String: "Article Description",
+			Valid:  true,
+		},
+		Image: "https://th.bing.com/th/id/OIP.QatFnF9HviYeE96kGdCpZgHaLH",
+	}
+
+	f.Article4 = &database.Article{
+		ID:      articleID4,
+		Title:   "Article Title",
+		Content: "Article Content",
+		CategoryID: uuid.NullUUID{
+			UUID:  categoryID2,
+			Valid: true,
+		},
+		Description: sql.NullString{
+			String: "Article Description",
+			Valid:  true,
+		},
+		Image: "https://th.bing.com/th/id/OIP.yIEB-Z7KC38rkAwXNZxv5QHaLG",
+	}
+
+	f.Article5 = &database.Article{
+		ID:      articleID5,
+		Title:   "Article Title",
+		Content: "Article Content",
+		CategoryID: uuid.NullUUID{
+			UUID:  categoryID3,
+			Valid: true,
+		},
+		Description: sql.NullString{
+			String: "Article Description",
+			Valid:  true,
+		},
+		Image: "https://th.bing.com/th/id/OIP.HEWc4UQg4s-gNFlFgRxCBQHaLG",
+	}
+
+	f.Article6 = &database.Article{
+		ID:      articleID6,
+		Title:   "Article Title",
+		Content: "Article Content",
+		CategoryID: uuid.NullUUID{
+			UUID:  categoryID3,
+			Valid: true,
+		},
+		Description: sql.NullString{
+			String: "Article Description",
+			Valid:  true,
+		},
+		Image: "https://th.bing.com/th/id/OIP._Fxv7pChiqxvz4QLubEXJgHaLH",
+	}
+
+	f.FeaturedArticle1 = &database.FeaturedArticle{
+		ID:                uuid.New(),
+		ArticleID:         articleID1,
+		FeaturedSectionID: featuredSectionID1,
+	}
+
+	f.FeaturedArticle2 = &database.FeaturedArticle{
+		ID:                uuid.New(),
+		ArticleID:         articleID2,
+		FeaturedSectionID: featuredSectionID1,
+	}
+
+	f.FeaturedArticle3 = &database.FeaturedArticle{
+		ID:                uuid.New(),
+		ArticleID:         articleID3,
+		FeaturedSectionID: featuredSectionID2,
+	}
+
+	f.FeaturedArticle4 = &database.FeaturedArticle{
+		ID:                uuid.New(),
+		ArticleID:         articleID4,
+		FeaturedSectionID: featuredSectionID2,
+	}
+
+	f.FeaturedArticle5 = &database.FeaturedArticle{
+		ID:                uuid.New(),
+		ArticleID:         articleID5,
+		FeaturedSectionID: featuredSectionID3,
+	}
+
+	f.FeaturedArticle6 = &database.FeaturedArticle{
+		ID:                uuid.New(),
+		ArticleID:         articleID6,
+		FeaturedSectionID: featuredSectionID3,
+	}
+
 	return f
 }
 
@@ -210,6 +399,28 @@ func Inserts() []Insertable {
 	inserts = append(inserts, fix.StreamStatus2)
 	inserts = append(inserts, fix.Stream3)
 	inserts = append(inserts, fix.StreamStatus3)
+
+	inserts = append(inserts, fix.Category1)
+	inserts = append(inserts, fix.Category2)
+	inserts = append(inserts, fix.Category3)
+
+	inserts = append(inserts, fix.FeaturedSection1)
+	inserts = append(inserts, fix.FeaturedSection2)
+	inserts = append(inserts, fix.FeaturedSection3)
+
+	inserts = append(inserts, fix.Article1)
+	inserts = append(inserts, fix.Article2)
+	inserts = append(inserts, fix.Article3)
+	inserts = append(inserts, fix.Article4)
+	inserts = append(inserts, fix.Article5)
+	inserts = append(inserts, fix.Article6)
+
+	inserts = append(inserts, fix.FeaturedArticle1)
+	inserts = append(inserts, fix.FeaturedArticle2)
+	inserts = append(inserts, fix.FeaturedArticle3)
+	inserts = append(inserts, fix.FeaturedArticle4)
+	inserts = append(inserts, fix.FeaturedArticle5)
+	inserts = append(inserts, fix.FeaturedArticle6)
 
 	log.Debug().Int("count", len(inserts)).Msg("Number of insertable fixtures found")
 
