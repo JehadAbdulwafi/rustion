@@ -8,5 +8,5 @@ import (
 )
 
 func GetSwaggerRoute(s *api.Server) *echo.Route {
-	return s.Echo.File("/swagger.yml", filepath.Join("/api", "swagger.yml"))
+	return s.Echo.File("/swagger.yml", filepath.Join("api", "swagger.yml"))
 }

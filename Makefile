@@ -101,6 +101,10 @@ swagger-generate:
 	@mkdir -p internal/types
 	@cp -r tmp/testdata/types/* internal/types/
 
+swagger-serve:
+	@echo "Serving Swagger API documentation..."
+	swagger serve api/swagger.yml
+
 swagger-validate: 
 	@echo "make swagger-validate"
 	@swagger validate --skip-warnings --stop-on-error -q api/swagger.yml
