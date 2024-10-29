@@ -5,7 +5,7 @@ import Animated, {
   LayoutAnimationConfig,
   LinearTransition,
 } from "react-native-reanimated";
-import { icons } from "lucide-react-native";
+import { LucideProps, icons } from "lucide-react-native";
 import { MotiProps } from "moti";
 import { motifySvg } from "moti/svg";
 import { useRouter } from "expo-router";
@@ -13,8 +13,8 @@ import { useRouter } from "expo-router";
 type IconNames = keyof typeof icons;
 
 type IconProps = {
-name: IconNames;
-} & MotiProps;
+  name: IconNames;
+} & LucideProps;
 
 type Tab = {
   name: string;
@@ -24,7 +24,7 @@ type Tab = {
 
 const Icon = ({ name, ...rest }: IconProps) => {
   // @ts-ignore
-  const IconComponent = motifySvg(icons[name])();
+  const IconComponent = icons[name];
   return <IconComponent size={20} {...rest} />;
 };
 
@@ -72,12 +72,7 @@ const Tabs = ({
             >
               <Icon
                 name={tab.icon}
-                animate={{
-                  color: isSelected
-                    ? TAB_COLORS.activeColor
-                    : TAB_COLORS.inactiveColor,
-                }}
-                delay={200}
+                color={isSelected ? TAB_COLORS.activeColor : TAB_COLORS.inactiveColor}
               />
               <LayoutAnimationConfig skipEntering>
                 {isSelected && (
