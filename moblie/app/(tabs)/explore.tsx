@@ -1,101 +1,42 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, Image, Platform, View } from 'react-native';
+import { getArticles } from '@/api/ArticlesApi';
+import ArticleCard from '@/components/featuredRows/articleCard';
+import SearchHeader from '@/components/ui/SearchHeader';
+import TagsBar from '@/components/ui/TagsBar';
+import { navigationHeight } from '@/constants';
+import { DarkTheme } from '@react-navigation/native';
+import { useEffect, useState } from 'react';
+import { FlatList, StatusBar } from 'react-native';
 
-import { Collapsible } from '@/components/ui/Collapsible';
-import { ExternalLink } from '@/components/ui/ExternalLink';
-import ParallaxScrollView from '@/components/ui/ParallaxScrollView';
-import { Text } from '@/components/ui/Text';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function TabTwoScreen() {
+  const [articles, setArticles] = useState<Article[]>();
+
+  async function fetchArticles() {
+    const _articles = await getArticles();
+    setArticles(_articles);
+  }
+
+  useEffect(() => {
+    fetchArticles();
+  }, []);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}>
-      <View style={styles.titleContainer}>
-        <Text type="title">Explore</Text>
-      </View>
-      <Text>This app includes example code to help you get started.</Text>
-      <Collapsible title="File-based routing">
-        <Text>
-          This app has two screens:{' '}
-          <Text type="defaultSemiBold">app/(tabs)/index.tsx</Text> and{' '}
-          <Text type="defaultSemiBold">app/(tabs)/explore.tsx</Text>
-        </Text>
-        <Text>
-          The layout file in <Text type="defaultSemiBold">app/(tabs)/_layout.tsx</Text>{' '}
-          sets up the tab navigator.
-        </Text>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <Text type="link">Learn more</Text>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <Text>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <Text type="defaultSemiBold">w</Text> in the terminal running this project.
-        </Text>
-      </Collapsible>
-      <Collapsible title="Images">
-        <Text>
-          For static images, you can use the <Text type="defaultSemiBold">@2x</Text> and{' '}
-          <Text type="defaultSemiBold">@3x</Text> suffixes to provide files for
-          different screen densities
-        </Text>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <Text type="link">Learn more</Text>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
-        <Text>
-          Open <Text type="defaultSemiBold">app/_layout.tsx</Text> to see how to load{' '}
-          <Text style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
-          </Text>
-        </Text>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <Text type="link">Learn more</Text>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <Text>
-          This template has light and dark mode support. The{' '}
-          <Text type="defaultSemiBold">useColorScheme()</Text> hook lets you inspect
-          what the user's current color scheme is, and so you can adjust UI colors accordingly.
-        </Text>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <Text type="link">Learn more</Text>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <Text>
-          This template includes an example of an animated component. The{' '}
-          <Text type="defaultSemiBold">components/HelloWave.tsx</Text> component uses
-          the powerful <Text type="defaultSemiBold">react-native-reanimated</Text> library
-          to create a waving hand animation.
-        </Text>
-        {Platform.select({
-          ios: (
-            <Text>
-              The <Text type="defaultSemiBold">components/ParallaxScrollView.tsx</Text>{' '}
-              component provides a parallax effect for the header image.
-            </Text>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+    <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar backgroundColor={DarkTheme.colors.card} />
+      <SearchHeader />
+      <TagsBar />
+      <FlatList
+        data={articles}
+        renderItem={({ item }) => <ArticleCard item={item} />}
+        keyExtractor={(item) => item.id}
+        style={{ flex: 1 }}
+        contentContainerStyle={{
+          paddingHorizontal: 16,
+          paddingBottom: navigationHeight + 16,
+          gap: 16
+        }}
+      />
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-});
