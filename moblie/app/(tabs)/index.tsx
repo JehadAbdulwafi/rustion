@@ -52,8 +52,6 @@ export default function HomeScreen() {
         contentContainerStyle={{
           paddingBottom: navigationHeight + 20,
         }}
-
-
       />
     </View>
   );
