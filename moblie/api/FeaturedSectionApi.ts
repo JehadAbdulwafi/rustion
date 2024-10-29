@@ -25,7 +25,7 @@ async function getFeaturedSectionsWithArticles(): Promise<FeaturedSectionWithArt
 }
 
 
-export default {
+export {
   getFeaturedSection,
   getFeaturedSections,
   getFeaturedSectionWithArticles,

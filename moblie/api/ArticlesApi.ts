@@ -14,7 +14,7 @@ async function getArticles(): Promise<Article[]> {
 
 
 
-export default {
+export {
   getArticle,
   getArticles,
 };

@@ -25,7 +25,7 @@ async function getCategoriesWithArticles(): Promise<CategoryWithArticles[]> {
 }
 
 
-export default {
+export {
   getCategory,
   getCategories,
   getCategoryWithArticles,
