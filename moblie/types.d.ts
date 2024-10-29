@@ -1,17 +1,19 @@
 type FeaturedSection = {
-  id: String
-  title: String
-  created_at: String
-  updated_at: String
+  id: string
+  title: string
+  created_at: string
+  updated_at: string
 }
 
 type Article = {
-  id: String
-  title: String
-  content: String
-  category_id: String
-  created_at: String
-  updated_at: String
+  id: string
+  title: string
+  content: string
+  description: string
+  image: string
+  category_id: string
+  created_at: string
+  updated_at: string
 }
 
 type FeaturedSectionWithArticles = {
@@ -21,11 +23,10 @@ type FeaturedSectionWithArticles = {
 
 
 type Category = {
-  id: String
-  // TODO: change it from name to title on the backend
-  title: String
-  created_at: String
-  updated_at: String
+  id: string
+  title: string
+  created_at: string
+  updated_at: string
 }
 
 type CategoryWithArticles = {
