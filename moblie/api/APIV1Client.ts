@@ -72,7 +72,7 @@ export class APIV1Client {
       );
     }
 
-    return body.data;
+    return body;
   }
 
   public async sendUnauthenticatedApiV1Request<TData>(

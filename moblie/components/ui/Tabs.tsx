@@ -6,6 +6,8 @@ import Animated, {
   LinearTransition,
 } from "react-native-reanimated";
 import { LucideProps, icons } from "lucide-react-native";
+import { MotiProps } from "moti";
+import { motifySvg } from "moti/svg";
 import { useRouter } from "expo-router";
 
 type IconNames = keyof typeof icons;
@@ -43,18 +45,15 @@ const Tabs = ({
   setSelectedIndex: (index: number) => void;
 }) => {
   const router = useRouter();
-  const pathname = router.pathname;
 
   return (
     <View style={styles.tabBar}>
       {tabs.map((tab, idx) => {
         const isSelected = selectedIndex === idx;
-        const isTabRoute = pathname === tab.route; // Check if the current route is a tab route
-
         return (
           <Animated.View
             key={tab.route}
-            layout={isTabRoute ? LinearTransition.springify().damping(80).stiffness(100) : null} // Only animate if it's a tab route
+            layout={LinearTransition.springify().damping(80).stiffness(100)}
             style={{
               backgroundColor: isSelected
                 ? TAB_COLORS.activeBackgroundColor
@@ -76,7 +75,7 @@ const Tabs = ({
                 color={isSelected ? TAB_COLORS.activeColor : TAB_COLORS.inactiveColor}
               />
               <LayoutAnimationConfig skipEntering>
-                {isSelected && isTabRoute && ( // Only animate text if it's a tab route
+                {isSelected && (
                   <Animated.Text
                     entering={FadeInLeft.springify().damping(80).stiffness(100)}
                     exiting={FadeOutLeft.springify().damping(80).stiffness(100)}

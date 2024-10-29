@@ -20,7 +20,6 @@ const TabBar = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
-    console.log("pathname", pathname);
     if (!routesWithTabs.includes(pathname)) {
       setSelectedIndex(0);
       isVisible.value = withTiming(0, { duration: 300 });
@@ -48,9 +47,9 @@ const TabBar = () => {
       <Tabs
         tabs={[
           { name: "Home", icon: "House", route: "/" },
-          { name: "Explore", icon: "Search", route: "explore" },
-          { name: "Live", icon: "Video", route: "live" },
-          { name: "Account", icon: "User", route: "account" },
+          { name: "Explore", icon: "Search", route: "/explore" },
+          { name: "Live", icon: "Video", route: "/live" },
+          { name: "Account", icon: "User", route: "/account" },
         ]}
         selectedIndex={selectedIndex}
         setSelectedIndex={setSelectedIndex}
