@@ -6,8 +6,7 @@ import FeaturedRows from "@/components/featuredRows";
 import { View } from "@/components/ui/View";
 import { navigationHeight } from "@/constants";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, StatusBar } from "react-native";
-import { ScrollView } from "tamagui";
+import { ActivityIndicator, FlatList, StatusBar } from "react-native";
 
 export default function HomeScreen() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -40,16 +39,22 @@ export default function HomeScreen() {
   return (
     <View style={{ flex: 1 }}>
       <StatusBar backgroundColor="transparent" barStyle="light-content" />
-      <ScrollView
-        f={1}
+      <FlatList
+        data={[""]}
+        renderItem={() =>
+          <>
+            <Carousel />
+            <Categories data={categories} />
+            <FeaturedRows data={featuredSections} />
+          </>
+        }
+        style={{ flex: 1 }}
         contentContainerStyle={{
           paddingBottom: navigationHeight + 20,
         }}
-      >
-        <Carousel />
-        <Categories data={categories} />
-        <FeaturedRows data={featuredSections} />
-      </ScrollView>
+
+
+      />
     </View>
   );
 }
