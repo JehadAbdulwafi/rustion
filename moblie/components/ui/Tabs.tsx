@@ -6,8 +6,6 @@ import Animated, {
   LinearTransition,
 } from "react-native-reanimated";
 import { LucideProps, icons } from "lucide-react-native";
-import { MotiProps } from "moti";
-import { motifySvg } from "moti/svg";
 import { useRouter } from "expo-router";
 
 type IconNames = keyof typeof icons;
