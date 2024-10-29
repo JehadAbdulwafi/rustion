@@ -3,16 +3,7 @@ import Row from "./Row";
 import { FlatList } from "react-native";
 
 type FeaturedRowsProps = {
-  data: {
-    id: number;
-    title: string;
-    items: {
-      id: number;
-      title: string;
-      desc: string;
-      image: string;
-    }[];
-  }[];
+  data: FeaturedSectionWithArticles[];
 };
 
 export default function FeaturedRows({ data }: FeaturedRowsProps) {
@@ -20,7 +11,7 @@ export default function FeaturedRows({ data }: FeaturedRowsProps) {
     <View>
       <FlatList
         data={data}
-        keyExtractor={(item) => String(item.id)}
+        keyExtractor={(item) => String(item.featured_section.id)}
         renderItem={({ item }) => <Row data={item} />}
       />
     </View>

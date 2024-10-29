@@ -1,57 +1,66 @@
 import { Text, View, XStack } from "tamagui";
-import {
-  Plane,
-  ShoppingBag,
-  Car,
-  HeartPulse,
-  Popsicle,
-} from "@tamagui/lucide-icons";
+import { icons } from "lucide-react-native";
 
-export default function Categories() {
+type IconNames = keyof typeof icons;
+
+type IconProps = {
+  name: IconNames;
+  index: number;
+};
+
+const icons_names = [
+  "Plane",
+  "ShoppingBag",
+  "Car",
+  "HeartPulse",
+  "Popsicle",
+] as IconNames[];
+
+const colors = [
+  {
+    name: "purple",
+    color: "#8b5cf6",
+    background: "#7c3aed50",
+  },
+  {
+    name: "red",
+    color: "#ef4444",
+    background: "#dc262650",
+  },
+  {
+    name: "green",
+    color: "#22c55e",
+    background: "#16a34a50",
+  },
+  {
+    name: "blue",
+    color: "#14b8a6",
+    background: "#05966950",
+  },
+  {
+    name: "pink",
+    color: "#ec4899",
+    background: "#db277750",
+  },
+]
+
+const Icon = ({ name, index, ...rest }: IconProps) => {
+  const IconComponent = icons[name];
+  return <IconComponent size={20} color={colors[index].color} {...rest} />;
+};
+
+export default function Categories({ data }: { data: Category[] }) {
   return (
     <View>
-      <XStack px={16} py={10} pt={20} ai={"center"} gap={6}>
-        {/* item */}
-        <XStack bg={"$color6"} ai={"center"} fg={1} gap={6} br={8} p={6}>
-          <View bg={"$purple3"} p={5} ai={"center"} br={20} padding={6}>
-            <Plane color={"$purple9"} size={20} />
-          </View>
-          <Text>Travel</Text>
-        </XStack>
-
-        {/* item */}
-        <XStack bg={"$color6"} ai={"center"} fg={1} gap={6} br={8} p={6}>
-          <View bg={"$pink3"} p={5} ai={"center"} br={20} padding={6}>
-            <ShoppingBag color={"$pink9"} size={20} />
-          </View>
-          <Text>Shopping</Text>
-        </XStack>
-
-        {/* item */}
-        <XStack bg={"$color6"} ai={"center"} fg={1} gap={6} br={8} p={6}>
-          <View bg={"$blue3"} p={5} ai={"center"} br={20} padding={6}>
-            <Car color={"$blue9"} size={20} />
-          </View>
-          <Text>Deliver</Text>
-        </XStack>
-      </XStack>
-
-      <XStack px={16} ai={"center"} gap={6}>
-        {/* item */}
-        <XStack bg={"$color6"} ai={"center"} fg={1} gap={6} br={8} p={6}>
-          <View bg={"$red3"} p={5} ai={"center"} br={20} padding={6}>
-            <Popsicle color={"$red9"} size={20} />
-          </View>
-          <Text>Popsicle</Text>
-        </XStack>
-
-        {/* item */}
-        <XStack bg={"$color6"} ai={"center"} fg={1} gap={6} br={8} p={6}>
-          <View bg={"$green3"} p={5} ai={"center"} br={20} padding={6}>
-            <HeartPulse color={"$green9"} size={20} />
-          </View>
-          <Text>Healthy</Text>
-        </XStack>
+      <XStack px={16} py={10} pt={20} flexWrap="wrap" ai={"center"} gap={6}>
+        {data.map((item, idx) => (
+          <XStack key={idx} bg={"$color6"} ai={"center"} fg={1} gap={6} br={8} p={6}>
+            <View bg={colors[idx].background} p={5} ai={"center"} br={20} padding={6}>
+              <Icon name={icons_names[idx]} index={idx} />
+            </View>
+            <Text>{item.title}</Text>
+          </XStack>
+        ))}
       </XStack>
     </View>
   );
