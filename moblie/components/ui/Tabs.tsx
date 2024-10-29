@@ -11,15 +11,16 @@ import { motifySvg } from "moti/svg";
 import { useRouter } from "expo-router";
 
 type IconNames = keyof typeof icons;
+
+type IconProps = {
+name: IconNames;
+} & MotiProps;
+
 type Tab = {
   name: string;
   icon: IconNames;
   route: string;
 };
-
-type IconProps = {
-  name: IconNames;
-} & MotiProps;
 
 const Icon = ({ name, ...rest }: IconProps) => {
   // @ts-ignore
