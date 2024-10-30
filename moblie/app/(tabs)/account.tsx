@@ -1,19 +1,8 @@
+import Icon from "@/components/icon";
 import { navigationHeight } from "@/constants";
-import { LucideProps, icons } from "lucide-react-native";
-import { Pressable } from "react-native";
+import { IconNames } from "@/types";
+import { Linking, Share, TouchableOpacity } from "react-native";
 import { ScrollView, Text, XStack, YStack } from "tamagui";
-
-type IconNames = keyof typeof icons;
-
-type IconProps = {
-  name: IconNames;
-} & LucideProps;
-
-const Icon = ({ name, ...rest }: IconProps) => {
-  // @ts-ignore
-  const IconComponent = icons[name];
-  return <IconComponent size={20} {...rest} />;
-};
 
 export default function Account() {
   return (
@@ -23,7 +12,7 @@ export default function Account() {
           <YStack key={d.title} p="$4" gap="$4" br={"$4"} bg={"$color3"}>
             <Text fontSize={"$7"} fontWeight={"700"}>{d.title}</Text>
             {d.items.map((i) => (
-              <Pressable key={i.title} onPress={() => i.onPress?.()}>
+              <TouchableOpacity key={i.title} onPress={() => i.onPress?.()}>
                 <XStack key={i.title} gap="$4" alignItems="center">
                   <Icon name={i.iconName} color={"#fff"} />
                   <YStack flex={1} justifyContent="center">
@@ -31,7 +20,7 @@ export default function Account() {
                     {i.description && <Text color={"$color11"}>{i.description}</Text>}
                   </YStack>
                 </XStack>
-              </Pressable>
+              </TouchableOpacity>
             ))}
           </YStack>
         ))}
@@ -49,6 +38,28 @@ type DataT = {
     onPress: () => void;
   }[]
 }[]
+
+const handleOpenLink = async (url: string) => {
+  const supported = await Linking.canOpenURL(url);
+  if (supported) {
+    await Linking.openURL(url);
+  } else {
+    console.log(`Unable to open URL: ${url}`);
+  }
+};
+
+
+const handleShare = async () => {
+  const url =
+    "https://play.google.com/store/apps/details?id=com.rustion.app";
+  try {
+    await Share.share({
+      message: "Check out this app: " + "\n" + url,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 const Data: DataT = [
   {
@@ -75,19 +86,26 @@ const Data: DataT = [
         title: "FAQ",
         description: "http://faq.rustion.com",
         iconName: "Info",
-        onPress: () => { }
+        onPress: () => {
+          handleOpenLink("http://faq.rustion.com")
+        }
       },
       {
         title: "Forum",
         description: "https://community.rustion.com",
         iconName: "MessagesSquare",
-        onPress: () => { }
+        onPress: () => {
+          handleOpenLink("https://community.rustion.com")
+        }
       },
       {
         title: "Contact us",
         description: "info@rustion.com",
         iconName: "Mail",
-        onPress: () => { }
+        onPress: () => {
+          const url = `mailto:info@rustion.com`;
+          Linking.openURL(url);
+        }
       }
     ]
   },
@@ -98,19 +116,21 @@ const Data: DataT = [
         title: "Share app",
         description: "Spread the word!",
         iconName: "Share2",
-        onPress: () => { }
+        onPress: handleShare
       },
       {
-        title: "Rate app",
-        description: "Rate the app!",
-        iconName: "Play",
+        title: "Rate us",
+        description: "Rate the app on the store",
+        iconName: "Star",
         onPress: () => { }
       },
       {
         title: "Privacy Policy",
         description: undefined,
         iconName: "BadgeCheck",
-        onPress: () => { }
+        onPress: () => {
+          handleOpenLink("https://legal.rustion.com/privacy-policy")
+        }
       },
       {
         title: "Version",

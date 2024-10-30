@@ -1,12 +1,6 @@
 import { Text, View, XStack } from "tamagui";
-import { icons } from "lucide-react-native";
-
-type IconNames = keyof typeof icons;
-
-type IconProps = {
-  name: IconNames;
-  index: number;
-};
+import { Category, IconNames } from "@/types";
+import Icon from "../icon";
 
 const icons_names = [
   "Plane",
@@ -44,11 +38,6 @@ const colors = [
   },
 ]
 
-const Icon = ({ name, index, ...rest }: IconProps) => {
-  const IconComponent = icons[name];
-  return <IconComponent size={20} color={colors[index].color} {...rest} />;
-};
-
 export default function Categories({ data }: { data: Category[] }) {
   return (
     <View>
@@ -56,7 +45,7 @@ export default function Categories({ data }: { data: Category[] }) {
         {data.map((item, idx) => (
           <XStack key={idx} bg={"$color6"} ai={"center"} fg={1} gap={6} br={8} p={6}>
             <View bg={colors[idx].background} p={5} ai={"center"} br={20} padding={6}>
-              <Icon name={icons_names[idx]} index={idx} />
+              <Icon name={icons_names[idx]} color={colors[idx].color} />
             </View>
             <Text>{item.title}</Text>
           </XStack>

@@ -5,25 +5,14 @@ import Animated, {
   LayoutAnimationConfig,
   LinearTransition,
 } from "react-native-reanimated";
-import { LucideProps, icons } from "lucide-react-native";
 import { useRouter } from "expo-router";
-
-type IconNames = keyof typeof icons;
-
-type IconProps = {
-  name: IconNames;
-} & LucideProps;
+import { IconNames } from "@/types";
+import Icon from "../icon";
 
 type Tab = {
   name: string;
   icon: IconNames;
   route: string;
-};
-
-const Icon = ({ name, ...rest }: IconProps) => {
-  // @ts-ignore
-  const IconComponent = icons[name];
-  return <IconComponent size={20} {...rest} />;
 };
 
 const TAB_COLORS = {
