@@ -122,7 +122,9 @@ const Data: DataT = [
         title: "Rate us",
         description: "Rate the app on the store",
         iconName: "Star",
-        onPress: () => { }
+        onPress: () => { 
+          handleOpenLink("market://details?id=com.rustion.app&showAllReviews=true")
+        }
       },
       {
         title: "Privacy Policy",
