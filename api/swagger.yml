@@ -418,6 +418,47 @@ paths:
             summary: Get healthy
             tags:
                 - common
+    /api/v1/push/test:
+        get:
+            deprecated: true
+            description: Sends a test push message to the current user
+            operationId: GetPushTestRoute
+            responses:
+                "200":
+                    description: OK
+            security:
+                - Bearer: []
+            summary: Send test push
+            tags:
+                - test
+    /api/v1/push/token:
+        put:
+            description: |-
+                Adds a push token for the given provider to the current user.
+                If the oldToken is present it will be deleted.
+                Currently only the provider 'fcm' is supported.
+            operationId: PostUpdatePushTokenRoute
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/postUpdatePushTokenPayload'
+            responses:
+                "200":
+                    description: OK
+                "404":
+                    description: PublicHTTPError, type `OLD_PUSH_TOKEN_NOT_FOUND`
+                    schema:
+                        $ref: '#/definitions/publicHttpError'
+                "409":
+                    description: PublicHTTPError, type `PUSH_TOKEN_ALREADY_EXISTS`
+                    schema:
+                        $ref: '#/definitions/publicHttpError'
+            security:
+                - Bearer: []
+            summary: Adds a push token to the user
+            tags:
+                - push
     /api/v1/streams:
         post:
             description: Creates a stream
@@ -958,6 +999,34 @@ definitions:
             - name
             - email
             - password
+        type: object
+    postUpdatePushTokenPayload:
+        properties:
+            newToken:
+                description: New push token for given provider.
+                example: 1c91e550-8167-439c-8021-dee7de2f7e96
+                maxLength: !!float 500
+                type: string
+            oldToken:
+                description: Old token that can be deleted if present.
+                example: 495179de-b771-48f0-aab2-8d23701b0f02
+                maxLength: !!float 500
+                type: string
+                x-nullable: true
+            provider:
+                description: Identifier of the provider the token is for (eg. "fcm", "apn"). Currently only "fcm" is supported.
+                example: fcm
+                maxLength: !!float 500
+                type: string
+            user_id:
+                description: ID of user
+                example: 891d37d3-c74f-493e-aea8-af73efd92016
+                format: uuid4
+                type: string
+        required:
+            - newToken
+            - provider
+            - user_id
         type: object
     publicHttpError:
         properties:
