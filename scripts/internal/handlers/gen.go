@@ -122,7 +122,7 @@ func GenHandlers(printOnly bool) {
 						funcs = append(funcs, ResolvedFunction{
 							FunctionName:    fnName,
 							PackageName:     gofile.Name.Name,
-							PackageNameFQDN: packageNameFQDN,
+							PackageNameFQDN: strings.Replace(packageNameFQDN, "\\", "/", -1),
 						})
 					}
 				}

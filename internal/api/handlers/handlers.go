@@ -8,6 +8,7 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/categories"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/common"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/featured_sections"
+	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/push"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/streams"
 	"github.com/labstack/echo/v4"
 )
@@ -40,6 +41,8 @@ func AttachAllRoutes(s *api.Server) {
 		featuredsections.GetFeaturedSectionsWithArticlesRoute(s),
 		featuredsections.PostCreateFeaturedSectionRoute(s),
 		featuredsections.PutUpdateFeaturedSectionRoute(s),
+		push.GetPushTestRoute(s),
+		push.PostUpdatePushTokenRoute(s),
 		streams.PostCreateStreamRoute(s),
 		streams.PostPlayStreamRoute(s),
 		streams.PostPublishStreamRoute(s),
