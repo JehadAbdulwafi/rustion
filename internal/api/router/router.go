@@ -141,6 +141,8 @@ func Init(s *api.Server) {
 				return false
 			},
 		})),
+
+		APIV1Push: s.Echo.Group("/api/v1/push", middleware.Auth(s)),
 	}
 
 	handlers.AttachAllRoutes(s)

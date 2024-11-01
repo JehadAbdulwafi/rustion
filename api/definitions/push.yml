@@ -9,13 +9,7 @@ definitions:
     required:
       - newToken
       - provider
-      - user_id
     properties:
-      user_id:
-        type: string
-        format: uuid4
-        description: ID of user
-        example: 891d37d3-c74f-493e-aea8-af73efd92016
       newToken:
         description: New push token for given provider.
         type: string
