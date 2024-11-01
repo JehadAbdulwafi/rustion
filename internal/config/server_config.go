@@ -4,6 +4,7 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/JehadAbdulwafi/rustion/internal/push"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/rs/zerolog"
 )
@@ -47,6 +48,10 @@ type AuthServer struct {
 	LastAuthenticatedAtThreshold       time.Duration
 }
 
+type PushService struct {
+	UseFCMProvider bool
+}
+
 type LoggerServer struct {
 	Level              zerolog.Level
 	RequestLevel       zerolog.Level
@@ -60,10 +65,12 @@ type LoggerServer struct {
 }
 
 type Server struct {
-	Database Database
-	Echo     EchoServer
-	Auth     AuthServer
-	Logger   LoggerServer
+	Database  Database
+	Echo      EchoServer
+	Auth      AuthServer
+	Logger    LoggerServer
+	Push      PushService
+	FCMConfig push.FCMConfig
 }
 
 func DefaultServiceConfigFromEnv() Server {
@@ -126,6 +133,14 @@ func DefaultServiceConfigFromEnv() Server {
 			LogResponseHeader:  util.GetEnvAsBool("SERVER_LOGGER_LOG_RESPONSE_HEADER", false),
 			LogCaller:          util.GetEnvAsBool("SERVER_LOGGER_LOG_CALLER", false),
 			PrettyPrintConsole: util.GetEnvAsBool("SERVER_LOGGER_PRETTY_PRINT_CONSOLE", false),
+		},
+		Push: PushService{
+			UseFCMProvider: util.GetEnvAsBool("SERVER_PUSH_USE_FCM", false),
+		},
+		FCMConfig: push.FCMConfig{
+			GoogleApplicationCredentials: util.GetEnv("GOOGLE_APPLICATION_CREDENTIALS", ""),
+			ProjectID:                    util.GetEnv("SERVER_FCM_PROJECT_ID", "no-fcm-project-id-set"),
+			ValidateOnly:                 util.GetEnvAsBool("SERVER_FCM_VALIDATE_ONLY", true),
 		},
 	}
 

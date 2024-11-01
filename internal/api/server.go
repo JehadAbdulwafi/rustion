@@ -7,6 +7,7 @@ import (
 
 	"github.com/JehadAbdulwafi/rustion/internal/config"
 	"github.com/JehadAbdulwafi/rustion/internal/database"
+	"github.com/JehadAbdulwafi/rustion/internal/push"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
 
@@ -31,6 +32,7 @@ type Server struct {
 	Queries *database.Queries
 	Echo    *echo.Echo
 	Router  *Router
+	Push    *push.Service
 }
 
 func NewServer(config config.Server) *Server {
@@ -74,6 +76,24 @@ func (s *Server) InitDB(ctx context.Context) error {
 
 	s.DB = db
 	s.Queries = queries
+
+	return nil
+}
+
+func (s *Server) InitPush() error {
+	s.Push = push.New(s.Queries)
+
+	if s.Config.Push.UseFCMProvider {
+		fcmProvider, err := push.NewFCM(s.Config.FCMConfig)
+		if err != nil {
+			return err
+		}
+		s.Push.RegisterProvider(fcmProvider)
+	}
+
+	if s.Push.GetProviderCount() < 1 {
+		log.Warn().Msg("No providers registered for push service")
+	}
 
 	return nil
 }

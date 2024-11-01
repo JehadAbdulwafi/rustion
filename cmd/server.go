@@ -54,6 +54,10 @@ func runServer() {
 	}
 	cancel()
 
+	if err := s.InitPush(); err != nil {
+		log.Fatal().Err(err).Msg("Failed to initialize push service")
+	}
+
 	router.Init(s)
 
 	go func() {
