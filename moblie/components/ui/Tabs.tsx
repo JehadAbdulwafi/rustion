@@ -6,7 +6,7 @@ import Animated, {
   LinearTransition,
 } from "react-native-reanimated";
 import { useRouter } from "expo-router";
-import { IconNames } from "@/types";
+import { IconNames } from "@/ptypes";
 import Icon from "../icon";
 
 type Tab = {

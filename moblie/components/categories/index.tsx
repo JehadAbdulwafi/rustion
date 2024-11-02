@@ -1,5 +1,5 @@
 import { Text, View, XStack } from "tamagui";
-import { Category, IconNames } from "@/types";
+import { IconNames } from "@/ptypes";
 import Icon from "../icon";
 
 const icons_names = [

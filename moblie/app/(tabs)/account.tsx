@@ -1,6 +1,6 @@
 import Icon from "@/components/icon";
 import { navigationHeight } from "@/constants";
-import { IconNames } from "@/types";
+import { IconNames } from "@/ptypes";
 import { Linking, Share, TouchableOpacity } from "react-native";
 import { ScrollView, Text, XStack, YStack } from "tamagui";
 

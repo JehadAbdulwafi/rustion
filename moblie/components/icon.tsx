@@ -1,4 +1,4 @@
-import { IconNames } from "@/types";
+import { IconNames } from "@/ptypes";
 import { LucideProps, icons } from "lucide-react-native";
 
 type IconProps = {
