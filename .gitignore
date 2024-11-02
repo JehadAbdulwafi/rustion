@@ -40,3 +40,7 @@ __debug_bin
 .env*
 .aider*
 .env
+
+# firebase credentials
+*firebase-adminsdk*.json
+google-services.json
