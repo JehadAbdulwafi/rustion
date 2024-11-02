@@ -57,7 +57,7 @@ func (s *Service) GetProviderCount() int {
 	return len(s.provider)
 }
 
-func (s *Service) SendToUser(ctx context.Context, user *database.User, title string, message string) error {
+func (s *Service) SendToUser(ctx context.Context, fingerprint string, title string, message string) error {
 	if s.GetProviderCount() < 1 {
 		return errors.New("No provider found")
 	}
@@ -65,7 +65,7 @@ func (s *Service) SendToUser(ctx context.Context, user *database.User, title str
 
 	for _, p := range s.provider {
 		// get all registered tokens for provider
-		pushTokens, err := s.Queries.GetPushTokensByUserID(ctx, user.ID)
+		pushTokens, err := s.Queries.GetPushTokensByFingerprint(ctx, fingerprint)
 		if err != nil {
 			return err
 		}
@@ -86,12 +86,16 @@ func (s *Service) SendToUser(ctx context.Context, user *database.User, title str
 				tokenToDelete = append(tokenToDelete, res.Token)
 			}
 		}
-		// delete invalid tokens
-		err = s.Queries.DeletePushTokensByUserID(ctx, user.ID)
-		if err != nil {
-			log.Debug().Err(err).Str("provider", string(p.GetProviderType())).Msg("Could not delete invalid tokens for provider")
-			return err
+
+		for _, token := range tokenToDelete {
+			err = s.Queries.DeletePushToken(ctx, token)
+
+			if err != nil {
+				log.Debug().Err(err).Str("provider", string(p.GetProviderType())).Msg("Could not delete invalid tokens for provider")
+				return err
+			}
 		}
+
 	}
 
 	return nil

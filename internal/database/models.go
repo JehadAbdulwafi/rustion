@@ -152,12 +152,12 @@ type PasswordResetToken struct {
 }
 
 type PushToken struct {
-	ID        uuid.UUID
-	Token     string
-	Provider  ProviderType
-	UserID    uuid.UUID
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID          uuid.UUID
+	Token       string
+	Provider    ProviderType
+	Fingerprint string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 type Stream struct {

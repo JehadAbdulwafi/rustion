@@ -12,25 +12,25 @@ import (
 )
 
 const createPushToken = `-- name: CreatePushToken :one
-INSERT INTO push_tokens (token, provider, user_id)
+INSERT INTO push_tokens (token, fingerprint, provider)
 VALUES ($1, $2, $3)
-RETURNING id, token, provider, user_id, created_at, updated_at
+RETURNING id, token, provider, fingerprint, created_at, updated_at
 `
 
 type CreatePushTokenParams struct {
-	Token    string
-	Provider ProviderType
-	UserID   uuid.UUID
+	Token       string
+	Fingerprint string
+	Provider    ProviderType
 }
 
 func (q *Queries) CreatePushToken(ctx context.Context, arg CreatePushTokenParams) (PushToken, error) {
-	row := q.db.QueryRowContext(ctx, createPushToken, arg.Token, arg.Provider, arg.UserID)
+	row := q.db.QueryRowContext(ctx, createPushToken, arg.Token, arg.Fingerprint, arg.Provider)
 	var i PushToken
 	err := row.Scan(
 		&i.ID,
 		&i.Token,
 		&i.Provider,
-		&i.UserID,
+		&i.Fingerprint,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -46,31 +46,17 @@ func (q *Queries) DeletePushToken(ctx context.Context, token string) error {
 	return err
 }
 
-const deletePushTokensByUserID = `-- name: DeletePushTokensByUserID :exec
-DELETE FROM push_tokens WHERE user_id = $1
+const deletePushTokensByFingerprint = `-- name: DeletePushTokensByFingerprint :exec
+DELETE FROM push_tokens WHERE fingerprint = $1
 `
 
-func (q *Queries) DeletePushTokensByUserID(ctx context.Context, userID uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, deletePushTokensByUserID, userID)
-	return err
-}
-
-const deletePushTokensByUserIDAndProvider = `-- name: DeletePushTokensByUserIDAndProvider :exec
-DELETE FROM push_tokens WHERE user_id = $1 AND provider = $2
-`
-
-type DeletePushTokensByUserIDAndProviderParams struct {
-	UserID   uuid.UUID
-	Provider ProviderType
-}
-
-func (q *Queries) DeletePushTokensByUserIDAndProvider(ctx context.Context, arg DeletePushTokensByUserIDAndProviderParams) error {
-	_, err := q.db.ExecContext(ctx, deletePushTokensByUserIDAndProvider, arg.UserID, arg.Provider)
+func (q *Queries) DeletePushTokensByFingerprint(ctx context.Context, fingerprint string) error {
+	_, err := q.db.ExecContext(ctx, deletePushTokensByFingerprint, fingerprint)
 	return err
 }
 
 const getPushToken = `-- name: GetPushToken :one
-SELECT id, token, provider, user_id, created_at, updated_at FROM push_tokens WHERE token = $1
+SELECT id, token, provider, fingerprint, created_at, updated_at FROM push_tokens WHERE token = $1
 `
 
 func (q *Queries) GetPushToken(ctx context.Context, token string) (PushToken, error) {
@@ -80,19 +66,19 @@ func (q *Queries) GetPushToken(ctx context.Context, token string) (PushToken, er
 		&i.ID,
 		&i.Token,
 		&i.Provider,
-		&i.UserID,
+		&i.Fingerprint,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
 	return i, err
 }
 
-const getPushTokensByUserID = `-- name: GetPushTokensByUserID :many
-SELECT id, token, provider, user_id, created_at, updated_at FROM push_tokens WHERE user_id = $1
+const getPushTokensByFingerprint = `-- name: GetPushTokensByFingerprint :many
+SELECT id, token, provider, fingerprint, created_at, updated_at FROM push_tokens WHERE fingerprint = $1
 `
 
-func (q *Queries) GetPushTokensByUserID(ctx context.Context, userID uuid.UUID) ([]PushToken, error) {
-	rows, err := q.db.QueryContext(ctx, getPushTokensByUserID, userID)
+func (q *Queries) GetPushTokensByFingerprint(ctx context.Context, fingerprint string) ([]PushToken, error) {
+	rows, err := q.db.QueryContext(ctx, getPushTokensByFingerprint, fingerprint)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +90,7 @@ func (q *Queries) GetPushTokensByUserID(ctx context.Context, userID uuid.UUID) (
 			&i.ID,
 			&i.Token,
 			&i.Provider,
-			&i.UserID,
+			&i.Fingerprint,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -121,41 +107,20 @@ func (q *Queries) GetPushTokensByUserID(ctx context.Context, userID uuid.UUID) (
 	return items, nil
 }
 
-const getPushTokensByUserIDAndProvider = `-- name: GetPushTokensByUserIDAndProvider :many
-SELECT id, token, provider, user_id, created_at, updated_at FROM push_tokens WHERE user_id = $1 AND provider = $2
+const getPushTokensByID = `-- name: GetPushTokensByID :one
+SELECT id, token, provider, fingerprint, created_at, updated_at FROM push_tokens WHERE id = $1
 `
 
-type GetPushTokensByUserIDAndProviderParams struct {
-	UserID   uuid.UUID
-	Provider ProviderType
-}
-
-func (q *Queries) GetPushTokensByUserIDAndProvider(ctx context.Context, arg GetPushTokensByUserIDAndProviderParams) ([]PushToken, error) {
-	rows, err := q.db.QueryContext(ctx, getPushTokensByUserIDAndProvider, arg.UserID, arg.Provider)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []PushToken
-	for rows.Next() {
-		var i PushToken
-		if err := rows.Scan(
-			&i.ID,
-			&i.Token,
-			&i.Provider,
-			&i.UserID,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+func (q *Queries) GetPushTokensByID(ctx context.Context, id uuid.UUID) (PushToken, error) {
+	row := q.db.QueryRowContext(ctx, getPushTokensByID, id)
+	var i PushToken
+	err := row.Scan(
+		&i.ID,
+		&i.Token,
+		&i.Provider,
+		&i.Fingerprint,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

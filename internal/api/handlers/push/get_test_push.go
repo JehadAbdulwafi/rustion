@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
-	"github.com/JehadAbdulwafi/rustion/internal/api/auth"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/labstack/echo/v4"
 )
@@ -18,15 +17,15 @@ func getPushTestHandler(s *api.Server) echo.HandlerFunc {
 		ctx := c.Request().Context()
 		log := util.LogFromContext(ctx)
 
-		user := auth.UserFromEchoContext(c)
+		fingerprint := c.QueryParam("fingerprint")
 
-		err := s.Push.SendToUser(ctx, user, "Hello", "World")
+		err := s.Push.SendToUser(ctx, fingerprint, "Hello", "World")
 		if err != nil {
-			log.Debug().Err(err).Str("user_id", user.ID.String()).Msg("Error while sending push to user.")
+			log.Debug().Err(err).Str("fingerprint", fingerprint).Msg("Error while sending push to user.")
 			return err
 		}
 
-		log.Debug().Str("user_id", user.ID.String()).Msg("Successfully sent push message.")
+		log.Debug().Str("fingerprint", fingerprint).Msg("Successfully sent push message.")
 
 		return c.String(http.StatusOK, "Success")
 	}

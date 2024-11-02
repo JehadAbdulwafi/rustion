@@ -19,6 +19,12 @@ import (
 // swagger:model postUpdatePushTokenPayload
 type PostUpdatePushTokenPayload struct {
 
+	// uniquely identifies the build of the device.
+	// Example: realme-RMX2001EEA-RMX2001L1:11-RP1A.200720.011-1647528410735:user-release-keys
+	// Required: true
+	// Max Length: 500
+	Fingerprint *string `json:"fingerprint"`
+
 	// New push token for given provider.
 	// Example: 1c91e550-8167-439c-8021-dee7de2f7e96
 	// Required: true
@@ -35,17 +41,15 @@ type PostUpdatePushTokenPayload struct {
 	// Required: true
 	// Max Length: 500
 	Provider *string `json:"provider"`
-
-	// ID of user
-	// Example: 891d37d3-c74f-493e-aea8-af73efd92016
-	// Required: true
-	// Format: uuid4
-	UserID *strfmt.UUID4 `json:"user_id"`
 }
 
 // Validate validates this post update push token payload
 func (m *PostUpdatePushTokenPayload) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateFingerprint(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateNewToken(formats); err != nil {
 		res = append(res, err)
@@ -59,13 +63,22 @@ func (m *PostUpdatePushTokenPayload) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateUserID(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *PostUpdatePushTokenPayload) validateFingerprint(formats strfmt.Registry) error {
+
+	if err := validate.Required("fingerprint", "body", m.Fingerprint); err != nil {
+		return err
+	}
+
+	if err := validate.MaxLength("fingerprint", "body", *m.Fingerprint, 500); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -101,19 +114,6 @@ func (m *PostUpdatePushTokenPayload) validateProvider(formats strfmt.Registry) e
 	}
 
 	if err := validate.MaxLength("provider", "body", *m.Provider, 500); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *PostUpdatePushTokenPayload) validateUserID(formats strfmt.Registry) error {
-
-	if err := validate.Required("user_id", "body", m.UserID); err != nil {
-		return err
-	}
-
-	if err := validate.FormatOf("user_id", "body", "uuid4", m.UserID.String(), formats); err != nil {
 		return err
 	}
 
