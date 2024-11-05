@@ -83,6 +83,13 @@ func InsertSeedData() error {
 					v.ID, v.ArticleID, v.FeaturedSectionID); err != nil {
 					return fmt.Errorf("failed to insert featured_articles fixture: %w", err)
 				}
+			case *database.TvShow:
+				if _, err := db.Exec(`INSERT INTO tv_shows
+				(id, title, genre, description, image)
+				VALUES ($1, $2, $3, $4, $5)
+				`, v.ID, v.Title, v.Genre, v.Description.String, v.Image.String); err != nil {
+					return fmt.Errorf("failed to insert tv_show fixture: %w", err)
+				}
 			}
 		}
 		return nil
