@@ -95,6 +95,13 @@ func ApplyTestFixtures(ctx context.Context, t *testing.T, db *sql.DB) (countFixt
 				`, v.ID, v.StreamID, v.Status, v.LastPublishedAt.Time, v.ViewersCount.Int32); err != nil {
 					return fmt.Errorf("failed to insert stream_status fixture: %w", err)
 				}
+			case *database.TvShow:
+				if _, err := db.Exec(`INSERT INTO tv_shows
+				(id, title, genre, description, image)
+				VALUES ($1, $2, $3, $4, $5)
+				`, v.ID, v.Title, v.Genre, v.Description.String, v.Image.String); err != nil {
+					return fmt.Errorf("failed to insert tv_show fixture: %w", err)
+				}
 			}
 		}
 		return nil

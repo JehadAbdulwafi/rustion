@@ -48,6 +48,9 @@ type FixtureMap struct {
 	FeaturedArticle4       *database.FeaturedArticle
 	FeaturedArticle5       *database.FeaturedArticle
 	FeaturedArticle6       *database.FeaturedArticle
+	TvShow1                *database.TvShow
+	TvShow2                *database.TvShow
+	TvShow3                *database.TvShow
 }
 
 // Fixtures returns a function wrapping our fixtures, which tests are allowed to manipulate.
@@ -373,6 +376,57 @@ func Fixtures() FixtureMap {
 		FeaturedSectionID: featuredSectionID3,
 	}
 
+	f.TvShow1 = &database.TvShow{
+		ID:    uuid.New(),
+		Title: "TV Show Title",
+		Genre: sql.NullString{
+			String: "Drama",
+			Valid:  true,
+		},
+		Description: sql.NullString{
+			String: "This is the description of the TV show.",
+			Valid:  true,
+		},
+		Image: sql.NullString{
+			String: "https://th.bing.com/th/id/OIP.EKxkhulCPo2M5eP6LEOAHAHaLL",
+			Valid:  true,
+		},
+	}
+
+	f.TvShow2 = &database.TvShow{
+		ID:    uuid.New(),
+		Title: "TV Show Title",
+		Genre: sql.NullString{
+			String: "Drama, Action",
+			Valid:  true,
+		},
+		Description: sql.NullString{
+			String: "This is the description of the TV show.",
+			Valid:  true,
+		},
+		Image: sql.NullString{
+			String: "https://i.pinimg.com/736x/79/84/2f/79842f01e8b3773916823961d6650605.jpg",
+			Valid:  true,
+		},
+	}
+
+	f.TvShow3 = &database.TvShow{
+		ID:    uuid.New(),
+		Title: "TV Show Title",
+		Genre: sql.NullString{
+			String: "Action, Drama, Comedy",
+			Valid:  true,
+		},
+		Description: sql.NullString{
+			String: "This is the description of the TV show.",
+			Valid:  true,
+		},
+		Image: sql.NullString{
+			String: "https://th.bing.com/th/id/OIP.QatFnF9HviYeE96kGdCpZgHaLH",
+			Valid:  true,
+		},
+	}
+
 	return f
 }
 
@@ -418,6 +472,10 @@ func Inserts() []Insertable {
 	inserts = append(inserts, fix.FeaturedArticle4)
 	inserts = append(inserts, fix.FeaturedArticle5)
 	inserts = append(inserts, fix.FeaturedArticle6)
+
+	inserts = append(inserts, fix.TvShow1)
+	inserts = append(inserts, fix.TvShow2)
+	inserts = append(inserts, fix.TvShow3)
 
 	log.Debug().Int("count", len(inserts)).Msg("Number of insertable fixtures found")
 
