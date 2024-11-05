@@ -1,4 +1,4 @@
-import { useThemeColor } from "@/hooks/useThemeColor";
+import useTheme from "@/hooks/useTheme";
 import { type TextProps, StyleSheet } from "react-native";
 import { Text as NativeText } from "tamagui";
 
@@ -15,7 +15,7 @@ export function Text({
   type = "default",
   ...rest
 }: ThemedTextProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
+  const color = useTheme().getThemeColor({ props: { light: lightColor, dark: darkColor }, colorName: "text" });
 
   return (
     <NativeText

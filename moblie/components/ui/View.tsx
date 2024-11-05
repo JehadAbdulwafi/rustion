@@ -1,5 +1,5 @@
+import useTheme from "@/hooks/useTheme";
 import React from "react"; // Add this import
-import { useThemeColor } from "@/hooks/useThemeColor";
 import { View as NativeView, TamaguiElement, ViewProps } from "tamagui";
 
 export type ThemedViewProps = ViewProps & {
@@ -10,10 +10,10 @@ export type ThemedViewProps = ViewProps & {
 // Wrap the View component with React.forwardRef
 export const View = React.forwardRef<TamaguiElement, ViewProps>(
   ({ style, lightColor, darkColor, ...otherProps }: ThemedViewProps, ref) => {
-    const backgroundColor = useThemeColor(
-      { light: lightColor, dark: darkColor },
-      "background"
-    );
+    const backgroundColor = useTheme().getThemeColor({
+      props: { light: lightColor, dark: darkColor },
+      colorName: "background"
+    });
 
     return (
       <NativeView

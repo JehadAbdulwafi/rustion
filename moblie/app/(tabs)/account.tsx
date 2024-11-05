@@ -1,10 +1,14 @@
 import Icon from "@/components/icon";
 import { navigationHeight } from "@/constants";
+import useTheme from "@/hooks/useTheme";
 import { IconNames } from "@/ptypes";
 import { Linking, Share, TouchableOpacity } from "react-native";
 import { ScrollView, Text, XStack, YStack } from "tamagui";
+export { useColorScheme } from 'react-native';
 
 export default function Account() {
+  const { toggleTheme } = useTheme();
+
   return (
     <ScrollView f={1} contentContainerStyle={{ padding: 16, paddingBottom: navigationHeight + 16 }}>
       <YStack gap="$4">
@@ -12,7 +16,7 @@ export default function Account() {
           <YStack key={d.title} p="$4" gap="$4" br={"$4"} bg={"$color3"}>
             <Text fontSize={"$7"} fontWeight={"700"}>{d.title}</Text>
             {d.items.map((i) => (
-              <TouchableOpacity key={i.title} onPress={() => i.onPress?.()}>
+              <TouchableOpacity key={i.title} onPress={() => i.title === "Dark" ? toggleTheme() : i.onPress?.()}>
                 <XStack key={i.title} gap="$4" alignItems="center">
                   <Icon name={i.iconName} color={"#fff"} />
                   <YStack flex={1} justifyContent="center">
@@ -70,12 +74,6 @@ const Data: DataT = [
         description: "Choose the app's theme",
         iconName: "Moon",
         onPress: () => { }
-      },
-      {
-        title: "Language",
-        description: "Choose the display language",
-        iconName: "Languages",
-        onPress: () => { }
       }
     ]
   },
@@ -122,7 +120,7 @@ const Data: DataT = [
         title: "Rate us",
         description: "Rate the app on the store",
         iconName: "Star",
-        onPress: () => { 
+        onPress: () => {
           handleOpenLink("market://details?id=com.rustion.app&showAllReviews=true")
         }
       },
