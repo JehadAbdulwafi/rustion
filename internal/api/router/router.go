@@ -46,7 +46,7 @@ func Init(s *api.Server) {
 	} else {
 		log.Warn().Msg("Disabling CORS middleware due to environment config")
 	}
-
+	s.Echo.Use(RequestLoggerMiddleware)
 	s.Echo.Static("/assets", "assets")
 
 	s.Router = &api.Router{
