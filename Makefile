@@ -4,14 +4,19 @@
 
 build:
 	@$(MAKE) build-pre
-	@$(MAKE) go-build
+	@$(MAKE) build-app
+	@$(MAKE) build-rsdev
 
 all: init
 	@$(MAKE) build
 
 build-pre: sql swagger
 
-go-build: go build -ldflags $(LDFLAGS) -o bin/app
+build-app:
+	go build -o bin/app.exe main.go
+
+build-rsdev:
+	go build -tags scripts -o bin/rsdev.exe scripts/main.go
 
 ### -----------------------
 # --- Initializing
