@@ -23,7 +23,6 @@ type CarouselProps = {
 
 
 const Carousel = ({ data }: CarouselProps) => {
-  console.log(data)
   const scrollX = useSharedValue(0);
 
   const onScroll = useAnimatedScrollHandler((e) => {
