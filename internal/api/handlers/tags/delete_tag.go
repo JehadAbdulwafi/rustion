@@ -1,4 +1,4 @@
-package categories
+package tags
 
 import (
 	"net/http"
@@ -9,11 +9,11 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func DeleteCategoryRoute(s *api.Server) *echo.Route {
-	return s.Router.APIV1Categories.DELETE("/:id", deleteCategoryHandler(s))
+func DeleteTagRoute(s *api.Server) *echo.Route {
+	return s.Router.APIV1Tags.DELETE("/:id", deleteTagHandler(s))
 }
 
-func deleteCategoryHandler(s *api.Server) echo.HandlerFunc {
+func deleteTagHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
 		id := c.Param("id")
@@ -27,15 +27,15 @@ func deleteCategoryHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, "invalid id")
 		}
 
-		_, err = s.Queries.GetCategory(ctx, ID)
+		_, err = s.Queries.GetTag(ctx, ID)
 		if err != nil {
-			return c.JSON(http.StatusNotFound, "category not found")
+			return c.JSON(http.StatusNotFound, "tag not found")
 		}
 
-		err = s.Queries.DeleteCategory(ctx, ID)
+		err = s.Queries.DeleteTag(ctx, ID)
 
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, "failed to update category")
+			return c.JSON(http.StatusInternalServerError, "failed to update tag")
 		}
 
 		return util.ValidateAndReturn(c, http.StatusOK, nil)

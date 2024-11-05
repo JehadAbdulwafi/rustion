@@ -35,14 +35,14 @@ func getArticleHandler(s *api.Server) echo.HandlerFunc {
 		}
 
 		res := types.Article{
-			ID:         (*strfmt.UUID4)(swag.String(article.ID.String())),
-			Title:      &article.Title,
-			Content:    &article.Content,
-			Image:      &article.Image,
+			ID:          (*strfmt.UUID4)(swag.String(article.ID.String())),
+			Title:       &article.Title,
+			Content:     &article.Content,
+			Image:       &article.Image,
 			Description: article.Description.String,
-			CategoryID: (*strfmt.UUID4)(swag.String(article.CategoryID.UUID.String())),
-			CreatedAt:  strfmt.DateTime(article.CreatedAt.Time),
-			UpdatedAt:  strfmt.DateTime(article.UpdatedAt.Time),
+			Tags:        article.Tags.String,
+			CreatedAt:   strfmt.DateTime(article.CreatedAt.Time),
+			UpdatedAt:   strfmt.DateTime(article.UpdatedAt.Time),
 		}
 
 		return util.ValidateAndReturn(c, http.StatusOK, &res)

@@ -1,4 +1,4 @@
-package categories
+package tags
 
 import (
 	"net/http"
@@ -9,26 +9,26 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func PostCreateCategoryRoute(s *api.Server) *echo.Route {
-	return s.Router.APIV1Categories.POST("", createCategoryHandler(s))
+func PostCreateTagRoute(s *api.Server) *echo.Route {
+	return s.Router.APIV1Tags.POST("", createTagHandler(s))
 }
 
-func createCategoryHandler(s *api.Server) echo.HandlerFunc {
+func createTagHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
-		var body types.CreateCategoryRequest
+		var body types.CreateTagRequest
 		if err := util.BindAndValidateBody(c, &body); err != nil {
 			return err
 		}
 
-		_, err := s.Queries.CreateCategory(ctx, *body.Title)
+		_, err := s.Queries.CreateTag(ctx, *body.Title)
 
 		if err != nil {
 			return err
 		}
 
-		res := &types.CreateCategoryResponse{
-			Message: "category created successfully",
+		res := &types.CreateTagResponse{
+			Message: "tag created successfully",
 		}
 
 		return util.ValidateAndReturn(c, http.StatusOK, res)

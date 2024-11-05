@@ -2,6 +2,7 @@ package test
 
 import (
 	"database/sql"
+	"strings"
 	"time"
 
 	"github.com/JehadAbdulwafi/rustion/internal/database"
@@ -35,9 +36,9 @@ type FixtureMap struct {
 	Article4               *database.Article
 	Article5               *database.Article
 	Article6               *database.Article
-	Category1              *database.Category
-	Category2              *database.Category
-	Category3              *database.Category
+	Tag1                   *database.Tag
+	Tag2                   *database.Tag
+	Tag3                   *database.Tag
 	FeaturedSection1       *database.FeaturedSection
 	FeaturedSection2       *database.FeaturedSection
 	FeaturedSection3       *database.FeaturedSection
@@ -53,10 +54,6 @@ type FixtureMap struct {
 func Fixtures() FixtureMap {
 	now := time.Now()
 	f := FixtureMap{}
-
-	categoryID1 := uuid.New()
-	categoryID2 := uuid.New()
-	categoryID3 := uuid.New()
 
 	featuredSectionID1 := uuid.New()
 	featuredSectionID2 := uuid.New()
@@ -220,19 +217,19 @@ func Fixtures() FixtureMap {
 		UpdatedAt:    sql.NullTime{},
 	}
 
-	f.Category1 = &database.Category{
-		ID:    categoryID1,
-		Title: "Category Title",
+	f.Tag1 = &database.Tag{
+		ID:    uuid.New(),
+		Title: "go",
 	}
 
-	f.Category2 = &database.Category{
-		ID:    categoryID2,
-		Title: "Category Title",
+	f.Tag2 = &database.Tag{
+		ID:    uuid.New(),
+		Title: "rust",
 	}
 
-	f.Category3 = &database.Category{
-		ID:    categoryID3,
-		Title: "Category Title",
+	f.Tag3 = &database.Tag{
+		ID:    uuid.New(),
+		Title: "python",
 	}
 
 	f.FeaturedSection1 = &database.FeaturedSection{
@@ -254,9 +251,9 @@ func Fixtures() FixtureMap {
 		ID:      articleID1,
 		Title:   "Article Title",
 		Content: "Article Content",
-		CategoryID: uuid.NullUUID{
-			UUID:  categoryID1,
-			Valid: true,
+		Tags: sql.NullString{
+			String: strings.Join([]string{"go", "rust", "python"}, ", "),
+			Valid:  true,
 		},
 		Description: sql.NullString{
 			String: "Article Description",
@@ -269,9 +266,9 @@ func Fixtures() FixtureMap {
 		ID:      articleID2,
 		Title:   "Article Title",
 		Content: "Article Content",
-		CategoryID: uuid.NullUUID{
-			UUID:  categoryID1,
-			Valid: true,
+		Tags: sql.NullString{
+			String: strings.Join([]string{"rust", "python"}, ", "),
+			Valid:  true,
 		},
 		Description: sql.NullString{
 			String: "Article Description",
@@ -284,9 +281,9 @@ func Fixtures() FixtureMap {
 		ID:      articleID3,
 		Title:   "Article Title",
 		Content: "Article Content",
-		CategoryID: uuid.NullUUID{
-			UUID:  categoryID2,
-			Valid: true,
+		Tags: sql.NullString{
+			String: strings.Join([]string{"go", "rust"}, ", "),
+			Valid:  true,
 		},
 		Description: sql.NullString{
 			String: "Article Description",
@@ -299,9 +296,9 @@ func Fixtures() FixtureMap {
 		ID:      articleID4,
 		Title:   "Article Title",
 		Content: "Article Content",
-		CategoryID: uuid.NullUUID{
-			UUID:  categoryID2,
-			Valid: true,
+		Tags: sql.NullString{
+			String: strings.Join([]string{"go", "python"}, ", "),
+			Valid:  true,
 		},
 		Description: sql.NullString{
 			String: "Article Description",
@@ -314,9 +311,9 @@ func Fixtures() FixtureMap {
 		ID:      articleID5,
 		Title:   "Article Title",
 		Content: "Article Content",
-		CategoryID: uuid.NullUUID{
-			UUID:  categoryID3,
-			Valid: true,
+		Tags: sql.NullString{
+			String: strings.Join([]string{"go"}, ", "),
+			Valid:  true,
 		},
 		Description: sql.NullString{
 			String: "Article Description",
@@ -329,9 +326,9 @@ func Fixtures() FixtureMap {
 		ID:      articleID6,
 		Title:   "Article Title",
 		Content: "Article Content",
-		CategoryID: uuid.NullUUID{
-			UUID:  categoryID3,
-			Valid: true,
+		Tags: sql.NullString{
+			String: "",
+			Valid:  false,
 		},
 		Description: sql.NullString{
 			String: "Article Description",
@@ -400,9 +397,9 @@ func Inserts() []Insertable {
 	inserts = append(inserts, fix.Stream3)
 	inserts = append(inserts, fix.StreamStatus3)
 
-	inserts = append(inserts, fix.Category1)
-	inserts = append(inserts, fix.Category2)
-	inserts = append(inserts, fix.Category3)
+	inserts = append(inserts, fix.Tag1)
+	inserts = append(inserts, fix.Tag2)
+	inserts = append(inserts, fix.Tag3)
 
 	inserts = append(inserts, fix.FeaturedSection1)
 	inserts = append(inserts, fix.FeaturedSection2)

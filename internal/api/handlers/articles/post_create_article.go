@@ -10,7 +10,6 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
 
@@ -26,16 +25,13 @@ func postCreateArticleHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, "invalid request body")
 		}
 
-		CategoryID := uuid.NullUUID{}
-		if body.CategoryID != "" {
-			CategoryID.UUID = uuid.MustParse(body.CategoryID.String())
-			CategoryID.Valid = true
-		}
-
 		Article, err := s.Queries.CreateArticle(ctx, database.CreateArticleParams{
-			Title:      *body.Title,
-			Content:    *body.Content,
-			CategoryID: CategoryID,
+			Title:   *body.Title,
+			Content: *body.Content,
+			Tags: sql.NullString{
+				String: body.Tags,
+				Valid:  body.Tags != "",
+			},
 			Description: sql.NullString{
 				String: body.Description,
 				Valid:  body.Description != "",

@@ -1,4 +1,4 @@
-package categories
+package tags
 
 import (
 	"net/http"
@@ -12,11 +12,11 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func GetCategoryRoute(s *api.Server) *echo.Route {
-	return s.Router.APIV1Categories.GET("/:id", getCategoryHandler(s))
+func GetTagRoute(s *api.Server) *echo.Route {
+	return s.Router.APIV1Tags.GET("/:id", getTagHandler(s))
 }
 
-func getCategoryHandler(s *api.Server) echo.HandlerFunc {
+func getTagHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
 		id := c.Param("id")
@@ -30,17 +30,17 @@ func getCategoryHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, "invalid id")
 		}
 
-		Category, err := s.Queries.GetCategory(ctx, ID)
+		Tag, err := s.Queries.GetTag(ctx, ID)
 		if err != nil {
 			return err
 		}
 
-		res := &types.GetCategoryResponse{
-			Category: &types.Category{
-				ID:        (*strfmt.UUID4)(swag.String(Category.ID.String())),
-				Title:      &Category.Title,
-				CreatedAt: strfmt.DateTime(Category.CreatedAt.Time),
-				UpdatedAt: strfmt.DateTime(Category.UpdatedAt.Time),
+		res := &types.GetTagResponse{
+			Tag: &types.Tag{
+				ID:        (*strfmt.UUID4)(swag.String(Tag.ID.String())),
+				Title:      &Tag.Title,
+				CreatedAt: strfmt.DateTime(Tag.CreatedAt.Time),
+				UpdatedAt: strfmt.DateTime(Tag.UpdatedAt.Time),
 			},
 		}
 

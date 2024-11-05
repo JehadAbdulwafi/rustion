@@ -59,11 +59,11 @@ func InsertSeedData() error {
 				`, v.ID, v.StreamID, v.Status, v.LastPublishedAt.Time, v.ViewersCount.Int32); err != nil {
 					return fmt.Errorf("failed to insert stream_status fixture: %w", err)
 				}
-			case *database.Category:
-				if _, err := db.Exec(`INSERT INTO categories
+			case *database.Tag:
+				if _, err := db.Exec(`INSERT INTO tags
 					(id, title) VALUES ($1, $2)`,
 					v.ID, v.Title); err != nil {
-					return fmt.Errorf("failed to insert categories fixture: %w", err)
+					return fmt.Errorf("failed to insert tags fixture: %w", err)
 				}
 			case *database.FeaturedSection:
 				if _, err := db.Exec(`INSERT INTO featured_sections
@@ -73,8 +73,8 @@ func InsertSeedData() error {
 				}
 			case *database.Article:
 				if _, err := db.Exec(`INSERT INTO articles
-					(id, title, content, image, category_id, description) VALUES ($1, $2, $3, $4, $5, $6)`,
-					v.ID, v.Title, v.Content, v.Image, v.CategoryID.UUID, v.Description.String); err != nil {
+					(id, title, content, image, tags, description) VALUES ($1, $2, $3, $4, $5, $6)`,
+					v.ID, v.Title, v.Content, v.Image, v.Tags, v.Description.String); err != nil {
 					return fmt.Errorf("failed to insert articles fixture: %w", err)
 				}
 			case *database.FeaturedArticle:

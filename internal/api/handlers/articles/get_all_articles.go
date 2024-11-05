@@ -38,7 +38,7 @@ func convertDBArticlesToArticles(articles []database.Article) types.GetArticlesR
 			Content:     &article.Content,
 			Image:       &article.Image,
 			Description: article.Description.String,
-			CategoryID:  (*strfmt.UUID4)(swag.String(article.CategoryID.UUID.String())),
+			Tags:        article.Tags.String,
 			CreatedAt:   strfmt.DateTime(article.CreatedAt.Time),
 			UpdatedAt:   strfmt.DateTime(article.UpdatedAt.Time),
 		}

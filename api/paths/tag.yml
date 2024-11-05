@@ -1,0 +1,123 @@
+swagger: "2.0"
+info:
+  title: github.com/JehadAbdulwafi/rustion
+  version: 0.1.0
+paths:
+  /api/v1/tags:
+    post:
+      description: Creates a tag
+      tags:
+        - tags
+      summary: Creates a tag
+      operationId: PostCreateTag
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/tag.yml#/definitions/CreateTagRequest"
+      responses:
+        "200":
+          description: CreateTagResponse
+          schema:
+            $ref: "../definitions/tag.yml#/definitions/CreateTagResponse"
+    get:
+      description: Retrieves all tags with their associated articles
+      tags:
+        - tags
+      summary: Gets all tags
+      operationId: GetTags
+      responses:
+        "200":
+          description: List of tags
+          schema:
+            $ref: "../definitions/tag.yml#/definitions/GetTagsResponse"
+  /api/v1/tags/{id}:
+    get:
+      description: Retrieves a tag by ID
+      tags:
+        - tags
+      summary: Gets a tag
+      operationId: GetTag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid4
+          description: ID of the tag
+      responses:
+        "200":
+          description: GetTagResponse
+          schema:
+            $ref: "../definitions/tag.yml#/definitions/GetTagResponse"
+    put:
+      description: Updates a tag by ID
+      tags:
+        - tags
+      summary: Updates a tag
+      operationId: UpdateTag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid4
+          description: ID of the tag
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/tag.yml#/definitions/UpdateTagRequest"
+      responses:
+        "200":
+          description: UpdateTagResponse
+          schema:
+            $ref: "../definitions/tag.yml#/definitions/UpdateTagResponse"
+    delete:
+      description: Deletes a tag by ID
+      tags:
+        - tags
+      summary: Deletes a tag
+      operationId: DeleteTag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid4
+          description: ID of the tag
+      responses:
+        "200":
+          description: DeleteTagResponse
+          schema:
+            $ref: "../definitions/tag.yml#/definitions/DeleteTagResponse"
+  /api/v1/tags/{id}/articles:
+    get:
+      description: Retrieves a tag with its associated articles
+      tags:
+        - tags
+      summary: Gets a tag with articles 
+      operationId: GetTagWithArticles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid4
+          description: ID of the tag
+      responses:
+        "200":
+          description: GetTagWithArticlesResponse
+          schema:
+            $ref: "../definitions/tag.yml#/definitions/GetTagWithArticlesResponse"
+  /api/v1/tags/articles:
+    get:
+      description: Retrieves a tag with its associated articles
+      tags:
+        - tags
+      summary: Gets a tag with articles 
+      operationId: GetTagWithArticles
+      responses:
+        "200":
+          description: GetTagWithArticlesResponse
+          schema:
+            $ref: "../definitions/tag.yml#/definitions/GetTagsWithArticlesResponse"

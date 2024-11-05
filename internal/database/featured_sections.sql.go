@@ -74,7 +74,7 @@ func (q *Queries) DeleteFeaturedSection(ctx context.Context, id uuid.UUID) error
 }
 
 const getArticlesBySectionID = `-- name: GetArticlesBySectionID :many
-SELECT a.id, a.title, a.description, a.content, a.image, a.category_id, a.created_at, a.updated_at FROM articles a
+SELECT a.id, a.title, a.description, a.content, a.image, a.tags, a.created_at, a.updated_at FROM articles a
 JOIN featured_articles fa ON a.id = fa.article_id
 JOIN featured_sections fs ON fs.id = fa.featured_section_id
 WHERE fs.id = $1
@@ -95,7 +95,7 @@ func (q *Queries) GetArticlesBySectionID(ctx context.Context, id uuid.UUID) ([]A
 			&i.Description,
 			&i.Content,
 			&i.Image,
-			&i.CategoryID,
+			&i.Tags,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {

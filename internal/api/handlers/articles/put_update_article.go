@@ -30,16 +30,15 @@ func updateArticleHandler(s *api.Server) echo.HandlerFunc {
 		}
 
 		ID := uuid.MustParse(id)
-		CategoryID := uuid.NullUUID{}
-		if body.CategoryID != "" {
-			CategoryID.UUID = uuid.MustParse(body.CategoryID.String())
-			CategoryID.Valid = true
-		}
+
 		_, err := s.Queries.UpdateArticle(ctx, database.UpdateArticleParams{
-			ID:         ID,
-			Title:      *body.Title,
-			Content:    *body.Content,
-			CategoryID: CategoryID,
+			ID:      ID,
+			Title:   *body.Title,
+			Content: *body.Content,
+			Tags: sql.NullString{
+				String: body.Tags,
+				Valid:  body.Tags != "",
+			},
 			Description: sql.NullString{
 				String: body.Description,
 				Valid:  body.Description != "",

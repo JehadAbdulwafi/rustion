@@ -1,4 +1,4 @@
-package categories
+package tags
 
 import (
 	"net/http"
@@ -11,11 +11,11 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func PutUpdateCategoryRoute(s *api.Server) *echo.Route {
-	return s.Router.APIV1Categories.PUT("/:id", updateCategoryHandler(s))
+func PutUpdateTagRoute(s *api.Server) *echo.Route {
+	return s.Router.APIV1Tags.PUT("/:id", updateTagHandler(s))
 }
 
-func updateCategoryHandler(s *api.Server) echo.HandlerFunc {
+func updateTagHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
 		id := c.Param("id")
@@ -24,7 +24,7 @@ func updateCategoryHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, "id is required")
 		}
 
-		var body types.CreateCategoryRequest
+		var body types.CreateTagRequest
 		if err := util.BindAndValidateBody(c, &body); err != nil {
 			return err
 		}
@@ -34,22 +34,22 @@ func updateCategoryHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, "invalid id")
 		}
 
-		_, err = s.Queries.GetCategory(ctx, ID)
+		_, err = s.Queries.GetTag(ctx, ID)
 		if err != nil {
-			return c.JSON(http.StatusNotFound, "category not found")
+			return c.JSON(http.StatusNotFound, "tag not found")
 		}
 
-		_, err = s.Queries.UpdateCategory(ctx, database.UpdateCategoryParams{
+		_, err = s.Queries.UpdateTag(ctx, database.UpdateTagParams{
 			Title: *body.Title,
 			ID:   ID,
 		})
 
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, "failed to update category")
+			return c.JSON(http.StatusInternalServerError, "failed to update tag")
 		}
 
-		res := &types.UpdateCategoryResponse{
-			Message: "category updated successfully",
+		res := &types.UpdateTagResponse{
+			Message: "tag updated successfully",
 		}
 
 		return util.ValidateAndReturn(c, http.StatusOK, res)

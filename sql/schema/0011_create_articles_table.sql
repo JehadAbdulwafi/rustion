@@ -5,12 +5,10 @@ CREATE TABLE IF NOT EXISTS articles (
   description VARCHAR(255),
   content TEXT NOT NULL,
   image VARCHAR(255) NOT NULL,
-  category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
+  tags TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP
 );
-
-CREATE INDEX idx_articles_category ON articles(category_id);
 
 -- +goose Down
 DROP TABLE IF EXISTS articles;

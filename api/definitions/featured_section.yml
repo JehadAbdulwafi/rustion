@@ -35,7 +35,6 @@ definitions:
       - id
       - title
       - content
-      - category_id
       - image
     properties:
       id:
@@ -52,11 +51,10 @@ definitions:
         type: string
         description: Content of the article
         example: "This is the content of the article."
-      category_id:
+      tags:
         type: string
-        format: uuid4
-        description: ID of article
-        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+        description: Content of the article
+        example: "tag1,tag2,tag3"
       image:
         type: string
         description: Image of the article
