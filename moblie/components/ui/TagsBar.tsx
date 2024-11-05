@@ -4,20 +4,31 @@ import { Pressable, View } from 'react-native';
 import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
 import { Text } from 'tamagui';
 
-const _tags = ["go", "rust", "fitness", "programming", "E-sport", "hiking", "travel", "crypto", "finance", "news"];
+type TagsBarProps = {
+  tags: Tag[];
+  handleSort: (items: string[]) => void;
+}
 
-export default function TagsBar() {
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+export default function TagsBar({ tags: _tags, handleSort }: TagsBarProps) {
+  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const [tags, setTags] = useState(_tags);
 
-  const handleTagPress = (tag: string) => {
+  const handleTagPress = (tag: Tag) => {
+    let res;
+    let finalRes;
     if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter((t) => t !== tag));
+      res = selectedTags.filter((t) => t !== tag)
       setTags([...tags.filter((t) => t !== tag), tag]);
+
     } else {
-      setSelectedTags([...selectedTags, tag]);
+      res = [...selectedTags, tag]
       setTags([tag, ...tags.filter((t) => t !== tag)]);
     }
+
+    setSelectedTags(res);
+    finalRes = res.map((t) => t.title);
+    handleSort(finalRes)
+
   };
 
   return (
@@ -31,20 +42,22 @@ export default function TagsBar() {
         layout={FadeIn}
         renderItem={({ item }) => (
           <Pressable
-            onPress={() => handleTagPress(item)}
+            onPress={() => {
+              handleTagPress(item)
+            }}
           >
             <Animated.View
               style={{ padding: 8, backgroundColor: selectedTags.includes(item) ? "skyblue" : DarkTheme.colors.card, borderRadius: 12 }}
             >
               <Text
               >
-                {item}
+                {item.title}
               </Text>
             </Animated.View>
           </Pressable>
         )
         }
-        keyExtractor={(item) => item}
+        keyExtractor={(item) => item.id}
 
       />
     </View>

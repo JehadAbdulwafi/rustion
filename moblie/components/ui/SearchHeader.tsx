@@ -4,7 +4,11 @@ import { View } from "./View";
 import { DarkTheme } from "@react-navigation/native";
 import { Input } from "tamagui";
 
-export default function SearchHeader() {
+type SearchHeaderProps = {
+  handleSearch: (text: string) => void
+}
+
+export default function SearchHeader({ handleSearch }: SearchHeaderProps) {
   return (
     <View
       style={{
@@ -20,11 +24,14 @@ export default function SearchHeader() {
 
       <View style={{ flex: 1, backgroundColor: "transparent" }}>
         <Input
+          // styles
           backgroundColor={"$color1"}
           color={"white"}
           borderWidth={0}
           borderRadius={12}
           placeholder={"Search"}
+          // events
+          onChangeText={handleSearch}
         />
       </View>
     </View>
