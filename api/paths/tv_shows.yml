@@ -1,0 +1,147 @@
+swagger: "2.0"
+info:
+  title: github.com/JehadAbdulwafi/tv-shows
+  version: 0.1.0
+paths:
+  /api/v1/tv-shows:
+    post:
+      description: Creates a TV show
+      tags:
+        - tv-shows
+      summary: Creates a TV show
+      operationId: PostCreateTVShow
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/tv_shows.yml#/definitions/CreateTVShowRequest"
+      responses:
+        "200":
+          description: CreateTVShowResponse
+          schema:
+            $ref: "../definitions/tv_shows.yml#/definitions/CreateTVShowResponse"
+    get:
+      description: Retrieves all TV shows
+      tags:
+        - tv-shows
+      summary: Gets all TV shows
+      operationId: GetAllTVShows
+      responses:
+        "200":
+          description: List of TV shows
+          schema:
+            $ref: "../definitions/tv_shows.yml#/definitions/GetTVShowsResponse"
+  /api/v1/tv-shows/{id}:
+    get:
+      description: Retrieves a TV show by ID
+      tags:
+        - tv-shows
+      summary: Gets a TV show
+      operationId: GetTVShow
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid4
+          description: ID of the TV show
+      responses:
+        "200":
+          description: GetTVShowResponse
+          schema:
+            $ref: "../definitions/tv_shows.yml#/definitions/GetTVShowResponse"
+    put:
+      description: Updates a TV show by ID
+      tags:
+        - tv-shows
+      summary: Updates a TV show
+      operationId: UpdateTVShow
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid4
+          description: ID of the TV show
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/tv_shows.yml#/definitions/UpdateTVShowRequest"
+      responses:
+        "200":
+          description: UpdateTVShowResponse
+          schema:
+            $ref: "../definitions/tv_shows.yml#/definitions/UpdateTVShowResponse"
+    delete:
+      description: Deletes a TV show by ID
+      tags:
+        - tv-shows
+      summary: Deletes a TV show
+      operationId: DeleteTVShow
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid4
+          description: ID of the TV show
+      responses:
+        "200":
+          description: DeleteTVShowResponse
+          schema:
+            $ref: "../definitions/tv_shows.yml#/definitions/DeleteTVShowResponse"
+
+  /api/v1/tv-shows/schedules:
+    get:
+      description: Retrieves all TV show with schedules
+      tags:
+        - tv_show_schedules
+      summary: Gets all TV show with schedules
+      operationId: GetAllTVShowsWithSchedules
+      responses:
+        "200":
+          description: List of TV show with schedules
+          schema:
+            $ref: "../definitions/tv_shows.yml#/definitions/GetAllTVShowsWithSchedulesResponse"
+
+  /api/v1/tv-shows/{id}/schedules:
+    get:
+      description: Retrieves TV show with schedules
+      tags:
+        - tv_show_schedules
+      summary: Gets TV show with schedules
+      operationId: GetTVShowSchedules
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid4
+          description: ID of the TV show
+      responses:
+        "200":
+          description: TV show with schedules
+          schema:
+            $ref: "../definitions/tv_shows.yml#/definitions/GetTVShowWithSchedulesResponse"
+    put:
+      description: Updates a TV show schedule by ID
+      tags:
+        - tv_show_schedules
+      summary: Updates a TV show schedule
+      operationId: UpdateTVShowSchedule
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid4
+          description: ID of the TV show schedule
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/tv_shows.yml#/definitions/UpdateTVShowScheduleRequest"
+      responses:
+        "200":
+          description: UpdateTVShowScheduleResponse
+          schema:
+            $ref: "../definitions/tv_shows.yml#/definitions/UpdateTVShowScheduleResponse"

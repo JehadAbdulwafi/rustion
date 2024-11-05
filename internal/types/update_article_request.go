@@ -19,11 +19,6 @@ import (
 // swagger:model updateArticleRequest
 type UpdateArticleRequest struct {
 
-	// ID of category
-	// Example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-	// Format: uuid4
-	CategoryID strfmt.UUID4 `json:"category_id,omitempty"`
-
 	// Content of the article
 	// Example: This is the content of the article.
 	// Required: true
@@ -38,6 +33,10 @@ type UpdateArticleRequest struct {
 	// Required: true
 	Image *string `json:"image"`
 
+	// Content of the article
+	// Example: tag1,tag2,tag3
+	Tags string `json:"tags,omitempty"`
+
 	// Title of the article
 	// Example: Article Title
 	// Required: true
@@ -48,10 +47,6 @@ type UpdateArticleRequest struct {
 // Validate validates this update article request
 func (m *UpdateArticleRequest) Validate(formats strfmt.Registry) error {
 	var res []error
-
-	if err := m.validateCategoryID(formats); err != nil {
-		res = append(res, err)
-	}
 
 	if err := m.validateContent(formats); err != nil {
 		res = append(res, err)
@@ -68,18 +63,6 @@ func (m *UpdateArticleRequest) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (m *UpdateArticleRequest) validateCategoryID(formats strfmt.Registry) error {
-	if swag.IsZero(m.CategoryID) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("category_id", "body", "uuid4", m.CategoryID.String(), formats); err != nil {
-		return err
-	}
-
 	return nil
 }
 

@@ -14,19 +14,19 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// CreateCategoryRequest create category request
+// CreateTagRequest create tag request
 //
-// swagger:model createCategoryRequest
-type CreateCategoryRequest struct {
+// swagger:model createTagRequest
+type CreateTagRequest struct {
 
-	// Name of the category
+	// Name of the tag
 	// Example: Politics
 	// Required: true
 	Title *string `json:"title"`
 }
 
-// Validate validates this create category request
-func (m *CreateCategoryRequest) Validate(formats strfmt.Registry) error {
+// Validate validates this create tag request
+func (m *CreateTagRequest) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateTitle(formats); err != nil {
@@ -39,7 +39,7 @@ func (m *CreateCategoryRequest) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *CreateCategoryRequest) validateTitle(formats strfmt.Registry) error {
+func (m *CreateTagRequest) validateTitle(formats strfmt.Registry) error {
 
 	if err := validate.Required("title", "body", m.Title); err != nil {
 		return err
@@ -48,13 +48,13 @@ func (m *CreateCategoryRequest) validateTitle(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this create category request based on context it is used
-func (m *CreateCategoryRequest) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this create tag request based on context it is used
+func (m *CreateTagRequest) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *CreateCategoryRequest) MarshalBinary() ([]byte, error) {
+func (m *CreateTagRequest) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -62,8 +62,8 @@ func (m *CreateCategoryRequest) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *CreateCategoryRequest) UnmarshalBinary(b []byte) error {
-	var res CreateCategoryRequest
+func (m *CreateTagRequest) UnmarshalBinary(b []byte) error {
+	var res CreateTagRequest
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -166,124 +166,6 @@ paths:
             summary: Get user info
             tags:
                 - auth
-    /api/v1/categories:
-        get:
-            description: Retrieves all categories with their associated articles
-            operationId: GetCategories
-            responses:
-                "200":
-                    description: List of categories
-                    schema:
-                        $ref: '#/definitions/getCategoriesResponse'
-            summary: Gets all categories
-            tags:
-                - categories
-        post:
-            description: Creates a category
-            operationId: PostCreateCategory
-            parameters:
-                - in: body
-                  name: Payload
-                  schema:
-                    $ref: '#/definitions/createCategoryRequest'
-            responses:
-                "200":
-                    description: CreateCategoryResponse
-                    schema:
-                        $ref: '#/definitions/createCategoryResponse'
-            summary: Creates a category
-            tags:
-                - categories
-    /api/v1/categories/articles:
-        get:
-            description: Retrieves a category with its associated articles
-            operationId: GetCategoryWithArticlesMixin2
-            responses:
-                "200":
-                    description: GetCategoryWithArticlesResponse
-                    schema:
-                        $ref: '#/definitions/getCategoriesWithArticlesResponse'
-            summary: Gets a category with articles
-            tags:
-                - categories
-    /api/v1/categories/{id}:
-        delete:
-            description: Deletes a category by ID
-            operationId: DeleteCategory
-            parameters:
-                - description: ID of the category
-                  format: uuid4
-                  in: path
-                  name: id
-                  required: true
-                  type: string
-            responses:
-                "200":
-                    description: DeleteCategoryResponse
-                    schema:
-                        $ref: '#/definitions/deleteCategoryResponse'
-            summary: Deletes a category
-            tags:
-                - news_categories
-        get:
-            description: Retrieves a category by ID
-            operationId: GetCategory
-            parameters:
-                - description: ID of the category
-                  format: uuid4
-                  in: path
-                  name: id
-                  required: true
-                  type: string
-            responses:
-                "200":
-                    description: GetCategoryResponse
-                    schema:
-                        $ref: '#/definitions/getCategoryResponse'
-            summary: Gets a category
-            tags:
-                - news_categories
-        put:
-            description: Updates a category by ID
-            operationId: UpdateCategory
-            parameters:
-                - description: ID of the category
-                  format: uuid4
-                  in: path
-                  name: id
-                  required: true
-                  type: string
-                - in: body
-                  name: Payload
-                  schema:
-                    $ref: '#/definitions/updateCategoryRequest'
-            responses:
-                "200":
-                    description: UpdateCategoryResponse
-                    schema:
-                        $ref: '#/definitions/updateCategoryResponse'
-            summary: Updates a category
-            tags:
-                - news_categories
-    /api/v1/categories/{id}/articles:
-        get:
-            description: Retrieves a category with its associated articles
-            operationId: GetCategoryWithArticles
-            parameters:
-                - description: ID of the category
-                  format: uuid4
-                  in: path
-                  name: id
-                  required: true
-                  type: string
-            responses:
-                "200":
-                    description: GetCategoryWithArticlesResponse
-                    schema:
-                        $ref: '#/definitions/getCategoryWithArticlesResponse'
-            summary: Gets a category with articles
-            tags:
-                - categories
     /api/v1/featured-sections:
         get:
             description: Retrieves all featured sections with their associated articles
@@ -539,6 +421,264 @@ paths:
             summary: Unpublishes a stream
             tags:
                 - stream
+    /api/v1/tags:
+        get:
+            description: Retrieves all tags with their associated articles
+            operationId: GetTags
+            responses:
+                "200":
+                    description: List of tags
+                    schema:
+                        $ref: '#/definitions/getTagsResponse'
+            summary: Gets all tags
+            tags:
+                - tags
+        post:
+            description: Creates a tag
+            operationId: PostCreateTag
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/createTagRequest'
+            responses:
+                "200":
+                    description: CreateTagResponse
+                    schema:
+                        $ref: '#/definitions/createTagResponse'
+            summary: Creates a tag
+            tags:
+                - tags
+    /api/v1/tags/articles:
+        get:
+            description: Retrieves a tag with its associated articles
+            operationId: GetTagWithArticlesMixin6
+            responses:
+                "200":
+                    description: GetTagWithArticlesResponse
+                    schema:
+                        $ref: '#/definitions/getTagsWithArticlesResponse'
+            summary: Gets a tag with articles
+            tags:
+                - tags
+    /api/v1/tags/{id}:
+        delete:
+            description: Deletes a tag by ID
+            operationId: DeleteTag
+            parameters:
+                - description: ID of the tag
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: DeleteTagResponse
+                    schema:
+                        $ref: '#/definitions/deleteTagResponse'
+            summary: Deletes a tag
+            tags:
+                - tags
+        get:
+            description: Retrieves a tag by ID
+            operationId: GetTag
+            parameters:
+                - description: ID of the tag
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: GetTagResponse
+                    schema:
+                        $ref: '#/definitions/getTagResponse'
+            summary: Gets a tag
+            tags:
+                - tags
+        put:
+            description: Updates a tag by ID
+            operationId: UpdateTag
+            parameters:
+                - description: ID of the tag
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/updateTagRequest'
+            responses:
+                "200":
+                    description: UpdateTagResponse
+                    schema:
+                        $ref: '#/definitions/updateTagResponse'
+            summary: Updates a tag
+            tags:
+                - tags
+    /api/v1/tags/{id}/articles:
+        get:
+            description: Retrieves a tag with its associated articles
+            operationId: GetTagWithArticles
+            parameters:
+                - description: ID of the tag
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: GetTagWithArticlesResponse
+                    schema:
+                        $ref: '#/definitions/getTagWithArticlesResponse'
+            summary: Gets a tag with articles
+            tags:
+                - tags
+    /api/v1/tv-shows:
+        get:
+            description: Retrieves all TV shows
+            operationId: GetAllTVShows
+            responses:
+                "200":
+                    description: List of TV shows
+                    schema:
+                        $ref: '#/definitions/getTVShowsResponse'
+            summary: Gets all TV shows
+            tags:
+                - tv-shows
+        post:
+            description: Creates a TV show
+            operationId: PostCreateTVShow
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/createTVShowRequest'
+            responses:
+                "200":
+                    description: CreateTVShowResponse
+                    schema:
+                        $ref: '#/definitions/createTVShowResponse'
+            summary: Creates a TV show
+            tags:
+                - tv-shows
+    /api/v1/tv-shows/schedules:
+        get:
+            description: Retrieves all TV show with schedules
+            operationId: GetAllTVShowsWithSchedules
+            responses:
+                "200":
+                    description: List of TV show with schedules
+                    schema:
+                        $ref: '#/definitions/getAllTVShowsWithSchedulesResponse'
+            summary: Gets all TV show with schedules
+            tags:
+                - tv_show_schedules
+    /api/v1/tv-shows/{id}:
+        delete:
+            description: Deletes a TV show by ID
+            operationId: DeleteTVShow
+            parameters:
+                - description: ID of the TV show
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: DeleteTVShowResponse
+                    schema:
+                        $ref: '#/definitions/deleteTVShowResponse'
+            summary: Deletes a TV show
+            tags:
+                - tv-shows
+        get:
+            description: Retrieves a TV show by ID
+            operationId: GetTVShow
+            parameters:
+                - description: ID of the TV show
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: GetTVShowResponse
+                    schema:
+                        $ref: '#/definitions/getTVShowResponse'
+            summary: Gets a TV show
+            tags:
+                - tv-shows
+        put:
+            description: Updates a TV show by ID
+            operationId: UpdateTVShow
+            parameters:
+                - description: ID of the TV show
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/updateTVShowRequest'
+            responses:
+                "200":
+                    description: UpdateTVShowResponse
+                    schema:
+                        $ref: '#/definitions/updateTVShowResponse'
+            summary: Updates a TV show
+            tags:
+                - tv-shows
+    /api/v1/tv-shows/{id}/schedules:
+        get:
+            description: Retrieves TV show with schedules
+            operationId: GetTVShowSchedules
+            parameters:
+                - description: ID of the TV show
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: TV show with schedules
+                    schema:
+                        $ref: '#/definitions/getTVShowWithSchedulesResponse'
+            summary: Gets TV show with schedules
+            tags:
+                - tv_show_schedules
+        put:
+            description: Updates a TV show schedule by ID
+            operationId: UpdateTVShowSchedule
+            parameters:
+                - description: ID of the TV show schedule
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/updateTVShowScheduleRequest'
+            responses:
+                "200":
+                    description: UpdateTVShowScheduleResponse
+                    schema:
+                        $ref: '#/definitions/updateTVShowScheduleResponse'
+            summary: Updates a TV show schedule
+            tags:
+                - tv_show_schedules
     /api/v1/version:
         get:
             description: This endpoint returns the module name, commit and build-date baked into the app binary.
@@ -568,11 +708,6 @@ paths:
 definitions:
     article:
         properties:
-            category_id:
-                description: ID of article
-                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-                format: uuid4
-                type: string
             content:
                 description: Content of the article
                 example: This is the content of the article.
@@ -595,6 +730,10 @@ definitions:
                 description: Image of the article
                 example: https://example.com/article-image.jpg
                 type: string
+            tags:
+                description: Content of the article
+                example: tag1,tag2,tag3
+                type: string
             title:
                 description: Title of the article
                 example: Article Title
@@ -609,41 +748,10 @@ definitions:
             - id
             - title
             - content
-            - category_id
             - image
-        type: object
-    category:
-        properties:
-            created_at:
-                description: Timestamp when the category was created
-                example: "2023-10-01T12:00:00Z"
-                format: date-time
-                type: string
-            id:
-                description: ID of category
-                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-                format: uuid4
-                type: string
-            title:
-                description: Name of the category
-                example: Politics
-                type: string
-            updated_at:
-                description: Timestamp when the category was last updated
-                example: "2023-10-02T12:00:00Z"
-                format: date-time
-                type: string
-        required:
-            - id
-            - title
         type: object
     createArticleRequest:
         properties:
-            category_id:
-                description: ID of category
-                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-                format: uuid4
-                type: string
             content:
                 description: Content of the article
                 example: This is the content of the article.
@@ -655,6 +763,10 @@ definitions:
             image:
                 description: Image of the article
                 example: https://example.com/article-image.jpg
+                type: string
+            tags:
+                description: Content of the article
+                example: tag1,tag2,tag3
                 type: string
             title:
                 description: Title of the article
@@ -670,21 +782,6 @@ definitions:
         properties:
             message:
                 example: Article created successfully.
-                type: string
-        type: object
-    createCategoryRequest:
-        properties:
-            title:
-                description: Name of the category
-                example: Politics
-                type: string
-        required:
-            - title
-        type: object
-    createCategoryResponse:
-        properties:
-            message:
-                example: Category created successfully.
                 type: string
         type: object
     createFeaturedSectionRequest:
@@ -715,22 +812,67 @@ definitions:
         required:
             - id
         type: object
+    createTVShowRequest:
+        properties:
+            description:
+                description: Description of the TV show
+                example: This is the description of the TV show.
+                type: string
+            genre:
+                description: Genre of the TV show
+                example: Drama
+                type: string
+            title:
+                description: Title of the TV show
+                example: TV Show Title
+                maxLength: !!float 255
+                type: string
+        required:
+            - title
+        type: object
+    createTVShowResponse:
+        properties:
+            message:
+                example: TV Show created successfully.
+                type: string
+        type: object
+    createTagRequest:
+        properties:
+            title:
+                description: Name of the tag
+                example: Politics
+                type: string
+        required:
+            - title
+        type: object
+    createTagResponse:
+        properties:
+            message:
+                example: Tag created successfully.
+                type: string
+        type: object
     deleteArticleResponse:
         properties:
             message:
                 example: Article deleted successfully.
                 type: string
         type: object
-    deleteCategoryResponse:
-        properties:
-            message:
-                example: Category deleted successfully.
-                type: string
-        type: object
     deleteFeaturedSectionResponse:
         properties:
             message:
                 example: Section deleted successfully.
+                type: string
+        type: object
+    deleteTVShowResponse:
+        properties:
+            message:
+                example: TV Show deleted successfully.
+                type: string
+        type: object
+    deleteTagResponse:
+        properties:
+            message:
+                example: Tag deleted successfully.
                 type: string
         type: object
     featuredSection:
@@ -758,6 +900,10 @@ definitions:
             - id
             - title
         type: object
+    getAllTVShowsWithSchedulesResponse:
+        items:
+            $ref: '#/definitions/getTVShowWithSchedulesResponse'
+        type: array
     getArticleResponse:
         properties:
             article:
@@ -767,72 +913,6 @@ definitions:
         items:
             $ref: '#/definitions/article'
         type: array
-    getCategoriesResponse:
-        items:
-            $ref: '#/definitions/category'
-        type: array
-    getCategoriesWithArticlesResponse:
-        items:
-            $ref: '#/definitions/getCategoryWithArticlesResponse'
-        type: array
-    getCategoryResponse:
-        properties:
-            category:
-                $ref: '#/definitions/category'
-        type: object
-    getCategoryWithArticlesResponse:
-        properties:
-            articles:
-                items:
-                    properties:
-                        category_id:
-                            description: ID of article
-                            example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-                            format: uuid4
-                            type: string
-                        content:
-                            description: Content of the article
-                            example: This is the content of the article.
-                            type: string
-                        created_at:
-                            description: Timestamp when the article was created
-                            example: "2023-10-01T12:00:00Z"
-                            format: date-time
-                            type: string
-                        description:
-                            description: Description of the article
-                            example: This is the description of the article.
-                            type: string
-                        id:
-                            description: ID of article
-                            example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-                            format: uuid4
-                            type: string
-                        image:
-                            description: Image of the article
-                            example: https://example.com/article-image.jpg
-                            type: string
-                        title:
-                            description: Title of the article
-                            example: Article Title
-                            maxLength: !!float 255
-                            type: string
-                        updated_at:
-                            description: Timestamp when the article was last updated
-                            example: "2023-10-02T12:00:00Z"
-                            format: date-time
-                            type: string
-                    required:
-                        - id
-                        - title
-                        - content
-                        - category_id
-                        - image
-                    type: object
-                type: array
-            category:
-                $ref: '#/definitions/category'
-        type: object
     getFeaturedSectionResponse:
         properties:
             section:
@@ -843,11 +923,6 @@ definitions:
             articles:
                 items:
                     properties:
-                        category_id:
-                            description: ID of article
-                            example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-                            format: uuid4
-                            type: string
                         content:
                             description: Content of the article
                             example: This is the content of the article.
@@ -870,6 +945,10 @@ definitions:
                             description: Image of the article
                             example: https://example.com/article-image.jpg
                             type: string
+                        tags:
+                            description: Content of the article
+                            example: tag1,tag2,tag3
+                            type: string
                         title:
                             description: Title of the article
                             example: Article Title
@@ -884,7 +963,6 @@ definitions:
                         - id
                         - title
                         - content
-                        - category_id
                         - image
                     type: object
                 type: array
@@ -898,6 +976,88 @@ definitions:
     getFeaturedSectionsWithArticlesResponse:
         items:
             $ref: '#/definitions/getFeaturedSectionWithArticlesResponse'
+        type: array
+    getTVShowResponse:
+        properties:
+            tv_show:
+                $ref: '#/definitions/tVShow'
+        type: object
+    getTVShowWithSchedulesResponse:
+        properties:
+            schedules:
+                items:
+                    $ref: '#/definitions/tVShowSchedule'
+                type: array
+            tv_show:
+                $ref: '#/definitions/tVShow'
+        type: object
+    getTVShowsResponse:
+        items:
+            $ref: '#/definitions/tVShow'
+        type: array
+    getTagResponse:
+        properties:
+            tag:
+                $ref: '#/definitions/tag'
+        type: object
+    getTagWithArticlesResponse:
+        properties:
+            articles:
+                items:
+                    properties:
+                        content:
+                            description: Content of the article
+                            example: This is the content of the article.
+                            type: string
+                        created_at:
+                            description: Timestamp when the article was created
+                            example: "2023-10-01T12:00:00Z"
+                            format: date-time
+                            type: string
+                        description:
+                            description: Description of the article
+                            example: This is the description of the article.
+                            type: string
+                        id:
+                            description: ID of article
+                            example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                            format: uuid4
+                            type: string
+                        image:
+                            description: Image of the article
+                            example: https://example.com/article-image.jpg
+                            type: string
+                        tags:
+                            description: Content of the article
+                            example: tag1,tag2,tag3
+                            type: string
+                        title:
+                            description: Title of the article
+                            example: Article Title
+                            maxLength: !!float 255
+                            type: string
+                        updated_at:
+                            description: Timestamp when the article was last updated
+                            example: "2023-10-02T12:00:00Z"
+                            format: date-time
+                            type: string
+                    required:
+                        - id
+                        - title
+                        - content
+                        - image
+                    type: object
+                type: array
+            tag:
+                $ref: '#/definitions/tag'
+        type: object
+    getTagsResponse:
+        items:
+            $ref: '#/definitions/tag'
+        type: array
+    getTagsWithArticlesResponse:
+        items:
+            $ref: '#/definitions/getTagWithArticlesResponse'
         type: array
     getUserInfoResponse:
         properties:
@@ -1130,13 +1290,101 @@ definitions:
         required:
             - code
         type: object
-    updateArticleRequest:
+    tVShow:
         properties:
-            category_id:
-                description: ID of category
+            created_at:
+                description: Timestamp when the TV show was created
+                example: "2023-10-01T12:00:00Z"
+                format: date-time
+                type: string
+            description:
+                description: Description of the TV show
+                example: This is the description of the TV show.
+                type: string
+            genre:
+                description: Genre of the TV show
+                example: Drama
+                type: string
+            id:
+                description: ID of the TV show
                 example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
                 format: uuid4
                 type: string
+            title:
+                description: Title of the TV show
+                example: TV Show Title
+                maxLength: !!float 255
+                type: string
+            updated_at:
+                description: Timestamp when the TV show was last updated
+                example: "2023-10-02T12:00:00Z"
+                format: date-time
+                type: string
+        required:
+            - id
+            - title
+            - genre
+            - description
+        type: object
+    tVShowSchedule:
+        properties:
+            day:
+                description: Day of the week for the schedule
+                example: Monday
+                type: string
+            id:
+                description: ID of the schedule
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                format: uuid4
+                type: string
+            is_active:
+                description: Indicates if the show is active on this day
+                example: true
+                type: boolean
+            time:
+                description: Time of the schedule
+                example: "2023-10-01T14:00:00Z"
+                format: time
+                type: string
+            tv_show_id:
+                description: ID of the associated TV show
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                format: uuid4
+                type: string
+        required:
+            - id
+            - tv_show_id
+            - day
+            - is_active
+            - time
+        type: object
+    tag:
+        properties:
+            created_at:
+                description: Timestamp when the tag was created
+                example: "2023-10-01T12:00:00Z"
+                format: date-time
+                type: string
+            id:
+                description: ID of tag
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                format: uuid4
+                type: string
+            title:
+                description: Name of the tag
+                example: Politics
+                type: string
+            updated_at:
+                description: Timestamp when the tag was last updated
+                example: "2023-10-02T12:00:00Z"
+                format: date-time
+                type: string
+        required:
+            - id
+            - title
+        type: object
+    updateArticleRequest:
+        properties:
             content:
                 description: Content of the article
                 example: This is the content of the article.
@@ -1148,6 +1396,10 @@ definitions:
             image:
                 description: Image of the article
                 example: https://example.com/article-image.jpg
+                type: string
+            tags:
+                description: Content of the article
+                example: tag1,tag2,tag3
                 type: string
             title:
                 description: Title of the article
@@ -1165,21 +1417,6 @@ definitions:
                 example: Article updated successfully.
                 type: string
         type: object
-    updateCategoryRequest:
-        properties:
-            title:
-                description: Name of the category
-                example: Politics
-                type: string
-        required:
-            - title
-        type: object
-    updateCategoryResponse:
-        properties:
-            message:
-                example: Category updated successfully.
-                type: string
-        type: object
     updateFeaturedSectionRequest:
         properties:
             title:
@@ -1192,6 +1429,73 @@ definitions:
         properties:
             message:
                 example: Featured Section updated successfully.
+                type: string
+        type: object
+    updateTVShowRequest:
+        properties:
+            description:
+                description: Description of the TV show
+                example: This is the description of the TV show.
+                type: string
+            genre:
+                description: Genre of the TV show
+                example: Drama
+                type: string
+            title:
+                description: Title of the TV show
+                example: TV Show Title
+                maxLength: !!float 255
+                type: string
+        required:
+            - title
+        type: object
+    updateTVShowResponse:
+        properties:
+            message:
+                example: TV Show updated successfully.
+                type: string
+        type: object
+    updateTVShowScheduleRequest:
+        items:
+            properties:
+                day:
+                    description: Day of the week for the schedule
+                    example: Monday
+                    type: string
+                is_active:
+                    description: Indicates if the show is active on this day
+                    example: true
+                    type: boolean
+                time:
+                    description: Time of the schedule
+                    example: 14:00:00
+                    format: time
+                    type: string
+            required:
+                - time
+                - is_active
+                - day
+            type: object
+        type: array
+    updateTVShowScheduleResponse:
+        properties:
+            message:
+                example: TV Show schedule updated successfully.
+                type: string
+        type: object
+    updateTagRequest:
+        properties:
+            title:
+                description: Name of the tag
+                example: Politics
+                type: string
+        required:
+            - title
+        type: object
+    updateTagResponse:
+        properties:
+            message:
+                example: Tag updated successfully.
                 type: string
         type: object
 responses:

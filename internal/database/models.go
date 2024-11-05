@@ -13,6 +13,53 @@ import (
 	"github.com/google/uuid"
 )
 
+type DayEnum string
+
+const (
+	DayEnumMonday    DayEnum = "Monday"
+	DayEnumTuesday   DayEnum = "Tuesday"
+	DayEnumWednesday DayEnum = "Wednesday"
+	DayEnumThursday  DayEnum = "Thursday"
+	DayEnumFriday    DayEnum = "Friday"
+	DayEnumSaturday  DayEnum = "Saturday"
+	DayEnumSunday    DayEnum = "Sunday"
+)
+
+func (e *DayEnum) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = DayEnum(s)
+	case string:
+		*e = DayEnum(s)
+	default:
+		return fmt.Errorf("unsupported scan type for DayEnum: %T", src)
+	}
+	return nil
+}
+
+type NullDayEnum struct {
+	DayEnum DayEnum
+	Valid   bool // Valid is true if DayEnum is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullDayEnum) Scan(value interface{}) error {
+	if value == nil {
+		ns.DayEnum, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.DayEnum.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullDayEnum) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.DayEnum), nil
+}
+
 type ProviderType string
 
 const (
@@ -116,16 +163,9 @@ type Article struct {
 	Description sql.NullString
 	Content     string
 	Image       string
-	CategoryID  uuid.NullUUID
+	Tags        sql.NullString
 	CreatedAt   sql.NullTime
 	UpdatedAt   sql.NullTime
-}
-
-type Category struct {
-	ID        uuid.UUID
-	Title     string
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
 }
 
 type FeaturedArticle struct {
@@ -188,6 +228,30 @@ type StreamStatus struct {
 	ViewersCount    sql.NullInt32
 	CreatedAt       sql.NullTime
 	UpdatedAt       sql.NullTime
+}
+
+type Tag struct {
+	ID        uuid.UUID
+	Title     string
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
+}
+
+type TvShow struct {
+	ID          uuid.UUID
+	Title       string
+	Genre       sql.NullString
+	Description sql.NullString
+	CreatedAt   sql.NullTime
+	UpdatedAt   sql.NullTime
+}
+
+type TvShowSchedule struct {
+	ID       uuid.UUID
+	TvShowID uuid.UUID
+	Day      DayEnum
+	Time     sql.NullTime
+	IsActive bool
 }
 
 type User struct {

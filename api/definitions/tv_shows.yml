@@ -1,0 +1,195 @@
+swagger: "2.0"
+info:
+  title: github.com/JehadAbdulwafi/tv_shows
+  version: 0.1.0
+paths: {}
+definitions:
+  TVShow:
+    type: object
+    required:
+      - id
+      - title
+      - genre
+      - description
+    properties:
+      id:
+        type: string
+        format: uuid4
+        description: ID of the TV show
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      title:
+        type: string
+        description: Title of the TV show
+        maxLength: 255
+        example: "TV Show Title"
+      genre:
+        type: string
+        description: Genre of the TV show
+        example: "Drama"
+      description:
+        type: string
+        description: Description of the TV show
+        example: "This is the description of the TV show."
+      created_at:
+        type: string
+        format: date-time
+        description: Timestamp when the TV show was created
+        example: "2023-10-01T12:00:00Z"
+      updated_at:
+        type: string
+        format: date-time
+        description: Timestamp when the TV show was last updated
+        example: "2023-10-02T12:00:00Z"
+
+  CreateTVShowRequest:
+    type: object
+    required:
+      - title
+    properties:
+      title:
+        type: string
+        description: Title of the TV show
+        maxLength: 255
+        example: "TV Show Title"
+      genre:
+        type: string
+        description: Genre of the TV show
+        example: "Drama"
+      description:
+        type: string
+        description: Description of the TV show
+        example: "This is the description of the TV show."
+
+  CreateTVShowResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "TV Show created successfully."
+
+  GetTVShowResponse:
+    type: object
+    properties:
+      tv_show:
+        $ref: "#/definitions/TVShow"
+
+  GetTVShowsResponse:
+    type: array
+    items:
+      $ref: "#/definitions/TVShow"
+
+  UpdateTVShowRequest:
+    type: object
+    required:
+      - title
+    properties:
+      title:
+        type: string
+        description: Title of the TV show
+        maxLength: 255
+        example: "TV Show Title"
+      genre:
+        type: string
+        description: Genre of the TV show
+        example: "Drama"
+      description:
+        type: string
+        description: Description of the TV show
+        example: "This is the description of the TV show."
+
+  UpdateTVShowResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "TV Show updated successfully."
+
+  DeleteTVShowResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "TV Show deleted successfully."
+
+  TVShowSchedule:
+    type: object
+    required:
+      - id
+      - tv_show_id
+      - day
+      - is_active
+      - time
+    properties:
+      id:
+        type: string
+        format: uuid4
+        description: ID of the schedule
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      tv_show_id:
+        type: string
+        format: uuid4
+        description: ID of the associated TV show
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      day:
+        type: string
+        description: Day of the week for the schedule
+        example: "Monday"
+      time:
+        type: string
+        format: time
+        description: Time of the schedule
+        example: "2023-10-01T14:00:00Z"
+      is_active:
+        type: boolean
+        description: Indicates if the show is active on this day
+        example: true
+
+  GetTVShowSchedulesResponse:
+    type: array
+    items:
+      $ref: "#/definitions/TVShowSchedule"
+
+  UpdateTVShowScheduleRequest:
+    type: array
+    items:
+      type: object
+      required:
+        - time
+        - is_active
+        - day
+      properties:
+        time:
+          type: string
+          format: time
+          description: Time of the schedule
+          example: "14:00:00"
+        is_active:
+          type: boolean
+          description: Indicates if the show is active on this day
+          example: true
+        day:
+          type: string
+          description: Day of the week for the schedule
+          example: "Monday"
+
+  UpdateTVShowScheduleResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "TV Show schedule updated successfully."
+
+  GetTVShowWithSchedulesResponse:
+    type: object
+    properties:
+      tv_show:
+        $ref: "#/definitions/TVShow"
+      schedules:
+        type: array
+        items:
+          $ref: "#/definitions/TVShowSchedule"
+
+  GetAllTVShowsWithSchedulesResponse:
+    type: array
+    items:
+      $ref: "#/definitions/GetTVShowWithSchedulesResponse"

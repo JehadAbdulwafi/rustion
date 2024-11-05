@@ -14,19 +14,19 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// UpdateCategoryRequest update category request
+// UpdateTagRequest update tag request
 //
-// swagger:model updateCategoryRequest
-type UpdateCategoryRequest struct {
+// swagger:model updateTagRequest
+type UpdateTagRequest struct {
 
-	// Name of the category
+	// Name of the tag
 	// Example: Politics
 	// Required: true
 	Title *string `json:"title"`
 }
 
-// Validate validates this update category request
-func (m *UpdateCategoryRequest) Validate(formats strfmt.Registry) error {
+// Validate validates this update tag request
+func (m *UpdateTagRequest) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateTitle(formats); err != nil {
@@ -39,7 +39,7 @@ func (m *UpdateCategoryRequest) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *UpdateCategoryRequest) validateTitle(formats strfmt.Registry) error {
+func (m *UpdateTagRequest) validateTitle(formats strfmt.Registry) error {
 
 	if err := validate.Required("title", "body", m.Title); err != nil {
 		return err
@@ -48,13 +48,13 @@ func (m *UpdateCategoryRequest) validateTitle(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this update category request based on context it is used
-func (m *UpdateCategoryRequest) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this update tag request based on context it is used
+func (m *UpdateTagRequest) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *UpdateCategoryRequest) MarshalBinary() ([]byte, error) {
+func (m *UpdateTagRequest) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -62,8 +62,8 @@ func (m *UpdateCategoryRequest) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *UpdateCategoryRequest) UnmarshalBinary(b []byte) error {
-	var res UpdateCategoryRequest
+func (m *UpdateTagRequest) UnmarshalBinary(b []byte) error {
+	var res UpdateTagRequest
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

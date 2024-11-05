@@ -177,12 +177,6 @@ func (m *GetFeaturedSectionWithArticlesResponse) UnmarshalBinary(b []byte) error
 // swagger:model GetFeaturedSectionWithArticlesResponseArticlesItems0
 type GetFeaturedSectionWithArticlesResponseArticlesItems0 struct {
 
-	// ID of article
-	// Example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-	// Required: true
-	// Format: uuid4
-	CategoryID *strfmt.UUID4 `json:"category_id"`
-
 	// Content of the article
 	// Example: This is the content of the article.
 	// Required: true
@@ -208,6 +202,10 @@ type GetFeaturedSectionWithArticlesResponseArticlesItems0 struct {
 	// Required: true
 	Image *string `json:"image"`
 
+	// Content of the article
+	// Example: tag1,tag2,tag3
+	Tags string `json:"tags,omitempty"`
+
 	// Title of the article
 	// Example: Article Title
 	// Required: true
@@ -223,10 +221,6 @@ type GetFeaturedSectionWithArticlesResponseArticlesItems0 struct {
 // Validate validates this get featured section with articles response articles items0
 func (m *GetFeaturedSectionWithArticlesResponseArticlesItems0) Validate(formats strfmt.Registry) error {
 	var res []error
-
-	if err := m.validateCategoryID(formats); err != nil {
-		res = append(res, err)
-	}
 
 	if err := m.validateContent(formats); err != nil {
 		res = append(res, err)
@@ -255,19 +249,6 @@ func (m *GetFeaturedSectionWithArticlesResponseArticlesItems0) Validate(formats 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (m *GetFeaturedSectionWithArticlesResponseArticlesItems0) validateCategoryID(formats strfmt.Registry) error {
-
-	if err := validate.Required("category_id", "body", m.CategoryID); err != nil {
-		return err
-	}
-
-	if err := validate.FormatOf("category_id", "body", "uuid4", m.CategoryID.String(), formats); err != nil {
-		return err
-	}
-
 	return nil
 }
 

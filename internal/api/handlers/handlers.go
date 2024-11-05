@@ -5,11 +5,12 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/api"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/articles"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/auth"
-	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/categories"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/common"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/featured_sections"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/push"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/streams"
+	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/tags"
+	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/tv_shows"
 	"github.com/labstack/echo/v4"
 )
 
@@ -24,13 +25,6 @@ func AttachAllRoutes(s *api.Server) {
 		auth.GetUserInfoRoute(s),
 		auth.PostLoginRoute(s),
 		auth.PostRegisterRoute(s),
-		categories.DeleteCategoryRoute(s),
-		categories.GetAllCategoriesRoute(s),
-		categories.GetCategoriesWithAriclesRoute(s),
-		categories.GetCategoryRoute(s),
-		categories.GetCategoryWithAriclesRoute(s),
-		categories.PostCreateCategoryRoute(s),
-		categories.PutUpdateCategoryRoute(s),
 		common.GetHealthyRoute(s),
 		common.GetSwaggerRoute(s),
 		common.GetVersionRoute(s),
@@ -48,5 +42,20 @@ func AttachAllRoutes(s *api.Server) {
 		streams.PostPublishStreamRoute(s),
 		streams.PostStopStreamRoute(s),
 		streams.PostUnpublishStreamRoute(s),
+		tags.DeleteTagRoute(s),
+		tags.GetAllTagsRoute(s),
+		tags.GetTagRoute(s),
+		tags.GetTagWithAriclesRoute(s),
+		tags.GetTagsWithAriclesRoute(s),
+		tags.PostCreateTagRoute(s),
+		tags.PutUpdateTagRoute(s),
+		tv_shows.DeleteTvShowRoute(s),
+		tv_shows.GetAllTvShowsRoute(s),
+		tv_shows.GetAllTvShowsWithScheduleRoute(s),
+		tv_shows.GetTvShowRoute(s),
+		tv_shows.GetTvShowWithScheduleRoute(s),
+		tv_shows.PostCreateTvShowRoute(s),
+		tv_shows.PutUpdateTVShowScheduleRoute(s),
+		tv_shows.PutUpdateTvShowRoute(s),
 	}
 }

@@ -102,17 +102,17 @@ func Init(s *api.Server) {
 			},
 		})),
 
-		APIV1Categories: s.Echo.Group("/api/v1/categories", middleware.AuthWithConfig(middleware.AuthConfig{
+		APIV1Tags: s.Echo.Group("/api/v1/tags", middleware.AuthWithConfig(middleware.AuthConfig{
 			S:    s,
 			Mode: middleware.AuthModeOptional,
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
-				case "/api/v1/categories/:id":
+				case "/api/v1/tags/:id":
 					if c.Request().Method == http.MethodGet {
 						return true
 					}
 					return false
-				case "/api/v1/categories":
+				case "/api/v1/tags":
 					if c.Request().Method == http.MethodPost {
 						return false
 					}
@@ -140,6 +140,11 @@ func Init(s *api.Server) {
 				}
 				return false
 			},
+		})),
+
+		APIV1TvShows: s.Echo.Group("/api/v1/tv-shows", middleware.AuthWithConfig(middleware.AuthConfig{
+			S:    s,
+			Mode: middleware.AuthModeOptional,
 		})),
 
 		APIV1Push: s.Echo.Group("/api/v1/push", middleware.Auth(s)),

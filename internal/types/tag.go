@@ -14,69 +14,42 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// Article article
+// Tag tag
 //
-// swagger:model article
-type Article struct {
+// swagger:model tag
+type Tag struct {
 
-	// Content of the article
-	// Example: This is the content of the article.
-	// Required: true
-	Content *string `json:"content"`
-
-	// Timestamp when the article was created
+	// Timestamp when the tag was created
 	// Example: 2023-10-01T12:00:00Z
 	// Format: date-time
 	CreatedAt strfmt.DateTime `json:"created_at,omitempty"`
 
-	// Description of the article
-	// Example: This is the description of the article.
-	Description string `json:"description,omitempty"`
-
-	// ID of article
+	// ID of tag
 	// Example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
 	// Required: true
 	// Format: uuid4
 	ID *strfmt.UUID4 `json:"id"`
 
-	// Image of the article
-	// Example: https://example.com/article-image.jpg
+	// Name of the tag
+	// Example: Politics
 	// Required: true
-	Image *string `json:"image"`
-
-	// Content of the article
-	// Example: tag1,tag2,tag3
-	Tags string `json:"tags,omitempty"`
-
-	// Title of the article
-	// Example: Article Title
-	// Required: true
-	// Max Length: 255
 	Title *string `json:"title"`
 
-	// Timestamp when the article was last updated
+	// Timestamp when the tag was last updated
 	// Example: 2023-10-02T12:00:00Z
 	// Format: date-time
 	UpdatedAt strfmt.DateTime `json:"updated_at,omitempty"`
 }
 
-// Validate validates this article
-func (m *Article) Validate(formats strfmt.Registry) error {
+// Validate validates this tag
+func (m *Tag) Validate(formats strfmt.Registry) error {
 	var res []error
-
-	if err := m.validateContent(formats); err != nil {
-		res = append(res, err)
-	}
 
 	if err := m.validateCreatedAt(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if err := m.validateID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateImage(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -94,16 +67,7 @@ func (m *Article) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Article) validateContent(formats strfmt.Registry) error {
-
-	if err := validate.Required("content", "body", m.Content); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *Article) validateCreatedAt(formats strfmt.Registry) error {
+func (m *Tag) validateCreatedAt(formats strfmt.Registry) error {
 	if swag.IsZero(m.CreatedAt) { // not required
 		return nil
 	}
@@ -115,7 +79,7 @@ func (m *Article) validateCreatedAt(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Article) validateID(formats strfmt.Registry) error {
+func (m *Tag) validateID(formats strfmt.Registry) error {
 
 	if err := validate.Required("id", "body", m.ID); err != nil {
 		return err
@@ -128,29 +92,16 @@ func (m *Article) validateID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Article) validateImage(formats strfmt.Registry) error {
-
-	if err := validate.Required("image", "body", m.Image); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *Article) validateTitle(formats strfmt.Registry) error {
+func (m *Tag) validateTitle(formats strfmt.Registry) error {
 
 	if err := validate.Required("title", "body", m.Title); err != nil {
 		return err
 	}
 
-	if err := validate.MaxLength("title", "body", *m.Title, 255); err != nil {
-		return err
-	}
-
 	return nil
 }
 
-func (m *Article) validateUpdatedAt(formats strfmt.Registry) error {
+func (m *Tag) validateUpdatedAt(formats strfmt.Registry) error {
 	if swag.IsZero(m.UpdatedAt) { // not required
 		return nil
 	}
@@ -162,13 +113,13 @@ func (m *Article) validateUpdatedAt(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this article based on context it is used
-func (m *Article) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this tag based on context it is used
+func (m *Tag) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *Article) MarshalBinary() ([]byte, error) {
+func (m *Tag) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -176,8 +127,8 @@ func (m *Article) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *Article) UnmarshalBinary(b []byte) error {
-	var res Article
+func (m *Tag) UnmarshalBinary(b []byte) error {
+	var res Tag
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

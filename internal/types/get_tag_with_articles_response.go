@@ -15,27 +15,27 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// GetCategoryWithArticlesResponse get category with articles response
+// GetTagWithArticlesResponse get tag with articles response
 //
-// swagger:model getCategoryWithArticlesResponse
-type GetCategoryWithArticlesResponse struct {
+// swagger:model getTagWithArticlesResponse
+type GetTagWithArticlesResponse struct {
 
 	// articles
-	Articles []*GetCategoryWithArticlesResponseArticlesItems0 `json:"articles"`
+	Articles []*GetTagWithArticlesResponseArticlesItems0 `json:"articles"`
 
-	// category
-	Category *Category `json:"category,omitempty"`
+	// tag
+	Tag *Tag `json:"tag,omitempty"`
 }
 
-// Validate validates this get category with articles response
-func (m *GetCategoryWithArticlesResponse) Validate(formats strfmt.Registry) error {
+// Validate validates this get tag with articles response
+func (m *GetTagWithArticlesResponse) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateArticles(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.validateCategory(formats); err != nil {
+	if err := m.validateTag(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -45,7 +45,7 @@ func (m *GetCategoryWithArticlesResponse) Validate(formats strfmt.Registry) erro
 	return nil
 }
 
-func (m *GetCategoryWithArticlesResponse) validateArticles(formats strfmt.Registry) error {
+func (m *GetTagWithArticlesResponse) validateArticles(formats strfmt.Registry) error {
 	if swag.IsZero(m.Articles) { // not required
 		return nil
 	}
@@ -71,17 +71,17 @@ func (m *GetCategoryWithArticlesResponse) validateArticles(formats strfmt.Regist
 	return nil
 }
 
-func (m *GetCategoryWithArticlesResponse) validateCategory(formats strfmt.Registry) error {
-	if swag.IsZero(m.Category) { // not required
+func (m *GetTagWithArticlesResponse) validateTag(formats strfmt.Registry) error {
+	if swag.IsZero(m.Tag) { // not required
 		return nil
 	}
 
-	if m.Category != nil {
-		if err := m.Category.Validate(formats); err != nil {
+	if m.Tag != nil {
+		if err := m.Tag.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("category")
+				return ve.ValidateName("tag")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("category")
+				return ce.ValidateName("tag")
 			}
 			return err
 		}
@@ -90,15 +90,15 @@ func (m *GetCategoryWithArticlesResponse) validateCategory(formats strfmt.Regist
 	return nil
 }
 
-// ContextValidate validate this get category with articles response based on the context it is used
-func (m *GetCategoryWithArticlesResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validate this get tag with articles response based on the context it is used
+func (m *GetTagWithArticlesResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateArticles(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.contextValidateCategory(ctx, formats); err != nil {
+	if err := m.contextValidateTag(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -108,7 +108,7 @@ func (m *GetCategoryWithArticlesResponse) ContextValidate(ctx context.Context, f
 	return nil
 }
 
-func (m *GetCategoryWithArticlesResponse) contextValidateArticles(ctx context.Context, formats strfmt.Registry) error {
+func (m *GetTagWithArticlesResponse) contextValidateArticles(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.Articles); i++ {
 
@@ -133,19 +133,19 @@ func (m *GetCategoryWithArticlesResponse) contextValidateArticles(ctx context.Co
 	return nil
 }
 
-func (m *GetCategoryWithArticlesResponse) contextValidateCategory(ctx context.Context, formats strfmt.Registry) error {
+func (m *GetTagWithArticlesResponse) contextValidateTag(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.Category != nil {
+	if m.Tag != nil {
 
-		if swag.IsZero(m.Category) { // not required
+		if swag.IsZero(m.Tag) { // not required
 			return nil
 		}
 
-		if err := m.Category.ContextValidate(ctx, formats); err != nil {
+		if err := m.Tag.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("category")
+				return ve.ValidateName("tag")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("category")
+				return ce.ValidateName("tag")
 			}
 			return err
 		}
@@ -155,7 +155,7 @@ func (m *GetCategoryWithArticlesResponse) contextValidateCategory(ctx context.Co
 }
 
 // MarshalBinary interface implementation
-func (m *GetCategoryWithArticlesResponse) MarshalBinary() ([]byte, error) {
+func (m *GetTagWithArticlesResponse) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -163,8 +163,8 @@ func (m *GetCategoryWithArticlesResponse) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *GetCategoryWithArticlesResponse) UnmarshalBinary(b []byte) error {
-	var res GetCategoryWithArticlesResponse
+func (m *GetTagWithArticlesResponse) UnmarshalBinary(b []byte) error {
+	var res GetTagWithArticlesResponse
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
@@ -172,16 +172,10 @@ func (m *GetCategoryWithArticlesResponse) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// GetCategoryWithArticlesResponseArticlesItems0 get category with articles response articles items0
+// GetTagWithArticlesResponseArticlesItems0 get tag with articles response articles items0
 //
-// swagger:model GetCategoryWithArticlesResponseArticlesItems0
-type GetCategoryWithArticlesResponseArticlesItems0 struct {
-
-	// ID of article
-	// Example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-	// Required: true
-	// Format: uuid4
-	CategoryID *strfmt.UUID4 `json:"category_id"`
+// swagger:model GetTagWithArticlesResponseArticlesItems0
+type GetTagWithArticlesResponseArticlesItems0 struct {
 
 	// Content of the article
 	// Example: This is the content of the article.
@@ -208,6 +202,10 @@ type GetCategoryWithArticlesResponseArticlesItems0 struct {
 	// Required: true
 	Image *string `json:"image"`
 
+	// Content of the article
+	// Example: tag1,tag2,tag3
+	Tags string `json:"tags,omitempty"`
+
 	// Title of the article
 	// Example: Article Title
 	// Required: true
@@ -220,13 +218,9 @@ type GetCategoryWithArticlesResponseArticlesItems0 struct {
 	UpdatedAt strfmt.DateTime `json:"updated_at,omitempty"`
 }
 
-// Validate validates this get category with articles response articles items0
-func (m *GetCategoryWithArticlesResponseArticlesItems0) Validate(formats strfmt.Registry) error {
+// Validate validates this get tag with articles response articles items0
+func (m *GetTagWithArticlesResponseArticlesItems0) Validate(formats strfmt.Registry) error {
 	var res []error
-
-	if err := m.validateCategoryID(formats); err != nil {
-		res = append(res, err)
-	}
 
 	if err := m.validateContent(formats); err != nil {
 		res = append(res, err)
@@ -258,20 +252,7 @@ func (m *GetCategoryWithArticlesResponseArticlesItems0) Validate(formats strfmt.
 	return nil
 }
 
-func (m *GetCategoryWithArticlesResponseArticlesItems0) validateCategoryID(formats strfmt.Registry) error {
-
-	if err := validate.Required("category_id", "body", m.CategoryID); err != nil {
-		return err
-	}
-
-	if err := validate.FormatOf("category_id", "body", "uuid4", m.CategoryID.String(), formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *GetCategoryWithArticlesResponseArticlesItems0) validateContent(formats strfmt.Registry) error {
+func (m *GetTagWithArticlesResponseArticlesItems0) validateContent(formats strfmt.Registry) error {
 
 	if err := validate.Required("content", "body", m.Content); err != nil {
 		return err
@@ -280,7 +261,7 @@ func (m *GetCategoryWithArticlesResponseArticlesItems0) validateContent(formats 
 	return nil
 }
 
-func (m *GetCategoryWithArticlesResponseArticlesItems0) validateCreatedAt(formats strfmt.Registry) error {
+func (m *GetTagWithArticlesResponseArticlesItems0) validateCreatedAt(formats strfmt.Registry) error {
 	if swag.IsZero(m.CreatedAt) { // not required
 		return nil
 	}
@@ -292,7 +273,7 @@ func (m *GetCategoryWithArticlesResponseArticlesItems0) validateCreatedAt(format
 	return nil
 }
 
-func (m *GetCategoryWithArticlesResponseArticlesItems0) validateID(formats strfmt.Registry) error {
+func (m *GetTagWithArticlesResponseArticlesItems0) validateID(formats strfmt.Registry) error {
 
 	if err := validate.Required("id", "body", m.ID); err != nil {
 		return err
@@ -305,7 +286,7 @@ func (m *GetCategoryWithArticlesResponseArticlesItems0) validateID(formats strfm
 	return nil
 }
 
-func (m *GetCategoryWithArticlesResponseArticlesItems0) validateImage(formats strfmt.Registry) error {
+func (m *GetTagWithArticlesResponseArticlesItems0) validateImage(formats strfmt.Registry) error {
 
 	if err := validate.Required("image", "body", m.Image); err != nil {
 		return err
@@ -314,7 +295,7 @@ func (m *GetCategoryWithArticlesResponseArticlesItems0) validateImage(formats st
 	return nil
 }
 
-func (m *GetCategoryWithArticlesResponseArticlesItems0) validateTitle(formats strfmt.Registry) error {
+func (m *GetTagWithArticlesResponseArticlesItems0) validateTitle(formats strfmt.Registry) error {
 
 	if err := validate.Required("title", "body", m.Title); err != nil {
 		return err
@@ -327,7 +308,7 @@ func (m *GetCategoryWithArticlesResponseArticlesItems0) validateTitle(formats st
 	return nil
 }
 
-func (m *GetCategoryWithArticlesResponseArticlesItems0) validateUpdatedAt(formats strfmt.Registry) error {
+func (m *GetTagWithArticlesResponseArticlesItems0) validateUpdatedAt(formats strfmt.Registry) error {
 	if swag.IsZero(m.UpdatedAt) { // not required
 		return nil
 	}
@@ -339,13 +320,13 @@ func (m *GetCategoryWithArticlesResponseArticlesItems0) validateUpdatedAt(format
 	return nil
 }
 
-// ContextValidate validates this get category with articles response articles items0 based on context it is used
-func (m *GetCategoryWithArticlesResponseArticlesItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this get tag with articles response articles items0 based on context it is used
+func (m *GetTagWithArticlesResponseArticlesItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *GetCategoryWithArticlesResponseArticlesItems0) MarshalBinary() ([]byte, error) {
+func (m *GetTagWithArticlesResponseArticlesItems0) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -353,8 +334,8 @@ func (m *GetCategoryWithArticlesResponseArticlesItems0) MarshalBinary() ([]byte,
 }
 
 // UnmarshalBinary interface implementation
-func (m *GetCategoryWithArticlesResponseArticlesItems0) UnmarshalBinary(b []byte) error {
-	var res GetCategoryWithArticlesResponseArticlesItems0
+func (m *GetTagWithArticlesResponseArticlesItems0) UnmarshalBinary(b []byte) error {
+	var res GetTagWithArticlesResponseArticlesItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -14,13 +14,13 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// GetCategoriesWithArticlesResponse get categories with articles response
+// GetAllTVShowsWithSchedulesResponse get all t v shows with schedules response
 //
-// swagger:model getCategoriesWithArticlesResponse
-type GetCategoriesWithArticlesResponse []*GetCategoryWithArticlesResponse
+// swagger:model getAllTVShowsWithSchedulesResponse
+type GetAllTVShowsWithSchedulesResponse []*GetTVShowWithSchedulesResponse
 
-// Validate validates this get categories with articles response
-func (m GetCategoriesWithArticlesResponse) Validate(formats strfmt.Registry) error {
+// Validate validates this get all t v shows with schedules response
+func (m GetAllTVShowsWithSchedulesResponse) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	for i := 0; i < len(m); i++ {
@@ -47,8 +47,8 @@ func (m GetCategoriesWithArticlesResponse) Validate(formats strfmt.Registry) err
 	return nil
 }
 
-// ContextValidate validate this get categories with articles response based on the context it is used
-func (m GetCategoriesWithArticlesResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validate this get all t v shows with schedules response based on the context it is used
+func (m GetAllTVShowsWithSchedulesResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	for i := 0; i < len(m); i++ {
