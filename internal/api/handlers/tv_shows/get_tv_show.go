@@ -42,8 +42,9 @@ func convertDBTVShowToTVShow(tvShow database.TvShow) *types.TVShow {
 	return &types.TVShow{
 		ID:          (*strfmt.UUID4)(swag.String(tvShow.ID.String())),
 		Title:       &tvShow.Title,
-		Genre:       &tvShow.Genre.String,
-		Description: &tvShow.Description.String,
+		Genre:       tvShow.Genre.String,
+		Description: tvShow.Description.String,
+		Image:       &tvShow.Image.String,
 		CreatedAt:   strfmt.DateTime(tvShow.CreatedAt.Time),
 		UpdatedAt:   strfmt.DateTime(tvShow.UpdatedAt.Time),
 	}

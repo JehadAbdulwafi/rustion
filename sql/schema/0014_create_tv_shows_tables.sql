@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS tv_shows (
   title VARCHAR(255) NOT NULL,
   genre VARCHAR(100),
   description TEXT,
+  image TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP
 );

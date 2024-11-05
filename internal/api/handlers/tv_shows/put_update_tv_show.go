@@ -40,6 +40,10 @@ func putUpdateTvShowHandler(s *api.Server) echo.HandlerFunc {
 				String: body.Description,
 				Valid:  body.Description != "",
 			},
+			Image: sql.NullString{
+				String: body.Image,
+				Valid:  body.Image != "",
+			},
 		})
 
 		if err != nil {

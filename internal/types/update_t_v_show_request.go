@@ -27,6 +27,10 @@ type UpdateTVShowRequest struct {
 	// Example: Drama
 	Genre string `json:"genre,omitempty"`
 
+	// Image of the TV show
+	// Example: https://example.com/image.jpg
+	Image string `json:"image,omitempty"`
+
 	// Title of the TV show
 	// Example: TV Show Title
 	// Required: true

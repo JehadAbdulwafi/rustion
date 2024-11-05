@@ -242,6 +242,7 @@ type TvShow struct {
 	Title       string
 	Genre       sql.NullString
 	Description sql.NullString
+	Image       sql.NullString
 	CreatedAt   sql.NullTime
 	UpdatedAt   sql.NullTime
 }

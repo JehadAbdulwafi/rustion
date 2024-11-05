@@ -822,6 +822,10 @@ definitions:
                 description: Genre of the TV show
                 example: Drama
                 type: string
+            image:
+                description: Image of the TV show
+                example: https://example.com/image.jpg
+                type: string
             title:
                 description: Title of the TV show
                 example: TV Show Title
@@ -1310,6 +1314,10 @@ definitions:
                 example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
                 format: uuid4
                 type: string
+            image:
+                description: Image of the TV show
+                example: https://example.com/image.jpg
+                type: string
             title:
                 description: Title of the TV show
                 example: TV Show Title
@@ -1323,8 +1331,7 @@ definitions:
         required:
             - id
             - title
-            - genre
-            - description
+            - image
         type: object
     tVShowSchedule:
         properties:
@@ -1440,6 +1447,10 @@ definitions:
             genre:
                 description: Genre of the TV show
                 example: Drama
+                type: string
+            image:
+                description: Image of the TV show
+                example: https://example.com/image.jpg
                 type: string
             title:
                 description: Title of the TV show

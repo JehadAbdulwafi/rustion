@@ -13,25 +13,32 @@ import (
 )
 
 const createTVShow = `-- name: CreateTVShow :one
-INSERT INTO tv_shows (title, genre, description)
-VALUES ($1, $2, $3)
-RETURNING id, title, genre, description, created_at, updated_at
+INSERT INTO tv_shows (title, genre, description, image)
+VALUES ($1, $2, $3, $4)
+RETURNING id, title, genre, description, image, created_at, updated_at
 `
 
 type CreateTVShowParams struct {
 	Title       string
 	Genre       sql.NullString
 	Description sql.NullString
+	Image       sql.NullString
 }
 
 func (q *Queries) CreateTVShow(ctx context.Context, arg CreateTVShowParams) (TvShow, error) {
-	row := q.db.QueryRowContext(ctx, createTVShow, arg.Title, arg.Genre, arg.Description)
+	row := q.db.QueryRowContext(ctx, createTVShow,
+		arg.Title,
+		arg.Genre,
+		arg.Description,
+		arg.Image,
+	)
 	var i TvShow
 	err := row.Scan(
 		&i.ID,
 		&i.Title,
 		&i.Genre,
 		&i.Description,
+		&i.Image,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -48,7 +55,7 @@ func (q *Queries) DeleteTVShow(ctx context.Context, id uuid.UUID) error {
 }
 
 const getAllTVShows = `-- name: GetAllTVShows :many
-SELECT id, title, genre, description, created_at, updated_at FROM tv_shows
+SELECT id, title, genre, description, image, created_at, updated_at FROM tv_shows
 `
 
 func (q *Queries) GetAllTVShows(ctx context.Context) ([]TvShow, error) {
@@ -65,6 +72,7 @@ func (q *Queries) GetAllTVShows(ctx context.Context) ([]TvShow, error) {
 			&i.Title,
 			&i.Genre,
 			&i.Description,
+			&i.Image,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -82,7 +90,7 @@ func (q *Queries) GetAllTVShows(ctx context.Context) ([]TvShow, error) {
 }
 
 const getTVShowByID = `-- name: GetTVShowByID :one
-SELECT id, title, genre, description, created_at, updated_at FROM tv_shows WHERE id = $1
+SELECT id, title, genre, description, image, created_at, updated_at FROM tv_shows WHERE id = $1
 `
 
 func (q *Queries) GetTVShowByID(ctx context.Context, id uuid.UUID) (TvShow, error) {
@@ -93,6 +101,7 @@ func (q *Queries) GetTVShowByID(ctx context.Context, id uuid.UUID) (TvShow, erro
 		&i.Title,
 		&i.Genre,
 		&i.Description,
+		&i.Image,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -134,9 +143,9 @@ func (q *Queries) GetTVShowSchedulesByTVShowID(ctx context.Context, tvShowID uui
 
 const updateTVShow = `-- name: UpdateTVShow :one
 UPDATE tv_shows
-SET title = $2, genre = $3, description = $4, updated_at = CURRENT_TIMESTAMP
+SET title = $2, genre = $3, description = $4, image = $5, updated_at = CURRENT_TIMESTAMP
 WHERE id = $1
-RETURNING id, title, genre, description, created_at, updated_at
+RETURNING id, title, genre, description, image, created_at, updated_at
 `
 
 type UpdateTVShowParams struct {
@@ -144,6 +153,7 @@ type UpdateTVShowParams struct {
 	Title       string
 	Genre       sql.NullString
 	Description sql.NullString
+	Image       sql.NullString
 }
 
 func (q *Queries) UpdateTVShow(ctx context.Context, arg UpdateTVShowParams) (TvShow, error) {
@@ -152,6 +162,7 @@ func (q *Queries) UpdateTVShow(ctx context.Context, arg UpdateTVShowParams) (TvS
 		arg.Title,
 		arg.Genre,
 		arg.Description,
+		arg.Image,
 	)
 	var i TvShow
 	err := row.Scan(
@@ -159,6 +170,7 @@ func (q *Queries) UpdateTVShow(ctx context.Context, arg UpdateTVShowParams) (TvS
 		&i.Title,
 		&i.Genre,
 		&i.Description,
+		&i.Image,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

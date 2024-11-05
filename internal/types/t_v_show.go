@@ -26,19 +26,22 @@ type TVShow struct {
 
 	// Description of the TV show
 	// Example: This is the description of the TV show.
-	// Required: true
-	Description *string `json:"description"`
+	Description string `json:"description,omitempty"`
 
 	// Genre of the TV show
 	// Example: Drama
-	// Required: true
-	Genre *string `json:"genre"`
+	Genre string `json:"genre,omitempty"`
 
 	// ID of the TV show
 	// Example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
 	// Required: true
 	// Format: uuid4
 	ID *strfmt.UUID4 `json:"id"`
+
+	// Image of the TV show
+	// Example: https://example.com/image.jpg
+	// Required: true
+	Image *string `json:"image"`
 
 	// Title of the TV show
 	// Example: TV Show Title
@@ -60,15 +63,11 @@ func (m *TVShow) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateDescription(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateGenre(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateImage(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -98,24 +97,6 @@ func (m *TVShow) validateCreatedAt(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *TVShow) validateDescription(formats strfmt.Registry) error {
-
-	if err := validate.Required("description", "body", m.Description); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *TVShow) validateGenre(formats strfmt.Registry) error {
-
-	if err := validate.Required("genre", "body", m.Genre); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (m *TVShow) validateID(formats strfmt.Registry) error {
 
 	if err := validate.Required("id", "body", m.ID); err != nil {
@@ -123,6 +104,15 @@ func (m *TVShow) validateID(formats strfmt.Registry) error {
 	}
 
 	if err := validate.FormatOf("id", "body", "uuid4", m.ID.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *TVShow) validateImage(formats strfmt.Registry) error {
+
+	if err := validate.Required("image", "body", m.Image); err != nil {
 		return err
 	}
 

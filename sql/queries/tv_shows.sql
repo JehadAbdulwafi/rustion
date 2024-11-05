@@ -1,6 +1,6 @@
 -- name: CreateTVShow :one
-INSERT INTO tv_shows (title, genre, description)
-VALUES ($1, $2, $3)
+INSERT INTO tv_shows (title, genre, description, image)
+VALUES ($1, $2, $3, $4)
 RETURNING *;
 
 -- name: GetTVShowByID :one
@@ -11,7 +11,7 @@ SELECT * FROM tv_shows;
 
 -- name: UpdateTVShow :one
 UPDATE tv_shows
-SET title = $2, genre = $3, description = $4, updated_at = CURRENT_TIMESTAMP
+SET title = $2, genre = $3, description = $4, image = $5, updated_at = CURRENT_TIMESTAMP
 WHERE id = $1
 RETURNING *;
 

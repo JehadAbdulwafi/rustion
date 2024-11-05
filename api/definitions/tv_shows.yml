@@ -9,8 +9,7 @@ definitions:
     required:
       - id
       - title
-      - genre
-      - description
+      - image
     properties:
       id:
         type: string
@@ -26,6 +25,10 @@ definitions:
         type: string
         description: Genre of the TV show
         example: "Drama"
+      image:
+        type: string
+        description: Image of the TV show
+        example: "https://example.com/image.jpg"
       description:
         type: string
         description: Description of the TV show
@@ -55,6 +58,10 @@ definitions:
         type: string
         description: Genre of the TV show
         example: "Drama"
+      image:
+        type: string
+        description: Image of the TV show
+        example: "https://example.com/image.jpg"
       description:
         type: string
         description: Description of the TV show
@@ -92,6 +99,10 @@ definitions:
         type: string
         description: Genre of the TV show
         example: "Drama"
+      image:
+        type: string
+        description: Image of the TV show
+        example: "https://example.com/image.jpg"
       description:
         type: string
         description: Description of the TV show
