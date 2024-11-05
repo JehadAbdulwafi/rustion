@@ -55,7 +55,7 @@ export class APIV1Client {
       );
     }
 
-    if (Array.isArray(body.errors) && body.errors.length > 0) {
+    if (Array.isArray(body?.errors) && body?.errors?.length > 0) {
       const responseError = body.errors[0];
       const errorMessage = responseError.details
         ? responseError.details.message

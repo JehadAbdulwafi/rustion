@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { View } from "tamagui";
 import { Dimensions, StyleSheet } from "react-native";
 
@@ -9,7 +8,6 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
-import { DATA } from "../../constants/data";
 import CarouselItem from "./CarouselItem";
 import { COLOR } from "@/constants/Colors";
 import HomeHeader from "../ui/HomeHeader";
@@ -19,8 +17,13 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 const SPACING = 10;
 const ITEM_WIDTH = SCREEN_WIDTH * 0.85;
 
-const Carousel = () => {
-  const [data] = useState(DATA);
+type CarouselProps = {
+  data: TvShow[];
+}
+
+
+const Carousel = ({ data }: CarouselProps) => {
+  console.log(data)
   const scrollX = useSharedValue(0);
 
   const onScroll = useAnimatedScrollHandler((e) => {

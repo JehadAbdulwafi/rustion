@@ -1,6 +1,5 @@
 import { StyleSheet } from "react-native";
 import { Text, View } from "tamagui";
-import { DATA_ITEM_TYPE } from "../../constants/data";
 import Animated, {
   SharedValue,
   interpolate,
@@ -11,7 +10,7 @@ const OVERFLOW_HEIGHT = 75;
 const SPACING = 10;
 
 type CarouselItemProps = {
-  data: DATA_ITEM_TYPE[];
+  data: TvShow[];
   scrollXAnimated: SharedValue<number>;
 };
 
@@ -37,7 +36,7 @@ const CarouselItem = ({ data, scrollXAnimated }: CarouselItemProps) => {
               <Text style={[styles.title]} numberOfLines={1}>
                 {item.title}
               </Text>
-              <Text style={[styles.location]}>{item.location}</Text>
+              <Text style={[styles.location]}>{item.genre}</Text>
             </View>
           );
         })}

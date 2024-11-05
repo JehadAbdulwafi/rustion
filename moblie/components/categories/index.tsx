@@ -38,16 +38,13 @@ const colors = [
   },
 ]
 
-export default function Categories({ data }: { data: Category[] }) {
+export default function Categories({ data }: { data: Tag[] }) {
   return (
     <View>
       <XStack px={16} py={10} pt={20} flexWrap="wrap" ai={"center"} gap={6}>
         {data.map((item, idx) => (
-          <XStack key={idx} bg={"$color6"} ai={"center"} fg={1} gap={6} br={8} p={6}>
-            <View bg={colors[idx].background} p={5} ai={"center"} br={20} padding={6}>
-              <Icon name={icons_names[idx]} color={colors[idx].color} />
-            </View>
-            <Text>{item.title}</Text>
+          <XStack key={idx} bg={"$color6"} ai={"center"} gap={6} br={8} p={6}>
+            <Text>#{item.title}</Text>
           </XStack>
         ))}
       </XStack>

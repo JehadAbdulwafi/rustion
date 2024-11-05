@@ -5,13 +5,23 @@ type FeaturedSection = {
   updated_at: string
 }
 
+type TvShow = {
+  id: string
+  title: string
+  description: string
+  genre: string
+  image: string
+  created_at: string
+  updated_at: string
+}
+
 type Article = {
   id: string
   title: string
   content: string
   description: string
   image: string
-  category_id: string
+  tags: string
   created_at: string
   updated_at: string
 }
@@ -22,14 +32,14 @@ type FeaturedSectionWithArticles = {
 }
 
 
-type Category = {
+type Tag = {
   id: string
   title: string
   created_at: string
   updated_at: string
 }
 
-type CategoryWithArticles = {
-  category: Category
+type TagWithArticles = {
+  category: Tag
   articles: Article[]
 }

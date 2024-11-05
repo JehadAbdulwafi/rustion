@@ -6,7 +6,6 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { Dimensions, StyleSheet, View } from "react-native";
-import { DATA_ITEM_TYPE } from "../../constants/data";
 import { Text } from "tamagui";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
@@ -17,7 +16,7 @@ const ITEM_HEIGHT = SCREEN_HEIGHT / 1.7 - HEADER_HEIGHT - SPACING * 2;
 
 type Props = {
   idx: number;
-  item: DATA_ITEM_TYPE;
+  item: TvShow;
   scrollX: SharedValue<number>;
 };
 
@@ -82,7 +81,7 @@ const CarouselItem = ({ idx, item, scrollX }: Props) => {
       ]}
     >
       <Animated.Image
-        source={{ uri: item.poster }}
+        source={{ uri: item.image }}
         style={[
           {
             flex: 1,
@@ -102,7 +101,7 @@ const CarouselItem = ({ idx, item, scrollX }: Props) => {
           <Text style={[styles.title]} numberOfLines={1}>
             {item.title}
           </Text>
-          <Text style={[styles.location]}>{item.location}</Text>
+          <Text style={[styles.location]}>{item.genre}</Text>
         </View>
       </View>
     </Animated.View>

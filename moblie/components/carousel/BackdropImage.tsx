@@ -5,7 +5,13 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 
-const BackdropImage = ({ item, idx, scrollX }: any) => {
+type BackdropImageProps = {
+  item: TvShow;
+  idx: number;
+  scrollX: any;
+};
+
+const BackdropImage = ({ item, idx, scrollX }: BackdropImageProps) => {
   const stylez = useAnimatedStyle(() => {
     return {
       opacity: interpolate(
@@ -19,7 +25,7 @@ const BackdropImage = ({ item, idx, scrollX }: any) => {
 
   return (
     <Animated.Image
-      source={{ uri: item.poster }}
+      source={{ uri: item.image }}
       style={[StyleSheet.absoluteFillObject, stylez]}
       blurRadius={100}
     />
