@@ -8,12 +8,14 @@ import { View } from "@/components/ui/View";
 import { navigationHeight } from "@/constants";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, StatusBar } from "react-native";
+import { useTheme } from "tamagui";
 
 export default function HomeScreen() {
   const [categories, setCategories] = useState<Tag[]>([]);
   const [featuredSections, setFeaturedSections] = useState<FeaturedSectionWithArticles[]>([]);
   const [tvShows, setTvShows] = useState<TvShow[]>([]);
   const [loading, setLoading] = useState(false);
+  const theme = useTheme();
 
   useEffect(() => {
     (async () => {
@@ -47,13 +49,14 @@ export default function HomeScreen() {
         renderItem={() =>
           <>
             <Carousel data={tvShows} />
-            <Categories data={categories} />
+            {/* <Categories data={categories} /> */}
             <FeaturedRows data={featuredSections} />
           </>
         }
         style={{ flex: 1 }}
         contentContainerStyle={{
           paddingBottom: navigationHeight + 20,
+          backgroundColor: theme.background.val
         }}
       />
     </View>

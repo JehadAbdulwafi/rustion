@@ -6,12 +6,12 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { navigationHeight } from "@/constants";
-import { View } from "./View";
 import Tabs from "./Tabs";
 import { usePathname } from "expo-router";
 import { useEffect, useState } from "react";
+import { View } from "tamagui";
 
-const AnimatedView = Animated.createAnimatedComponent(View);
+const AView = Animated.createAnimatedComponent(View);
 
 const routesWithTabs = ["/", "/explore", "/account"];
 const TabBar = () => {
@@ -43,7 +43,7 @@ const TabBar = () => {
   });
 
   return (
-    <AnimatedView style={[styles.tabBar, rStyle]}>
+    <AView style={[styles.tabBar, rStyle]} backgroundColor={"$color2"}>
       <Tabs
         tabs={[
           { name: "Home", icon: "House", route: "/" },
@@ -54,7 +54,7 @@ const TabBar = () => {
         selectedIndex={selectedIndex}
         setSelectedIndex={setSelectedIndex}
       />
-    </AnimatedView>
+    </AView>
   );
 };
 
@@ -64,7 +64,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     height: navigationHeight,
-    backgroundColor: "#121212",
     position: "absolute",
     bottom: 0,
     left: 0,

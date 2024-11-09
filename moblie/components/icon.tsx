@@ -1,3 +1,4 @@
+import useTheme from "@/hooks/useTheme";
 import { IconNames } from "@/ptypes";
 import { LucideProps, icons } from "lucide-react-native";
 
@@ -7,7 +8,8 @@ type IconProps = {
 
 const Icon = ({ name, ...rest }: IconProps) => {
   const IconComponent = icons[name];
-  return <IconComponent size={20} {...rest} />;
+  const color = useTheme().getThemeColor({ props: { light: undefined, dark: undefined }, colorName: "icon" });
+  return <IconComponent size={20} {...rest} color={color} />;
 };
 
 export default Icon;

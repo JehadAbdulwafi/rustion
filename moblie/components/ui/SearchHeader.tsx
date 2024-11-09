@@ -1,8 +1,7 @@
 import { navigationHeight } from "@/constants";
-import { ArrowLeft } from "lucide-react-native";
 import { View } from "./View";
-import { DarkTheme } from "@react-navigation/native";
 import { Input } from "tamagui";
+import Icon from "../icon";
 
 type SearchHeaderProps = {
   handleSearch: (text: string) => void
@@ -17,10 +16,9 @@ export default function SearchHeader({ handleSearch }: SearchHeaderProps) {
         alignItems: "center",
         paddingHorizontal: 16,
         gap: 12,
-        backgroundColor: DarkTheme.colors.card,
       }}
     >
-      <ArrowLeft color={"white"} size={24} />
+      <Icon name="ArrowLeft" size={24} />
 
       <View style={{ flex: 1, backgroundColor: "transparent" }}>
         <Input

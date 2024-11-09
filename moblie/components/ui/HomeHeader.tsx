@@ -26,6 +26,7 @@ export default function HomeHeader() {
             textTransform: "uppercase",
             fontSize: 16,
             fontWeight: "700",
+            color: "#fff"
           }}
         >
           jehad

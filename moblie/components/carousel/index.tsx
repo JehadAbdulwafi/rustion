@@ -1,4 +1,4 @@
-import { View } from "tamagui";
+import { View, useTheme } from "tamagui";
 import { Dimensions, StyleSheet } from "react-native";
 
 import { LinearGradient } from "expo-linear-gradient";
@@ -9,7 +9,6 @@ import Animated, {
 } from "react-native-reanimated";
 
 import CarouselItem from "./CarouselItem";
-import { COLOR } from "@/constants/Colors";
 import HomeHeader from "../ui/HomeHeader";
 import BackdropImage from "./BackdropImage";
 
@@ -23,6 +22,7 @@ type CarouselProps = {
 
 
 const Carousel = ({ data }: CarouselProps) => {
+  const theme = useTheme();
   const scrollX = useSharedValue(0);
 
   const onScroll = useAnimatedScrollHandler((e) => {
@@ -50,7 +50,7 @@ const Carousel = ({ data }: CarouselProps) => {
 
       <HomeHeader />
       <LinearGradient
-        colors={[COLOR.black0, "#151718"]}
+        colors={["transparent", theme.background.val]}
         start={{ x: 1, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={{

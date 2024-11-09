@@ -1,4 +1,5 @@
-import { DarkTheme } from '@react-navigation/native';
+import { Colors } from '@/constants/Colors';
+import useTheme from '@/hooks/useTheme';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
@@ -12,6 +13,7 @@ type TagsBarProps = {
 export default function TagsBar({ tags: _tags, handleSort }: TagsBarProps) {
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const [tags, setTags] = useState(_tags);
+  const { theme } = useTheme();
 
   const handleTagPress = (tag: Tag) => {
     let res;
@@ -47,9 +49,16 @@ export default function TagsBar({ tags: _tags, handleSort }: TagsBarProps) {
             }}
           >
             <Animated.View
-              style={{ padding: 8, backgroundColor: selectedTags.includes(item) ? "skyblue" : DarkTheme.colors.card, borderRadius: 12 }}
+              style={{
+                padding: 8,
+                backgroundColor: selectedTags.includes(item) ? "skyblue" : theme === "dark" ? Colors.dark.card : "white",
+                borderRadius: 8
+              }}
             >
               <Text
+                style={{
+                  color: selectedTags.includes(item) ? "white" : theme === "dark" ? Colors.dark.text : Colors.light.text
+                }}
               >
                 {item.title}
               </Text>

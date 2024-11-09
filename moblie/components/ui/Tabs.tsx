@@ -8,6 +8,7 @@ import Animated, {
 import { useRouter } from "expo-router";
 import { IconNames } from "@/ptypes";
 import Icon from "../icon";
+import { useTheme } from "tamagui";
 
 type Tab = {
   name: string;
@@ -15,12 +16,6 @@ type Tab = {
   route: string;
 };
 
-const TAB_COLORS = {
-  activeColor: "#ddd",
-  inactiveColor: "#fff",
-  activeBackgroundColor: "#1b1b1b",
-  inactiveBackgroundColor: "#121212",
-};
 
 const Tabs = ({
   tabs,
@@ -32,6 +27,7 @@ const Tabs = ({
   setSelectedIndex: (index: number) => void;
 }) => {
   const router = useRouter();
+  const theme = useTheme();
 
   return (
     <View style={styles.tabBar}>
@@ -43,8 +39,8 @@ const Tabs = ({
             layout={LinearTransition.springify().damping(80).stiffness(100)}
             style={{
               backgroundColor: isSelected
-                ? TAB_COLORS.activeBackgroundColor
-                : TAB_COLORS.inactiveBackgroundColor,
+                ? theme.color4.val
+                : undefined,
 
               overflow: "hidden",
               borderRadius: 16,
@@ -59,7 +55,6 @@ const Tabs = ({
             >
               <Icon
                 name={tab.icon}
-                color={isSelected ? TAB_COLORS.activeColor : TAB_COLORS.inactiveColor}
               />
               <LayoutAnimationConfig skipEntering>
                 {isSelected && (
@@ -67,9 +62,7 @@ const Tabs = ({
                     entering={FadeInLeft.springify().damping(80).stiffness(100)}
                     exiting={FadeOutLeft.springify().damping(80).stiffness(100)}
                     style={{
-                      color: isSelected
-                        ? TAB_COLORS.activeColor
-                        : TAB_COLORS.inactiveColor,
+                      color: theme.color11.val,
                       fontSize: 12,
                     }}
                   >
