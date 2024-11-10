@@ -75,7 +75,8 @@ func Init(s *api.Server) {
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
 				case "/api/v1/streams/publish",
-					"/api/v1/streams/unpublish":
+					"/api/v1/streams/unpublish",
+					"/api/v1/streams/ws":
 					return true
 				}
 				return false

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>WebSocket</title>
+</head>
+
+<body>
+  <p id="output"></p>
+
+  <script>
+    const ws = new WebSocket("ws://192.168.1.6:9973/api/v1/streams/ws");
+
+    ws.onopen = function () {
+      console.log('Connected');
+    };
+
+    ws.onerror = function (error) {
+      console.error('WebSocket error:', error);
+    };
+
+    ws.onmessage = function (evt) {
+      const out = document.getElementById('output');
+      out.innerHTML += evt.data + '<br>';
+    };
+
+    setInterval(function () {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send('Hello, Server!');
+      }
+    }, 1000);
+  </script>
+</body>
+
+</html>

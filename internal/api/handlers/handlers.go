@@ -37,6 +37,7 @@ func AttachAllRoutes(s *api.Server) {
 		featuredsections.PutUpdateFeaturedSectionRoute(s),
 		push.GetPushTestRoute(s),
 		push.PostUpdatePushTokenRoute(s),
+		streams.GetStreamStatusRoute(s),
 		streams.PostCreateStreamRoute(s),
 		streams.PostPlayStreamRoute(s),
 		streams.PostPublishStreamRoute(s),
