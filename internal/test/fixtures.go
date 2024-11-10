@@ -25,11 +25,11 @@ type FixtureMap struct {
 	UserDeactivated        *database.User
 	UserDeactivatedAccount *database.Account
 	Stream1                *database.Stream
-	StreamStatus1          *database.StreamStatus
+	StreamMetadata1        *database.StreamMetadatum
 	Stream2                *database.Stream
-	StreamStatus2          *database.StreamStatus
+	StreamMetadata2        *database.StreamMetadatum
 	Stream3                *database.Stream
-	StreamStatus3          *database.StreamStatus
+	StreamMetadata3        *database.StreamMetadatum
 	Article1               *database.Article
 	Article2               *database.Article
 	Article3               *database.Article
@@ -162,18 +162,21 @@ func Fixtures() FixtureMap {
 		UserID:     uuid.MustParse("6c46cdec-4fd3-4d25-8218-3b75df65f8ab"),
 	}
 
-	f.StreamStatus1 = &database.StreamStatus{
-		ID:           uuid.New(),
-		StreamID:     f.Stream1.ID,
-		Status:       "online",
-		EstStartTime: sql.NullTime{},
+	f.StreamMetadata1 = &database.StreamMetadatum{
+		ID:          uuid.New(),
+		StreamID:    f.Stream1.ID,
+		Status:      "published",
+		Title:       "Stream1 title",
+		Description: "Stream1 description",
+		Thumbnail: sql.NullString{
+			String: "https://th.bing.com/th/id/OIP.yIEB-Z7KC38rkAwXNZxv5QHaLG",
+			Valid:  true,
+		},
 		LastPublishedAt: sql.NullTime{
 			Time:  time.Now(),
 			Valid: true,
 		},
-		ViewersCount: sql.NullInt32{},
-		CreatedAt:    sql.NullTime{},
-		UpdatedAt:    sql.NullTime{},
+		Viewers: sql.NullInt32{},
 	}
 
 	f.Stream2 = &database.Stream{
@@ -184,18 +187,21 @@ func Fixtures() FixtureMap {
 		UserID:     uuid.MustParse("bafe468f-f756-499e-bd95-9a2980fd164e"),
 	}
 
-	f.StreamStatus2 = &database.StreamStatus{
-		ID:           uuid.New(),
-		StreamID:     f.Stream2.ID,
-		Status:       "offline",
-		EstStartTime: sql.NullTime{},
+	f.StreamMetadata2 = &database.StreamMetadatum{
+		ID:          uuid.New(),
+		StreamID:    f.Stream2.ID,
+		Status:      "unpublished",
+		Title:       "Stream2 title",
+		Description: "Stream2 description",
+		Thumbnail: sql.NullString{
+			String: "https://th.bing.com/th/id/OIP.yIEB-Z7KC38rkAwXNZxv5QHaLG",
+			Valid:  true,
+		},
 		LastPublishedAt: sql.NullTime{
 			Time:  time.Now().AddDate(0, 0, -7),
 			Valid: true,
 		},
-		ViewersCount: sql.NullInt32{},
-		CreatedAt:    sql.NullTime{},
-		UpdatedAt:    sql.NullTime{},
+		Viewers: sql.NullInt32{},
 	}
 
 	f.Stream3 = &database.Stream{
@@ -206,18 +212,21 @@ func Fixtures() FixtureMap {
 		UserID:     uuid.MustParse("19211b77-c579-4e6e-95c1-35735fcaaae1"),
 	}
 
-	f.StreamStatus3 = &database.StreamStatus{
-		ID:           uuid.New(),
-		StreamID:     f.Stream3.ID,
-		Status:       "offline",
-		EstStartTime: sql.NullTime{},
+	f.StreamMetadata3 = &database.StreamMetadatum{
+		ID:          uuid.New(),
+		StreamID:    f.Stream3.ID,
+		Status:      "unpublished",
+		Title:       "Stream3 title",
+		Description: "Stream3 description",
+		Thumbnail: sql.NullString{
+			String: "https://th.bing.com/th/id/OIP.yIEB-Z7KC38rkAwXNZxv5QHaLG",
+			Valid:  true,
+		},
 		LastPublishedAt: sql.NullTime{
 			Time:  time.Now().AddDate(0, 0, -7),
 			Valid: true,
 		},
-		ViewersCount: sql.NullInt32{},
-		CreatedAt:    sql.NullTime{},
-		UpdatedAt:    sql.NullTime{},
+		Viewers: sql.NullInt32{},
 	}
 
 	f.Tag1 = &database.Tag{
@@ -445,11 +454,11 @@ func Inserts() []Insertable {
 	inserts = append(inserts, fix.UserDeactivatedAccount)
 
 	inserts = append(inserts, fix.Stream1)
-	inserts = append(inserts, fix.StreamStatus1)
+	inserts = append(inserts, fix.StreamMetadata1)
 	inserts = append(inserts, fix.Stream2)
-	inserts = append(inserts, fix.StreamStatus2)
+	inserts = append(inserts, fix.StreamMetadata2)
 	inserts = append(inserts, fix.Stream3)
-	inserts = append(inserts, fix.StreamStatus3)
+	inserts = append(inserts, fix.StreamMetadata3)
 
 	inserts = append(inserts, fix.Tag1)
 	inserts = append(inserts, fix.Tag2)

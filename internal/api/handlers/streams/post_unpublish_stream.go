@@ -31,13 +31,13 @@ func postUnpublishStreamHandler(s *api.Server) echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusNotFound, "Stream not found")
 		}
 
-		streamStatus, err := s.Queries.GetStreamStatus(c.Request().Context(), stream.ID)
+		streamMetadata, err := s.Queries.GetStreamMetadata(c.Request().Context(), stream.ID)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusNotFound, "Stream Status not found")
 		}
 
 		// TODO: check if stream belongs to user
-		if streamStatus.Status == database.StreamStatusEnumOffline {
+		if streamMetadata.Status == database.StreamStatusEnumUnpublished {
 			return echo.NewHTTPError(http.StatusForbidden, "Stream is not live")
 		}
 

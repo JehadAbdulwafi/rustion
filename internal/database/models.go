@@ -105,9 +105,8 @@ func (ns NullProviderType) Value() (driver.Value, error) {
 type StreamStatusEnum string
 
 const (
-	StreamStatusEnumOnline    StreamStatusEnum = "online"
-	StreamStatusEnumOffline   StreamStatusEnum = "offline"
-	StreamStatusEnumScheduled StreamStatusEnum = "scheduled"
+	StreamStatusEnumPublished   StreamStatusEnum = "published"
+	StreamStatusEnumUnpublished StreamStatusEnum = "unpublished"
 )
 
 func (e *StreamStatusEnum) Scan(src interface{}) error {
@@ -210,22 +209,15 @@ type Stream struct {
 	UpdatedAt  sql.NullTime
 }
 
-type StreamDetail struct {
-	ID          uuid.UUID
-	StreamID    uuid.UUID
-	Title       string
-	Description string
-	CreatedAt   sql.NullTime
-	UpdatedAt   sql.NullTime
-}
-
-type StreamStatus struct {
+type StreamMetadatum struct {
 	ID              uuid.UUID
 	StreamID        uuid.UUID
 	Status          StreamStatusEnum
-	EstStartTime    sql.NullTime
+	Title           string
+	Description     string
+	Thumbnail       sql.NullString
 	LastPublishedAt sql.NullTime
-	ViewersCount    sql.NullInt32
+	Viewers         sql.NullInt32
 	CreatedAt       sql.NullTime
 	UpdatedAt       sql.NullTime
 }

@@ -88,12 +88,12 @@ func ApplyTestFixtures(ctx context.Context, t *testing.T, db *sql.DB) (countFixt
 				`, v.ID, v.UserID, v.App, v.StreamName, v.Url); err != nil {
 					return fmt.Errorf("failed to insert stream fixture: %w", err)
 				}
-			case *database.StreamStatus:
-				if _, err := db.Exec(`INSERT INTO stream_status
-				(id, stream_id, status, last_published_at, viewers_count)
-				VALUES ($1, $2, $3, $4, $5)
-				`, v.ID, v.StreamID, v.Status, v.LastPublishedAt.Time, v.ViewersCount.Int32); err != nil {
-					return fmt.Errorf("failed to insert stream_status fixture: %w", err)
+			case *database.StreamMetadatum:
+				if _, err := db.Exec(`INSERT INTO stream_metadata
+				(id, stream_id, status, title, description, thumbnail, last_published_at, viewers)
+				VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+				`, v.ID, v.StreamID, v.Status, v.Title, v.Description, v.Thumbnail.String, v.LastPublishedAt.Time, v.Viewers.Int32); err != nil {
+					return fmt.Errorf("failed to insert stream_metadata fixture: %w", err)
 				}
 			case *database.TvShow:
 				if _, err := db.Exec(`INSERT INTO tv_shows

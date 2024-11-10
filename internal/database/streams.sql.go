@@ -45,76 +45,50 @@ func (q *Queries) CreateStream(ctx context.Context, arg CreateStreamParams) (Str
 	return i, err
 }
 
-const createStreamDetails = `-- name: CreateStreamDetails :one
-INSERT INTO stream_details (stream_id, title, description)
-VALUES ($1, $2, $3)
-RETURNING id, stream_id, title, description, created_at, updated_at
+const createStreamMetadata = `-- name: CreateStreamMetadata :one
+INSERT INTO stream_metadata (stream_id, title, description, thumbnail)
+VALUES ($1, $2, $3, $4)
+RETURNING id, stream_id, status, title, description, thumbnail, last_published_at, viewers, created_at, updated_at
 `
 
-type CreateStreamDetailsParams struct {
+type CreateStreamMetadataParams struct {
 	StreamID    uuid.UUID
 	Title       string
 	Description string
+	Thumbnail   sql.NullString
 }
 
-func (q *Queries) CreateStreamDetails(ctx context.Context, arg CreateStreamDetailsParams) (StreamDetail, error) {
-	row := q.db.QueryRowContext(ctx, createStreamDetails, arg.StreamID, arg.Title, arg.Description)
-	var i StreamDetail
-	err := row.Scan(
-		&i.ID,
-		&i.StreamID,
-		&i.Title,
-		&i.Description,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
-const createStreamStatus = `-- name: CreateStreamStatus :one
-INSERT INTO stream_status (stream_id, status, est_start_time, last_published_at, viewers_count)
-VALUES ($1, $2, $3, $4, $5)
-RETURNING id, stream_id, status, est_start_time, last_published_at, viewers_count, created_at, updated_at
-`
-
-type CreateStreamStatusParams struct {
-	StreamID        uuid.UUID
-	Status          StreamStatusEnum
-	EstStartTime    sql.NullTime
-	LastPublishedAt sql.NullTime
-	ViewersCount    sql.NullInt32
-}
-
-func (q *Queries) CreateStreamStatus(ctx context.Context, arg CreateStreamStatusParams) (StreamStatus, error) {
-	row := q.db.QueryRowContext(ctx, createStreamStatus,
+func (q *Queries) CreateStreamMetadata(ctx context.Context, arg CreateStreamMetadataParams) (StreamMetadatum, error) {
+	row := q.db.QueryRowContext(ctx, createStreamMetadata,
 		arg.StreamID,
-		arg.Status,
-		arg.EstStartTime,
-		arg.LastPublishedAt,
-		arg.ViewersCount,
+		arg.Title,
+		arg.Description,
+		arg.Thumbnail,
 	)
-	var i StreamStatus
+	var i StreamMetadatum
 	err := row.Scan(
 		&i.ID,
 		&i.StreamID,
 		&i.Status,
-		&i.EstStartTime,
+		&i.Title,
+		&i.Description,
+		&i.Thumbnail,
 		&i.LastPublishedAt,
-		&i.ViewersCount,
+		&i.Viewers,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
 	return i, err
 }
 
-const decrementStreamStatusViewersCount = `-- name: DecrementStreamStatusViewersCount :exec
-UPDATE stream_status
-SET viewers_count = viewers_count - 1
+const decrementStreamViewers = `-- name: DecrementStreamViewers :exec
+UPDATE stream_metadata
+SET viewers = viewers - 1
 WHERE stream_id = $1
 `
 
-func (q *Queries) DecrementStreamStatusViewersCount(ctx context.Context, streamID uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, decrementStreamStatusViewersCount, streamID)
+func (q *Queries) DecrementStreamViewers(ctx context.Context, streamID uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, decrementStreamViewers, streamID)
 	return err
 }
 
@@ -127,21 +101,12 @@ func (q *Queries) DeleteStream(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
-const deleteStreamDetails = `-- name: DeleteStreamDetails :exec
-DELETE FROM stream_details WHERE stream_id = $1
+const deleteStreamMetadata = `-- name: DeleteStreamMetadata :exec
+DELETE FROM stream_metadata WHERE stream_id = $1
 `
 
-func (q *Queries) DeleteStreamDetails(ctx context.Context, streamID uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, deleteStreamDetails, streamID)
-	return err
-}
-
-const deleteStreamStatus = `-- name: DeleteStreamStatus :exec
-DELETE FROM stream_status WHERE stream_id = $1
-`
-
-func (q *Queries) DeleteStreamStatus(ctx context.Context, streamID uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, deleteStreamStatus, streamID)
+func (q *Queries) DeleteStreamMetadata(ctx context.Context, streamID uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, deleteStreamMetadata, streamID)
 	return err
 }
 
@@ -183,38 +148,22 @@ func (q *Queries) GetStreamByStreamName(ctx context.Context, streamName string) 
 	return i, err
 }
 
-const getStreamDetails = `-- name: GetStreamDetails :one
-SELECT id, stream_id, title, description, created_at, updated_at FROM stream_details WHERE stream_id = $1
+const getStreamMetadata = `-- name: GetStreamMetadata :one
+SELECT id, stream_id, status, title, description, thumbnail, last_published_at, viewers, created_at, updated_at FROM stream_metadata WHERE stream_id = $1
 `
 
-func (q *Queries) GetStreamDetails(ctx context.Context, streamID uuid.UUID) (StreamDetail, error) {
-	row := q.db.QueryRowContext(ctx, getStreamDetails, streamID)
-	var i StreamDetail
-	err := row.Scan(
-		&i.ID,
-		&i.StreamID,
-		&i.Title,
-		&i.Description,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
-const getStreamStatus = `-- name: GetStreamStatus :one
-SELECT id, stream_id, status, est_start_time, last_published_at, viewers_count, created_at, updated_at FROM stream_status WHERE stream_id = $1
-`
-
-func (q *Queries) GetStreamStatus(ctx context.Context, streamID uuid.UUID) (StreamStatus, error) {
-	row := q.db.QueryRowContext(ctx, getStreamStatus, streamID)
-	var i StreamStatus
+func (q *Queries) GetStreamMetadata(ctx context.Context, streamID uuid.UUID) (StreamMetadatum, error) {
+	row := q.db.QueryRowContext(ctx, getStreamMetadata, streamID)
+	var i StreamMetadatum
 	err := row.Scan(
 		&i.ID,
 		&i.StreamID,
 		&i.Status,
-		&i.EstStartTime,
+		&i.Title,
+		&i.Description,
+		&i.Thumbnail,
 		&i.LastPublishedAt,
-		&i.ViewersCount,
+		&i.Viewers,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -291,20 +240,20 @@ func (q *Queries) GetStreamsByUserId(ctx context.Context, userID uuid.UUID) ([]S
 	return items, nil
 }
 
-const incrementStreamStatusViewersCount = `-- name: IncrementStreamStatusViewersCount :exec
-UPDATE stream_status
-SET viewers_count = viewers_count + 1
+const incrementStreamViewers = `-- name: IncrementStreamViewers :exec
+UPDATE stream_metadata
+SET viewers = viewers + 1
 WHERE stream_id = $1
 `
 
-func (q *Queries) IncrementStreamStatusViewersCount(ctx context.Context, streamID uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, incrementStreamStatusViewersCount, streamID)
+func (q *Queries) IncrementStreamViewers(ctx context.Context, streamID uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, incrementStreamViewers, streamID)
 	return err
 }
 
 const publishStream = `-- name: PublishStream :exec
-UPDATE stream_status
-SET status = 'online', last_published_at = CURRENT_TIMESTAMP
+UPDATE stream_metadata
+SET status = 'published', last_published_at = CURRENT_TIMESTAMP
 WHERE stream_id = $1
 `
 
@@ -313,25 +262,9 @@ func (q *Queries) PublishStream(ctx context.Context, streamID uuid.UUID) error {
 	return err
 }
 
-const scheduleStream = `-- name: ScheduleStream :exec
-UPDATE stream_status
-SET status = 'scheduled', est_start_time = $2
-WHERE stream_id = $1
-`
-
-type ScheduleStreamParams struct {
-	StreamID     uuid.UUID
-	EstStartTime sql.NullTime
-}
-
-func (q *Queries) ScheduleStream(ctx context.Context, arg ScheduleStreamParams) error {
-	_, err := q.db.ExecContext(ctx, scheduleStream, arg.StreamID, arg.EstStartTime)
-	return err
-}
-
 const unpublishStream = `-- name: UnpublishStream :exec
-UPDATE stream_status
-SET status = 'offline', last_published_at = CURRENT_TIMESTAMP
+UPDATE stream_metadata
+SET status = 'unpublished', last_published_at = CURRENT_TIMESTAMP
 WHERE stream_id = $1
 `
 
@@ -374,82 +307,49 @@ func (q *Queries) UpdateStream(ctx context.Context, arg UpdateStreamParams) (Str
 	return i, err
 }
 
-const updateStreamDetails = `-- name: UpdateStreamDetails :one
-UPDATE stream_details
+const updateStreamMetadataInfo = `-- name: UpdateStreamMetadataInfo :one
+UPDATE stream_metadata
 SET title = $2, description = $3, updated_at = CURRENT_TIMESTAMP
 WHERE stream_id = $1
-RETURNING id, stream_id, title, description, created_at, updated_at
+RETURNING id, stream_id, status, title, description, thumbnail, last_published_at, viewers, created_at, updated_at
 `
 
-type UpdateStreamDetailsParams struct {
+type UpdateStreamMetadataInfoParams struct {
 	StreamID    uuid.UUID
 	Title       string
 	Description string
 }
 
-func (q *Queries) UpdateStreamDetails(ctx context.Context, arg UpdateStreamDetailsParams) (StreamDetail, error) {
-	row := q.db.QueryRowContext(ctx, updateStreamDetails, arg.StreamID, arg.Title, arg.Description)
-	var i StreamDetail
-	err := row.Scan(
-		&i.ID,
-		&i.StreamID,
-		&i.Title,
-		&i.Description,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
-const updateStreamStatus = `-- name: UpdateStreamStatus :one
-UPDATE stream_status
-SET status = $2, est_start_time = $3, last_published_at = $4, viewers_count = $5
-WHERE stream_id = $1
-RETURNING id, stream_id, status, est_start_time, last_published_at, viewers_count, created_at, updated_at
-`
-
-type UpdateStreamStatusParams struct {
-	StreamID        uuid.UUID
-	Status          StreamStatusEnum
-	EstStartTime    sql.NullTime
-	LastPublishedAt sql.NullTime
-	ViewersCount    sql.NullInt32
-}
-
-func (q *Queries) UpdateStreamStatus(ctx context.Context, arg UpdateStreamStatusParams) (StreamStatus, error) {
-	row := q.db.QueryRowContext(ctx, updateStreamStatus,
-		arg.StreamID,
-		arg.Status,
-		arg.EstStartTime,
-		arg.LastPublishedAt,
-		arg.ViewersCount,
-	)
-	var i StreamStatus
+func (q *Queries) UpdateStreamMetadataInfo(ctx context.Context, arg UpdateStreamMetadataInfoParams) (StreamMetadatum, error) {
+	row := q.db.QueryRowContext(ctx, updateStreamMetadataInfo, arg.StreamID, arg.Title, arg.Description)
+	var i StreamMetadatum
 	err := row.Scan(
 		&i.ID,
 		&i.StreamID,
 		&i.Status,
-		&i.EstStartTime,
+		&i.Title,
+		&i.Description,
+		&i.Thumbnail,
 		&i.LastPublishedAt,
-		&i.ViewersCount,
+		&i.Viewers,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
 	return i, err
 }
 
-const updateStreamStatusViewersCount = `-- name: UpdateStreamStatusViewersCount :exec
-UPDATE stream_status
-SET viewers_count = $2
+const updateStreamViewers = `-- name: UpdateStreamViewers :exec
+UPDATE stream_metadata
+SET viewers = $2
 WHERE stream_id = $1
 `
 
-type UpdateStreamStatusViewersCountParams struct {
-	StreamID     uuid.UUID
-	ViewersCount sql.NullInt32
+type UpdateStreamViewersParams struct {
+	StreamID uuid.UUID
+	Viewers  sql.NullInt32
 }
 
-func (q *Queries) UpdateStreamStatusViewersCount(ctx context.Context, arg UpdateStreamStatusViewersCountParams) error {
-	_, err := q.db.ExecContext(ctx, updateStreamStatusViewersCount, arg.StreamID, arg.ViewersCount)
+func (q *Queries) UpdateStreamViewers(ctx context.Context, arg UpdateStreamViewersParams) error {
+	_, err := q.db.ExecContext(ctx, updateStreamViewers, arg.StreamID, arg.Viewers)
 	return err
 }

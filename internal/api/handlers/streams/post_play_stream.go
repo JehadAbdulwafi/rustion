@@ -34,19 +34,19 @@ func postPlayStreamHandler(s *api.Server) echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusNotFound, "Stream not found")
 		}
 
-		streamStatus, err := s.Queries.GetStreamStatus(c.Request().Context(), stream.ID)
+		streamMetadata, err := s.Queries.GetStreamMetadata(c.Request().Context(), stream.ID)
 		if err != nil {
 			log.Debug().Msg("Stream Status not found")
 			return echo.NewHTTPError(http.StatusNotFound, "Stream Status not found")
 		}
 
 		// TODO: check if stream belongs to user
-		if streamStatus.Status == database.StreamStatusEnumOffline {
+		if streamMetadata.Status == database.StreamStatusEnumUnpublished {
 			log.Debug().Msg("Stream is not live")
 			return echo.NewHTTPError(http.StatusForbidden, "Stream is not live")
 		}
 
-		err = s.Queries.IncrementStreamStatusViewersCount(c.Request().Context(), stream.ID)
+		err = s.Queries.IncrementStreamViewers(c.Request().Context(), stream.ID)
 
 		if err != nil {
 			log.Debug().Msg("Failed to increment stream viewers count")
