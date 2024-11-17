@@ -43,4 +43,4 @@ __debug_bin
 
 # firebase credentials
 *firebase-adminsdk*.json
-google-services.json
+# google-services.json
