@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
-	"github.com/JehadAbdulwafi/rustion/internal/database"
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/labstack/echo/v4"
@@ -34,15 +33,15 @@ func postPublishStreamHandler(s *api.Server) echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusNotFound, "Stream not found")
 		}
 
-		streamMetadata, err := s.Queries.GetStreamMetadata(c.Request().Context(), stream.ID)
-		if err != nil {
-			return echo.NewHTTPError(http.StatusNotFound, "Stream Status not found")
-		}
-
-		// TODO: check if stream belongs to user
-		if streamMetadata.Status == database.StreamStatusEnumPublished {
-			return echo.NewHTTPError(http.StatusForbidden, "Stream is live")
-		}
+		// streamMetadata, err := s.Queries.GetStreamMetadata(c.Request().Context(), stream.ID)
+		// if err != nil {
+		// 	return echo.NewHTTPError(http.StatusNotFound, "Stream Status not found")
+		// }
+		//
+		// // TODO: check if stream belongs to user
+		// if streamMetadata.Status == database.StreamStatusEnumPublished {
+		// 	return echo.NewHTTPError(http.StatusForbidden, "Stream is live")
+		// }
 
 		err = s.Queries.PublishStream(c.Request().Context(), stream.ID)
 		if err != nil {
