@@ -1,8 +1,6 @@
 import { getFeaturedSectionsWithArticles } from "@/api/FeaturedSectionApi";
-import { getTags } from "@/api/TagApi";
 import { getTvShows } from "@/api/TvShowApi";
 import Carousel from "@/components/carousel";
-import Categories from "@/components/categories";
 import FeaturedRows from "@/components/featuredRows";
 import { View } from "@/components/ui/View";
 import { navigationHeight } from "@/constants";
@@ -11,7 +9,6 @@ import { ActivityIndicator, FlatList, StatusBar } from "react-native";
 import { useTheme } from "tamagui";
 
 export default function HomeScreen() {
-  const [categories, setCategories] = useState<Tag[]>([]);
   const [featuredSections, setFeaturedSections] = useState<FeaturedSectionWithArticles[]>([]);
   const [tvShows, setTvShows] = useState<TvShow[]>([]);
   const [loading, setLoading] = useState(false);
@@ -21,9 +18,8 @@ export default function HomeScreen() {
     (async () => {
       setLoading(true);
       try {
-        const [_tvShows, _categories, _featuredSections] = await Promise.all([getTvShows(), getTags(), getFeaturedSectionsWithArticles()]);
+        const [_tvShows, _featuredSections] = await Promise.all([getTvShows(), getFeaturedSectionsWithArticles()]);
         setTvShows(_tvShows);
-        setCategories(_categories);
         setFeaturedSections(_featuredSections);
       } catch (error) {
         console.error(error);

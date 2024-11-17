@@ -13,7 +13,7 @@ import { View } from "tamagui";
 
 const AView = Animated.createAnimatedComponent(View);
 
-const routesWithTabs = ["/", "/explore", "/account"];
+const routesWithTabs = ["/", "/tabs/explore", "/tabs/account"];
 const TabBar = () => {
   const pathname = usePathname();
   const isVisible = useSharedValue(0);
@@ -47,9 +47,9 @@ const TabBar = () => {
       <Tabs
         tabs={[
           { name: "Home", icon: "House", route: "/" },
-          { name: "Explore", icon: "Search", route: "/explore" },
-          { name: "Live", icon: "Video", route: "/live" },
-          { name: "Account", icon: "User", route: "/account" },
+          { name: "Explore", icon: "Search", route: "/tabs/explore" },
+          { name: "Live", icon: "Video", route: "/tabs/live" },
+          { name: "Account", icon: "User", route: "tabs/account" },
         ]}
         selectedIndex={selectedIndex}
         setSelectedIndex={setSelectedIndex}
