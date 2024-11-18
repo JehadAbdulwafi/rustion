@@ -13,12 +13,16 @@ export default function Controls({ playerState, methods, animations }: Props) {
   return (
     <>
       <TopControls animations={animations} />
-      <PlayPause
-        togglePlayPause={methods.togglePlayPause}
-        paused={playerState.paused}
-        showControls={playerState.showControls}
-        animations={animations}
-      />
+      {playerState.error || playerState.loading ? null : (
+        <PlayPause
+          togglePlayPause={methods.togglePlayPause}
+          paused={playerState.paused}
+          showControls={playerState.showControls}
+          animations={animations}
+        />
+
+      )}
+
       <BottomControls
         paused={playerState.paused}
         togglePlayPause={methods.togglePlayPause}

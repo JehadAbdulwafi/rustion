@@ -36,6 +36,7 @@
     "expo": "~51.0.38",
     "expo-constants": "~16.0.2",
     "expo-dev-client": "~4.0.28",
+    "expo-device": "~6.0.2",
     "expo-font": "~12.0.9",
     "expo-image": "~1.13.0",
     "expo-linear-gradient": "~13.0.2",
@@ -69,8 +70,7 @@
     "socket.io-client": "^4.8.0",
     "tamagui": "^1.112.22",
     "zod": "^3.23.8",
-    "zustand": "^5.0.0-rc.2",
-    "expo-device": "~6.0.2"
+    "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

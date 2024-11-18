@@ -14,6 +14,7 @@ import {
   Share2,
 } from "lucide-react-native";
 import { View } from "../ui/View";
+import { FullScreenEnterIcon, FullScreenExitIcon } from "@/assets/icons";
 
 type Props = {
   paused: boolean;
@@ -26,8 +27,8 @@ type Props = {
 export default function BottomControls({
   toggleFullscreen,
   animations,
+  isFullScreen,
 }: Props) {
-  const marginBottom = animations.bottomControl.marginBottom;
   const opacity = animations.bottomControl.opacity;
 
   return (
@@ -36,7 +37,6 @@ export default function BottomControls({
         styles.bottom,
         {
           opacity,
-          // marginBottom,
         },
       ]}
     >
@@ -54,18 +54,6 @@ export default function BottomControls({
             </Text>
           </View>
           <View style={{ gap: 12, backgroundColor: "transparent" }}>
-            <TouchableOpacity>
-              <View
-                style={{
-                  padding: 10,
-                  backgroundColor: "rgba(150,150,150,0.2)",
-                  borderRadius: 20,
-                }}
-              >
-                <MessageCircleDashed size={22} fill={"white"} color="white" />
-              </View>
-            </TouchableOpacity>
-
             <TouchableOpacity onPress={toggleFullscreen}>
               <View
                 style={{
@@ -74,29 +62,9 @@ export default function BottomControls({
                   borderRadius: 20,
                 }}
               >
-                <FullscreenIcon size={22} fill={"white"} color="white" />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View
-                style={{
-                  padding: 10,
-                  backgroundColor: "rgba(150,150,150,0.2)",
-                  borderRadius: 20,
-                }}
-              >
-                <Share2 size={22} fill={"white"} color="white" />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View
-                style={{
-                  padding: 10,
-                  backgroundColor: "rgba(150,150,150,0.2)",
-                  borderRadius: 20,
-                }}
-              >
-                <Heart size={22} fill={"red"} color="red" />
+                {isFullScreen
+                  ? <FullScreenExitIcon width={24} height={24} fill={"white"} color="white" />
+                  : <FullScreenEnterIcon width={24} height={24} fill={"white"} color="white" />}
               </View>
             </TouchableOpacity>
           </View>

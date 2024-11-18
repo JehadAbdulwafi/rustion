@@ -17,7 +17,7 @@ type Props = {
 export default function TopControls({ animations }: Props) {
   const router = useRouter();
   const onGoBack = () => {
-    router.navigate("/(tabs)/");
+    router.navigate("/");
   };
 
   return (

@@ -1,8 +1,6 @@
 import { Pause, Play } from "lucide-react-native";
 import {
-  View,
   StyleSheet,
-  ActivityIndicator,
   TouchableOpacity,
   Animated,
 } from "react-native";
@@ -18,7 +16,6 @@ type Props = {
 const PlayPause = ({
   togglePlayPause,
   paused,
-  showControls,
   animations,
 }: Props) => {
   return (

@@ -10,7 +10,6 @@ import {
 import PlayerLoader from "./loader";
 import PlayerError from "./error";
 import Controls from "./controls";
-import PlayPause from "./play_pause";
 
 export interface ConfigTypes {
   controlTimeoutDelay: number;
@@ -30,9 +29,6 @@ type PlayerProps = {
   isFullScreen?: boolean;
   showOnStart?: boolean;
   paused?: boolean;
-  muted?: boolean;
-  volume?: number;
-  rate?: number;
   onBack?: () => void;
   onEnd?: () => void;
   onEnterFullscreen?: () => void;
@@ -50,9 +46,6 @@ type PlayerProps = {
 export type PlayerState = {
   resizeMode: "contain" | "cover" | "none" | "stretch";
   paused: boolean;
-  muted: boolean;
-  volume: number;
-  rate: number;
 
   isFullScreen: boolean;
   showControls: boolean;
@@ -84,9 +77,6 @@ export const VideoPlayer = (props: PlayerProps) => {
     // Video
     resizeMode: props.resizeMode || "contain",
     paused: props.paused || false,
-    muted: props.muted || false,
-    volume: props.volume || 1,
-    rate: props.rate || 1,
 
     // Controls
     isFullScreen: props.isFullScreen || false,
@@ -367,24 +357,6 @@ export const VideoPlayer = (props: PlayerProps) => {
     }
   }
 
-  /**
-   * Toggle fullscreen changes resizeMode on
-   * the <Video> component then updates the
-   * isFullScreen state.
-   */
-  function toggleFullscreen() {
-    setPlayerState((prev) => ({
-      ...prev,
-      isFullScreen: !prev.isFullScreen,
-    }));
-    if (props.toggleResizeModeOnFullscreen) {
-      setPlayerState((prev) => ({
-        ...prev,
-        resizeMode: !prev.isFullScreen ? "cover" : "contain",
-      }));
-    }
-  }
-
   function togglePlayPause() {
     setPlayerState((prev) => ({
       ...prev,
@@ -402,11 +374,11 @@ export const VideoPlayer = (props: PlayerProps) => {
         <Video
           {...props}
           ref={playerRef}
-          resizeMode={playerState.resizeMode || "contain"}
-          volume={playerState.volume}
+          resizeMode={"contain"}
+          volume={1}
           paused={playerState.paused || false}
-          muted={playerState.muted || false}
-          rate={playerState.rate || 1}
+          muted={false}
+          rate={1}
           onLoadStart={events.onLoadStart}
           onError={events.onError}
           onLoad={events.onLoad}
@@ -421,6 +393,7 @@ export const VideoPlayer = (props: PlayerProps) => {
           playerState={playerState}
           animations={animations.current}
         />
+
       </View>
     </TouchableWithoutFeedback>
   );

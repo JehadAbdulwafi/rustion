@@ -11,7 +11,7 @@ const PlayerError = ({ error }: Props) => {
           source={require("../../assets/img/error-icon.png")}
           style={styles.icon}
         />
-        <Text style={styles.text}>Video unavailable</Text>
+        <Text style={styles.text}>Stream is offline</Text>
       </View>
     );
   }

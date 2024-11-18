@@ -128,6 +128,8 @@ export const PauseIcon = (props: SvgProps) => (
 export const FullScreenEnterIcon = (props: SvgProps) => (
   <Svg
     viewBox="0 0 48 48"
+    strokeWidth={2}
+    stroke={"#fff"}
     {...props}
   >
     <Path
@@ -140,6 +142,8 @@ export const FullScreenEnterIcon = (props: SvgProps) => (
 export const FullScreenExitIcon = (props: SvgProps) => (
   <Svg
     viewBox="0 0 48 48"
+    strokeWidth={2}
+    stroke={"#fff"}
     {...props}
   >
     <Path

@@ -12,17 +12,17 @@ import {
 import Animated, {
   Extrapolation,
   interpolate,
-  SharedValue,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
 import { videoMinHeight, videoMinWidth } from "@/constants";
-import { View } from "../ui/View";
 import { Text } from "../ui/Text";
 import Player from "../player";
 import Constants from "expo-constants";
+import { usePlayerContext } from "@/providers/PlayerProvider";
+import { View } from "tamagui";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("screen");
 
@@ -56,19 +56,15 @@ const ListItem = ({ onSelect }: { onSelect: (item: string) => void }) => (
   />
 );
 
-export function VideoPlayerContainer({
-  translateY,
-  movableHeight,
-  setSelectedItem,
-  selectedItem,
-  isFullScreen,
-}: {
-  translateY: SharedValue<number>;
-  movableHeight: number;
-  setSelectedItem: (item: string | null) => void;
-  selectedItem: string | null;
-  isFullScreen: boolean;
-}) {
+export function VideoPlayerContainer() {
+  const {
+    selectedItem,
+    setSelectedItem,
+    translateY,
+    movableHeight,
+    isFullScreen,
+  } = usePlayerContext();
+
   const videoMaxHeight = SCREEN_WIDTH * 0.6;
   const videoMaxWidth = SCREEN_WIDTH;
   const initialTranslateY = useSharedValue(100);
@@ -81,8 +77,8 @@ export function VideoPlayerContainer({
         {
           translateY: interpolate(
             translateY.value,
-            [0, movableHeight],
-            [0, movableHeight]
+            [0, movableHeight.value],
+            [0, movableHeight.value]
           ),
         },
         { translateY: initialTranslateY.value },
@@ -97,48 +93,48 @@ export function VideoPlayerContainer({
       width: isFullScreen
         ? SCREEN_HEIGHT - Constants.statusBarHeight
         : interpolate(
-            translateY.value,
-            [movableHeight - videoMinHeight, movableHeight],
-            [videoMaxWidth, videoMinWidth],
-            {
-              extrapolateLeft: Extrapolation.CLAMP,
-              extrapolateRight: Extrapolation.CLAMP,
-            }
-          ),
+          translateY.value,
+          [movableHeight.value - videoMinHeight, movableHeight.value],
+          [videoMaxWidth, videoMinWidth],
+          {
+            extrapolateLeft: Extrapolation.CLAMP,
+            extrapolateRight: Extrapolation.CLAMP,
+          }
+        ),
       height: isFullScreen
         ? SCREEN_WIDTH
         : interpolate(
-            translateY.value,
-            [0, movableHeight - videoMinHeight, movableHeight],
-            [videoMaxHeight, videoMinHeight + videoMinHeight, videoMinHeight],
-            {
-              extrapolateLeft: Extrapolation.CLAMP,
-              extrapolateRight: Extrapolation.CLAMP,
-            }
-          ),
+          translateY.value,
+          [0, movableHeight.value - videoMinHeight, movableHeight.value],
+          [videoMaxHeight, videoMinHeight + videoMinHeight, videoMinHeight],
+          {
+            extrapolateLeft: Extrapolation.CLAMP,
+            extrapolateRight: Extrapolation.CLAMP,
+          }
+        ),
     };
   });
 
   const panGesture = Gesture.Pan()
     .onChange((event) => {
       let newValue = event.changeY + translateY.value;
-      if (newValue > movableHeight) newValue = movableHeight;
+      if (newValue > movableHeight.value) newValue = movableHeight.value;
       if (newValue < 0) newValue = 0;
       translateY.value = newValue;
     })
     .onFinalize((event) => {
       if (event.velocityY < -20 && translateY.value > 0) {
         translateY.value = withSpring(0, springConfig(event.velocityY));
-      } else if (event.velocityY > 20 && translateY.value < movableHeight) {
+      } else if (event.velocityY > 20 && translateY.value < movableHeight.value) {
         translateY.value = withSpring(
-          movableHeight,
+          movableHeight.value,
           springConfig(event.velocityY)
         );
-      } else if (translateY.value < movableHeight / 2) {
+      } else if (translateY.value < movableHeight.value / 2) {
         translateY.value = withSpring(0, springConfig(event.velocityY));
       } else {
         translateY.value = withSpring(
-          movableHeight,
+          movableHeight.value,
           springConfig(event.velocityY)
         );
       }
@@ -151,8 +147,8 @@ export function VideoPlayerContainer({
 
   useEffect(() => {
     const backAction = () => {
-      if (translateY.value < movableHeight / 2) {
-        translateY.value = withSpring(movableHeight, springConfig(40));
+      if (translateY.value < movableHeight.value / 2) {
+        translateY.value = withSpring(movableHeight.value, springConfig(40));
         return true;
       }
       return false;
@@ -162,7 +158,7 @@ export function VideoPlayerContainer({
       backAction
     );
     return () => backHandler.remove();
-  }, [movableHeight]);
+  }, [movableHeight.value]);
 
   const openVideo = () => {
     translateY.value = withSpring(0, springConfig(-20));
@@ -185,8 +181,8 @@ export function VideoPlayerContainer({
     setSelectedItem(item);
   };
 
-  return (
-    <AnimatedView style={[styles.subContainer, animatedContainerStyles]}>
+  return selectedItem ? (
+    <Animated.View style={[styles.subContainer, animatedContainerStyles]}>
       <GestureDetector gesture={panGesture}>
         <AnimatedView style={[styles.fillWidth]}>
           <TouchableOpacity
@@ -212,18 +208,21 @@ export function VideoPlayerContainer({
         <Text style={styles.subTitle}>Selected description</Text>
       </View>
       <ListItem onSelect={onSelect} />
-    </AnimatedView>
-  );
+    </Animated.View>
+  ) : null;
 }
 
 const styles = StyleSheet.create({
   subContainer: {
+    backgroundColor: "#1d1d1d",
     ...StyleSheet.absoluteFillObject,
   },
   fillWidth: {
     width: "100%",
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#1d1d1d"
   },
   flexRow: {
     flexDirection: "row",
@@ -234,11 +233,11 @@ const styles = StyleSheet.create({
   },
   videoTumbnail: {
     height: SCREEN_WIDTH / 2,
-    backgroundColor: "#000",
+    backgroundColor: "#121212",
   },
   title: {
     marginHorizontal: 20,
-    marginTop: 10,
+    marginTop: 5,
   },
   subTitle: {
     fontSize: 13,
@@ -247,6 +246,7 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   close: {
-    alignSelf: "center",
+    marginBottom: 18,
+    marginEnd: 12,
   },
 });
