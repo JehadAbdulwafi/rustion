@@ -28,6 +28,7 @@ type PlayerProps = {
   resizeMode?: "contain" | "cover" | "none" | "stretch";
   isFullScreen?: boolean;
   showOnStart?: boolean;
+  isLive: boolean;
   paused?: boolean;
   onBack?: () => void;
   onEnd?: () => void;
@@ -46,6 +47,7 @@ type PlayerProps = {
 export type PlayerState = {
   resizeMode: "contain" | "cover" | "none" | "stretch";
   paused: boolean;
+  isLive: boolean;
 
   isFullScreen: boolean;
   showControls: boolean;
@@ -76,7 +78,8 @@ export const VideoPlayer = (props: PlayerProps) => {
   const [playerState, setPlayerState] = useState<PlayerState>({
     // Video
     resizeMode: props.resizeMode || "contain",
-    paused: props.paused || false,
+    paused: props.paused || true,
+    isLive: props.source.isLive || false,
 
     // Controls
     isFullScreen: props.isFullScreen || false,
@@ -90,7 +93,7 @@ export const VideoPlayer = (props: PlayerProps) => {
     controlTimeout: null,
     tapActionTimeout: null,
     iconOffset: 0,
-    tapAnywhereToPause: true,
+    tapAnywhereToPause: false,
   });
 
   const events = {
@@ -103,6 +106,7 @@ export const VideoPlayer = (props: PlayerProps) => {
     onShowControls: props.onShowControls,
     onHideControls: props.onHideControls,
     onLoadStart: onLoadStart,
+    onBuffer: onBuffer,
     onLoad: onLoad,
     onPause: props.onPause,
     onPlay: props.onPlay,
@@ -178,7 +182,17 @@ export const VideoPlayer = (props: PlayerProps) => {
     }
   }
 
-  function onError() {
+  function onBuffer(e: { isBuffering: boolean }) {
+    if (!playerState.isLive) return setPlayerState((prev) => ({ ...prev, loading: false }));
+    if (e.isBuffering) {
+      setPlayerState((prev) => ({ ...prev, loading: true }));
+    } else {
+      setPlayerState((prev) => ({ ...prev, loading: false }));
+    }
+  }
+
+  function onError(e: any) {
+    console.log("onError:", e);
     setPlayerState((prev) => ({ ...prev, loading: false, error: true }));
   }
 
@@ -376,9 +390,10 @@ export const VideoPlayer = (props: PlayerProps) => {
           ref={playerRef}
           resizeMode={"contain"}
           volume={1}
-          paused={playerState.paused || false}
+          paused={playerState.paused || true}
           muted={false}
           rate={1}
+          onBuffer={events.onBuffer}
           onLoadStart={events.onLoadStart}
           onError={events.onError}
           onLoad={events.onLoad}
@@ -386,8 +401,8 @@ export const VideoPlayer = (props: PlayerProps) => {
           style={[styles.video]}
           source={props.source}
         />
-        <PlayerError error={playerState.error} />
         <PlayerLoader loading={playerState.loading} />
+        <PlayerError error={playerState.error} isLive={props.isLive} />
         <Controls
           methods={methods}
           playerState={playerState}

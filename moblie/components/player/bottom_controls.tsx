@@ -7,14 +7,9 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { animationsTypes } from "./player";
 import { Text } from "tamagui";
-import {
-  FullscreenIcon,
-  Heart,
-  MessageCircleDashed,
-  Share2,
-} from "lucide-react-native";
 import { View } from "../ui/View";
 import { FullScreenEnterIcon, FullScreenExitIcon } from "@/assets/icons";
+import useStream from "@/hooks/streamStatus";
 
 type Props = {
   paused: boolean;
@@ -29,6 +24,7 @@ export default function BottomControls({
   animations,
   isFullScreen,
 }: Props) {
+  const { streamStatus } = useStream();
   const opacity = animations.bottomControl.opacity;
 
   return (
@@ -47,10 +43,9 @@ export default function BottomControls({
       >
         <SafeAreaView style={[styles.row, styles.bottomControlGroup]}>
           <View style={{ flex: 1, backgroundColor: "transparent" }}>
-            <Text style={{ color: "white", fontSize: 16 }}>Live Stream</Text>
+            <Text style={{ color: "white", fontSize: 16 }}>{streamStatus.title}</Text>
             <Text style={{ color: "white", fontSize: 14 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit sfdsfs
-              gess.
+              {streamStatus.description}
             </Text>
           </View>
           <View style={{ gap: 12, backgroundColor: "transparent" }}>

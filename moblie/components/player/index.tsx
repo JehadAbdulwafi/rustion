@@ -8,7 +8,7 @@ import { usePlayerContext } from "@/providers/PlayerProvider";
 const videoSource =
   'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
 
-export default function Player() {
+export default function Player({ isLive }: { isLive: boolean }) {
   const { isFullScreen, setIsFullScreen } = usePlayerContext();
   function toggleFullscreen() {
 
@@ -49,7 +49,8 @@ export default function Player() {
       <VideoPlayer
         repeat
         title="title"
-        source={{ uri: videoSource }}
+        isLive={isLive}
+        source={{ uri: "http://192.168.1.5:8080/live/livestream.flv" }}
         toggleFullscreen={toggleFullscreen}
         isFullScreen={isFullScreen}
       />

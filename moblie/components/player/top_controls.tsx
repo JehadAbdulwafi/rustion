@@ -9,6 +9,7 @@ import { animationsTypes } from "./player";
 import { Text } from "tamagui";
 import { ArrowLeft, Eye } from "lucide-react-native";
 import { useRouter } from "expo-router";
+import useStream from "@/hooks/streamStatus";
 
 type Props = {
   animations: animationsTypes;
@@ -16,6 +17,7 @@ type Props = {
 
 export default function TopControls({ animations }: Props) {
   const router = useRouter();
+  const { streamStatus, isConnected } = useStream();
   const onGoBack = () => {
     router.navigate("/");
   };
@@ -57,23 +59,25 @@ export default function TopControls({ animations }: Props) {
               gap: 7,
               borderRadius: 20,
               backgroundColor: "rgba(150,150,150,0.2)",
-              paddingHorizontal: 10,
-              paddingVertical: 6,
+              // paddingHorizontal: 10,
+              // paddingVertical: 6,
             }}
           >
-            <Eye size={16} color="white" />
-            <Text style={{ color: "white", fontSize: 12 }}>140k</Text>
+            {/*
+              <Eye size={16} color="white" />
+              <Text style={{ color: "white", fontSize: 12 }}>{streamStatus.viewers}</Text>
+            */}
             <Text
               style={{
                 color: "white",
                 fontSize: 12,
-                backgroundColor: "red",
+                backgroundColor: isConnected ? "rgba(150,150,150,0.5)" : "red",
                 borderRadius: 20,
                 paddingHorizontal: 10,
                 paddingVertical: 4,
               }}
             >
-              Live
+              {streamStatus.status === "published" ? "Live" : "Offline"}
             </Text>
           </View>
         </View>

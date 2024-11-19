@@ -5,6 +5,15 @@ type FeaturedSection = {
   updated_at: string
 }
 
+type StreamStatus = {
+  stream_id: string
+  title: string
+  description: string
+  status: string
+  viewers: number
+  thumbnail: string
+}
+
 type TvShow = {
   id: string
   title: string

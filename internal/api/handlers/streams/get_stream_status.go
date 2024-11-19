@@ -7,21 +7,17 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/api"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"github.com/rs/zerolog/log"
 	"golang.org/x/net/websocket"
 )
 
-type StreamMessage struct {
-	StreamID uuid.UUID `json:"stream_id"`
-}
-
 type StreamStatus struct {
-	StreamID     uuid.UUID `json:"stream_id"`
-	Title        string    `json:"title"`
-	Description  string    `json:"description"`
-	ViewersCount int32     `json:"viewers_count"`
-	Status       string    `json:"status"`
-	Viewers      int32     `json:"viewers"`
-	Thumbnail    string    `json:"thumbnail"`
+	StreamID    uuid.UUID `json:"stream_id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Status      string    `json:"status"`
+	Viewers     int32     `json:"viewers"`
+	Thumbnail   string    `json:"thumbnail"`
 }
 
 type WebSocketMessage struct {
@@ -29,14 +25,8 @@ type WebSocketMessage struct {
 	Payload interface{} `json:"payload"`
 }
 
-func (s *StreamStatus) Equals(other *StreamStatus) bool {
-	return s.Title == other.Title &&
-		s.Description == other.Description &&
-		s.ViewersCount == other.ViewersCount
-}
-
 func GetStreamStatusRoute(s *api.Server) *echo.Route {
-	return s.Router.APIV1Streams.GET("/ws", getStreamStatusHandler(s))
+	return s.Router.APIV1Streams.GET("/:id/ws", getStreamStatusHandler(s))
 }
 
 func getStreamStatusHandler(s *api.Server) echo.HandlerFunc {
@@ -46,72 +36,76 @@ func getStreamStatusHandler(s *api.Server) echo.HandlerFunc {
 
 			ctx := c.Request().Context()
 
-			streamID := uuid.Nil
-			var previousStreamStatus *StreamStatus
-
-			for {
-				msg := ""
-				err := websocket.Message.Receive(ws, &msg)
-				if err != nil {
-					c.Logger().Error("Error receiving message: ", err)
-					break
-				}
-
-				var streamMessage StreamMessage
-				err = json.Unmarshal([]byte(msg), &streamMessage)
-				if err != nil {
-					c.Logger().Error(err)
-					continue
-				}
-
-				streamID = streamMessage.StreamID
-
-				err = s.Queries.IncrementStreamViewers(ctx, streamID)
-				if err != nil {
-					c.Logger().Error(err)
-				}
-
-				streamMetadata, err := s.Queries.GetStreamMetadata(ctx, streamID)
-				if err != nil {
-					c.Logger().Error(err)
-					continue
-				}
-
-				currentStreamStatus := StreamStatus{
-					StreamID:     streamMetadata.StreamID,
-					Title:        streamMetadata.Title,
-					Description:  streamMetadata.Description,
-					ViewersCount: streamMetadata.Viewers.Int32,
-					Status:       string(streamMetadata.Status),
-					Viewers:      streamMetadata.Viewers.Int32,
-					Thumbnail:    streamMetadata.Thumbnail.String,
-				}
-
-				if previousStreamStatus == nil || !previousStreamStatus.Equals(&currentStreamStatus) {
-					statusMessage := WebSocketMessage{
-						Type:    "status",
-						Payload: currentStreamStatus,
-					}
-					jsonData, err := json.Marshal(statusMessage)
-					if err != nil {
-						c.Logger().Error("Error encoding JSON: ", err)
-						continue
-					}
-					err = websocket.Message.Send(ws, string(jsonData))
-					if err != nil {
-						c.Logger().Error(err)
-					}
-					previousStreamStatus = &currentStreamStatus
-				}
+			log.Info().Msg("new user joining stream")
+			// Get stream ID from request
+			id := c.Param("id")
+			streamID, err := uuid.Parse(id)
+			if err != nil {
+				log.Error().Err(err).Msg("Error parsing stream ID: ")
+				return
 			}
 
-			if streamID != uuid.Nil {
-				err := s.Queries.DecrementStreamViewers(context.Background(), streamID)
+			// Increment viewer count
+			err = s.Queries.IncrementStreamViewers(ctx, streamID)
+			if err != nil {
+				log.Error().Err(err).Msg("Error incrementing viewers in DB: ")
+			}
+
+			// Decrement viewer count on disconnect
+			defer func() {
+				log.Info().Msg("Attempting to decrement viewer count")
+				err := s.Queries.DecrementStreamViewers(ctx, streamID)
 				if err != nil {
-					c.Logger().Error("Error decrementing viewer count: ", err)
+					log.Error().Err(err).Msg("Error decrementing viewers in DB:")
+				}
+			}()
+
+			// Send initial stream status
+			sendStreamStatus(ws, s, ctx, streamID)
+
+			// Keep connection alive and wait for disconnection
+			for {
+				var msg string
+				err := websocket.Message.Receive(ws, &msg)
+				if err != nil {
+					// WebSocket is closed or error occurred
+					log.Error().Err(err).Msg("WebSocket disconnected")
+					break
 				}
 			}
 		}).ServeHTTP(c.Response(), c.Request())
 		return nil
+	}
+}
+func sendStreamStatus(ws *websocket.Conn, s *api.Server, ctx context.Context, streamID uuid.UUID) {
+	streamMetadata, err := s.Queries.GetStreamMetadata(ctx, streamID)
+	if err != nil {
+		log.Error().Err(err).Msg("Error fetching stream metadata:")
+		return
+	}
+
+	currentStreamStatus := StreamStatus{
+		StreamID:    streamMetadata.StreamID,
+		Title:       streamMetadata.Title,
+		Description: streamMetadata.Description,
+		Status:      string(streamMetadata.Status),
+		Viewers:     streamMetadata.Viewers.Int32,
+		Thumbnail:   streamMetadata.Thumbnail.String,
+	}
+
+	statusMessage := WebSocketMessage{
+		Type:    "status",
+		Payload: currentStreamStatus,
+	}
+
+	jsonData, err := json.Marshal(statusMessage)
+	if err != nil {
+		log.Error().Err(err).Msg("Error encoding JSON: ")
+		return
+	}
+
+	err = websocket.Message.Send(ws, string(jsonData))
+	if err != nil {
+		log.Error().Err(err).Msg("Error sending WebSocket message:")
 	}
 }

@@ -1,16 +1,24 @@
+import { CircleX, Cloud, CloudOff } from "lucide-react-native";
 import { StyleSheet, Text, View } from "react-native";
 import { Image } from "tamagui";
 type Props = {
   error: any;
+  isLive: boolean;
 };
-const PlayerError = ({ error }: Props) => {
+const PlayerError = ({ error, isLive }: Props) => {
+  if (!isLive) {
+    return (
+      <View style={styles.container}>
+        <CloudOff size={24} color="#eee" />
+        <Text style={styles.text}>Stream not available now!</Text>
+      </View>
+    );
+  }
+
   if (error) {
     return (
       <View style={styles.container}>
-        <Image
-          source={require("../../assets/img/error-icon.png")}
-          style={styles.icon}
-        />
+        <CircleX size={24} color="#eee" />
         <Text style={styles.text}>Stream is offline</Text>
       </View>
     );
@@ -30,12 +38,10 @@ const styles = StyleSheet.create({
     left: 0,
     justifyContent: "center",
     alignItems: "center",
-  },
-  icon: {
-    marginBottom: 16,
+    gap: 4,
   },
   text: {
     backgroundColor: "transparent",
-    color: "#f27474",
+    color: "#eee",
   },
 });
