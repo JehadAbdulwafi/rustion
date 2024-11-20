@@ -44,57 +44,41 @@ definitions:
   StreamEvent:
     type: object
     required:
+      - request_id
       - action
-      - client_id
-      - ip
       - vhost
       - app
       - stream
       - param
-      - server_id
-      - stream_id
-      - stream_url
     properties:
+      request_id:
+        description: Unique identifier for the request
+        type: string
+        example: 3ab26a09-59b0-42f7-98e3-a281c7d0712b
       action:
-        description: Action performed on stream
+        description: Action performed on the stream
         type: string
-        example: publish
-      client_id:
-        description: Client ID of stream
+        example: on_publish
+      opaque:
+        description: Optional opaque token
         type: string
-        example: 891d37d3-c74f-493e-aea8-af73efd92016
-      ip:
-        description: IP address of stream
-        type: string
-        example: 89.207.132.170
+        example: mytoken
       vhost:
-        description: VHost of stream
+        description: Virtual host of the stream
         type: string
-        example: vhost
+        example: __defaultVhost__
       app:
-        description: App of stream
+        description: Application name of the stream
         type: string
-        example: app
+        example: live
       stream:
-        description: Stream of stream
+        description: Stream name
         type: string
-        example: stream
+        example: livestream
       param:
-        description: Param of stream
+        description: Parameters passed to the stream
         type: string
-        example: param
-      server_id:
-        description: Server ID of stream
-        type: string
-        example: 891d37d3-c74f-493e-aea8-af73efd92016
-      stream_id:
-        description: Stream ID of stream
-        type: string
-        example: 891d37d3-c74f-493e-aea8-af73efd92016
-      stream_url:
-        description: Stream URL of stream
-        type: string
-        example: stream_url
+        example: "?secret=8f7605d657c74d69b6b48f532c469bc9"
   StreamEventResponse:
     type: object
     required:

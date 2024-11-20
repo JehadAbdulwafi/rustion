@@ -19,53 +19,37 @@ import (
 // swagger:model streamEvent
 type StreamEvent struct {
 
-	// Action performed on stream
-	// Example: publish
+	// Action performed on the stream
+	// Example: on_publish
 	// Required: true
 	Action *string `json:"action"`
 
-	// App of stream
-	// Example: app
+	// Application name of the stream
+	// Example: live
 	// Required: true
 	App *string `json:"app"`
 
-	// Client ID of stream
-	// Example: 891d37d3-c74f-493e-aea8-af73efd92016
-	// Required: true
-	ClientID *string `json:"client_id"`
+	// Optional opaque token
+	// Example: mytoken
+	Opaque string `json:"opaque,omitempty"`
 
-	// IP address of stream
-	// Example: 89.207.132.170
-	// Required: true
-	IP *string `json:"ip"`
-
-	// Param of stream
-	// Example: param
+	// Parameters passed to the stream
+	// Example: ?secret=8f7605d657c74d69b6b48f532c469bc9
 	// Required: true
 	Param *string `json:"param"`
 
-	// Server ID of stream
-	// Example: 891d37d3-c74f-493e-aea8-af73efd92016
+	// Unique identifier for the request
+	// Example: 3ab26a09-59b0-42f7-98e3-a281c7d0712b
 	// Required: true
-	ServerID *string `json:"server_id"`
+	RequestID *string `json:"request_id"`
 
-	// Stream of stream
-	// Example: stream
+	// Stream name
+	// Example: livestream
 	// Required: true
 	Stream *string `json:"stream"`
 
-	// Stream ID of stream
-	// Example: 891d37d3-c74f-493e-aea8-af73efd92016
-	// Required: true
-	StreamID *string `json:"stream_id"`
-
-	// Stream URL of stream
-	// Example: stream_url
-	// Required: true
-	StreamURL *string `json:"stream_url"`
-
-	// VHost of stream
-	// Example: vhost
+	// Virtual host of the stream
+	// Example: __defaultVhost__
 	// Required: true
 	Vhost *string `json:"vhost"`
 }
@@ -82,31 +66,15 @@ func (m *StreamEvent) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateClientID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateIP(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.validateParam(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.validateServerID(formats); err != nil {
+	if err := m.validateRequestID(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if err := m.validateStream(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateStreamID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateStreamURL(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -138,24 +106,6 @@ func (m *StreamEvent) validateApp(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *StreamEvent) validateClientID(formats strfmt.Registry) error {
-
-	if err := validate.Required("client_id", "body", m.ClientID); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *StreamEvent) validateIP(formats strfmt.Registry) error {
-
-	if err := validate.Required("ip", "body", m.IP); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (m *StreamEvent) validateParam(formats strfmt.Registry) error {
 
 	if err := validate.Required("param", "body", m.Param); err != nil {
@@ -165,9 +115,9 @@ func (m *StreamEvent) validateParam(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *StreamEvent) validateServerID(formats strfmt.Registry) error {
+func (m *StreamEvent) validateRequestID(formats strfmt.Registry) error {
 
-	if err := validate.Required("server_id", "body", m.ServerID); err != nil {
+	if err := validate.Required("request_id", "body", m.RequestID); err != nil {
 		return err
 	}
 
@@ -177,24 +127,6 @@ func (m *StreamEvent) validateServerID(formats strfmt.Registry) error {
 func (m *StreamEvent) validateStream(formats strfmt.Registry) error {
 
 	if err := validate.Required("stream", "body", m.Stream); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *StreamEvent) validateStreamID(formats strfmt.Registry) error {
-
-	if err := validate.Required("stream_id", "body", m.StreamID); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *StreamEvent) validateStreamURL(formats strfmt.Registry) error {
-
-	if err := validate.Required("stream_url", "body", m.StreamURL); err != nil {
 		return err
 	}
 

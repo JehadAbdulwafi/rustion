@@ -4,10 +4,10 @@ import (
 	"net/http"
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
-	"github.com/JehadAbdulwafi/rustion/internal/database"
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/labstack/echo/v4"
+	"github.com/rs/zerolog/log"
 )
 
 func PostStreamEventsRoute(s *api.Server) *echo.Route {
@@ -21,6 +21,8 @@ func postStreamEventsHandler(s *api.Server) echo.HandlerFunc {
 			return err
 		}
 
+		log.Debug().Interface("body", body).Msg("request body")
+
 		// check if stream exists
 		stream, err := s.Queries.GetStreamByStreamName(c.Request().Context(), *body.Stream)
 		if err != nil {
@@ -29,35 +31,17 @@ func postStreamEventsHandler(s *api.Server) echo.HandlerFunc {
 
 		switch *body.Action {
 		case util.StreamActionPublish:
-			streamMetadata, err := s.Queries.GetStreamMetadata(c.Request().Context(), stream.ID)
-			if err != nil {
-				return echo.NewHTTPError(http.StatusNotFound, "Stream Status not found")
-			}
-
-			// TODO: check if stream belongs to user
-			if streamMetadata.Status == database.StreamStatusEnumPublished {
-				return echo.NewHTTPError(http.StatusForbidden, "Stream is live")
-			}
-
 			err = s.Queries.PublishStream(c.Request().Context(), stream.ID)
 			if err != nil {
 				return echo.NewHTTPError(http.StatusInternalServerError, "Failed to publish stream")
 			}
 		case util.StreamActionUnpublish:
-			streamMetadata, err := s.Queries.GetStreamMetadata(c.Request().Context(), stream.ID)
-			if err != nil {
-				return echo.NewHTTPError(http.StatusNotFound, "Stream Status not found")
-			}
-
-			// TODO: check if stream belongs to user
-			if streamMetadata.Status == database.StreamStatusEnumUnpublished {
-				return echo.NewHTTPError(http.StatusForbidden, "Stream is not live")
-			}
-
 			err = s.Queries.UnpublishStream(c.Request().Context(), stream.ID)
 			if err != nil {
 				return echo.NewHTTPError(http.StatusInternalServerError, "Failed to unpublish stream")
 			}
+		default:
+			log.Info().Str("action", *body.Action).Msg("invalid action")
 		}
 
 		code := int64(0)
