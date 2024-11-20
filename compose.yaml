@@ -1,11 +1,15 @@
 services:
-  srs:
-    build:
-      context: ./srs
+  oryx:
+    image: ossrs/oryx:5
+    container_name: oryx
+    restart: always
     ports:
-      - '1935:1935'
-      - '8080:8080'
-      - '10080:10080/udp'
+      - "80:2022"
+      - "443:2443"
+      - "1935:1935"
+      - "8000:8000/udp"
+      - "10080:10080/udp"
     volumes:
-      - ./srs/srs.conf:/usr/local/srs/conf/srs.conf
-
+      - "${HOME}/data:/data"
+    stdin_open: true
+    tty: true
