@@ -42,17 +42,17 @@ const data = {
       isActive: true,
     },
     {
-      title: "Channels",
-      url: "/dashboard/channels",
+      title: "Lives",
+      url: "/dashboard/lives",
       icon: Bot,
       items: [
         {
           title: "Live",
-          url: "/dashboard/channels/live",
+          url: "/dashboard/lives/live",
         },
         {
           title: "Explorer",
-          url: "/dashboard/channels/live",
+          url: "/dashboard/lives/live",
         },
       ],
     },
