@@ -7,6 +7,7 @@ package database
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/google/uuid"
 )
@@ -36,17 +37,23 @@ func (q *Queries) CreateFeaturedArticle(ctx context.Context, arg CreateFeaturedA
 }
 
 const createFeaturedSection = `-- name: CreateFeaturedSection :one
-INSERT INTO featured_sections (title)
-VALUES ($1)
-RETURNING id, title, created_at, updated_at
+INSERT INTO featured_sections (title, app_id)
+VALUES ($1, $2)
+RETURNING id, title, app_id, created_at, updated_at
 `
 
-func (q *Queries) CreateFeaturedSection(ctx context.Context, title string) (FeaturedSection, error) {
-	row := q.db.QueryRowContext(ctx, createFeaturedSection, title)
+type CreateFeaturedSectionParams struct {
+	Title string
+	AppID uuid.UUID
+}
+
+func (q *Queries) CreateFeaturedSection(ctx context.Context, arg CreateFeaturedSectionParams) (FeaturedSection, error) {
+	row := q.db.QueryRowContext(ctx, createFeaturedSection, arg.Title, arg.AppID)
 	var i FeaturedSection
 	err := row.Scan(
 		&i.ID,
 		&i.Title,
+		&i.AppID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -74,7 +81,7 @@ func (q *Queries) DeleteFeaturedSection(ctx context.Context, id uuid.UUID) error
 }
 
 const getArticlesBySectionID = `-- name: GetArticlesBySectionID :many
-SELECT a.id, a.title, a.description, a.content, a.image, a.tags, a.created_at, a.updated_at FROM articles a
+SELECT a.id, a.title, a.description, a.content, a.image, a.tags, a.app_id, a.created_at, a.updated_at FROM articles a
 JOIN featured_articles fa ON a.id = fa.article_id
 JOIN featured_sections fs ON fs.id = fa.featured_section_id
 WHERE fs.id = $1
@@ -96,6 +103,7 @@ func (q *Queries) GetArticlesBySectionID(ctx context.Context, id uuid.UUID) ([]A
 			&i.Content,
 			&i.Image,
 			&i.Tags,
+			&i.AppID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -167,7 +175,7 @@ func (q *Queries) GetFeaturedArticlesBySectionID(ctx context.Context, featuredSe
 }
 
 const getFeaturedSection = `-- name: GetFeaturedSection :one
-SELECT id, title, created_at, updated_at
+SELECT id, title, app_id, created_at, updated_at
 FROM featured_sections
 WHERE id = $1
 `
@@ -178,6 +186,7 @@ func (q *Queries) GetFeaturedSection(ctx context.Context, id uuid.UUID) (Feature
 	err := row.Scan(
 		&i.ID,
 		&i.Title,
+		&i.AppID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -186,18 +195,25 @@ func (q *Queries) GetFeaturedSection(ctx context.Context, id uuid.UUID) (Feature
 
 const getFeaturedSections = `-- name: GetFeaturedSections :many
 SELECT id, title, created_at, updated_at
-FROM featured_sections
+FROM featured_sections WHERE app_id = $1
 `
 
-func (q *Queries) GetFeaturedSections(ctx context.Context) ([]FeaturedSection, error) {
-	rows, err := q.db.QueryContext(ctx, getFeaturedSections)
+type GetFeaturedSectionsRow struct {
+	ID        uuid.UUID
+	Title     string
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
+}
+
+func (q *Queries) GetFeaturedSections(ctx context.Context, appID uuid.UUID) ([]GetFeaturedSectionsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getFeaturedSections, appID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []FeaturedSection
+	var items []GetFeaturedSectionsRow
 	for rows.Next() {
-		var i FeaturedSection
+		var i GetFeaturedSectionsRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Title,
@@ -255,9 +271,16 @@ type UpdateFeaturedSectionParams struct {
 	ID    uuid.UUID
 }
 
-func (q *Queries) UpdateFeaturedSection(ctx context.Context, arg UpdateFeaturedSectionParams) (FeaturedSection, error) {
+type UpdateFeaturedSectionRow struct {
+	ID        uuid.UUID
+	Title     string
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
+}
+
+func (q *Queries) UpdateFeaturedSection(ctx context.Context, arg UpdateFeaturedSectionParams) (UpdateFeaturedSectionRow, error) {
 	row := q.db.QueryRowContext(ctx, updateFeaturedSection, arg.Title, arg.ID)
-	var i FeaturedSection
+	var i UpdateFeaturedSectionRow
 	err := row.Scan(
 		&i.ID,
 		&i.Title,

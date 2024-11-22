@@ -1,6 +1,6 @@
 -- name: CreateArticle :one
-INSERT INTO articles (title, content, tags, image, description)
-VALUES ($1, $2, $3, $4, $5)
+INSERT INTO articles (title, content, tags, image, description, app_id)
+VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING *;
 
 -- name: GetArticle :one
@@ -10,8 +10,8 @@ WHERE id = $1;
 
 -- name: UpdateArticle :one
 UPDATE articles
-SET title = $1, content = $2, tags = $3, image = $4, description = $5, updated_at = CURRENT_TIMESTAMP
-WHERE id = $6
+SET title = $1, content = $2, tags = $3, image = $4, description = $5, app_id = $6, updated_at = CURRENT_TIMESTAMP
+WHERE id = $7
 RETURNING *;
 
 -- name: DeleteArticle :exec

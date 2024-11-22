@@ -13,9 +13,9 @@ import (
 )
 
 const createArticle = `-- name: CreateArticle :one
-INSERT INTO articles (title, content, tags, image, description)
-VALUES ($1, $2, $3, $4, $5)
-RETURNING id, title, description, content, image, tags, created_at, updated_at
+INSERT INTO articles (title, content, tags, image, description, app_id)
+VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING id, title, description, content, image, tags, app_id, created_at, updated_at
 `
 
 type CreateArticleParams struct {
@@ -24,6 +24,7 @@ type CreateArticleParams struct {
 	Tags        sql.NullString
 	Image       string
 	Description sql.NullString
+	AppID       uuid.UUID
 }
 
 func (q *Queries) CreateArticle(ctx context.Context, arg CreateArticleParams) (Article, error) {
@@ -33,6 +34,7 @@ func (q *Queries) CreateArticle(ctx context.Context, arg CreateArticleParams) (A
 		arg.Tags,
 		arg.Image,
 		arg.Description,
+		arg.AppID,
 	)
 	var i Article
 	err := row.Scan(
@@ -42,6 +44,7 @@ func (q *Queries) CreateArticle(ctx context.Context, arg CreateArticleParams) (A
 		&i.Content,
 		&i.Image,
 		&i.Tags,
+		&i.AppID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -59,7 +62,7 @@ func (q *Queries) DeleteArticle(ctx context.Context, id uuid.UUID) error {
 }
 
 const getAllArticles = `-- name: GetAllArticles :many
-SELECT id, title, description, content, image, tags, created_at, updated_at
+SELECT id, title, description, content, image, tags, app_id, created_at, updated_at
 FROM articles
 ORDER BY created_at DESC
 `
@@ -80,6 +83,7 @@ func (q *Queries) GetAllArticles(ctx context.Context) ([]Article, error) {
 			&i.Content,
 			&i.Image,
 			&i.Tags,
+			&i.AppID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -97,7 +101,7 @@ func (q *Queries) GetAllArticles(ctx context.Context) ([]Article, error) {
 }
 
 const getArticle = `-- name: GetArticle :one
-SELECT id, title, description, content, image, tags, created_at, updated_at
+SELECT id, title, description, content, image, tags, app_id, created_at, updated_at
 FROM articles
 WHERE id = $1
 `
@@ -112,6 +116,7 @@ func (q *Queries) GetArticle(ctx context.Context, id uuid.UUID) (Article, error)
 		&i.Content,
 		&i.Image,
 		&i.Tags,
+		&i.AppID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -119,7 +124,7 @@ func (q *Queries) GetArticle(ctx context.Context, id uuid.UUID) (Article, error)
 }
 
 const getArticlesByAnyTag = `-- name: GetArticlesByAnyTag :many
-SELECT id, title, description, content, image, tags, created_at, updated_at
+SELECT id, title, description, content, image, tags, app_id, created_at, updated_at
 FROM articles
 WHERE EXISTS (
     SELECT 1
@@ -144,6 +149,7 @@ func (q *Queries) GetArticlesByAnyTag(ctx context.Context, stringToArray string)
 			&i.Content,
 			&i.Image,
 			&i.Tags,
+			&i.AppID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -161,7 +167,7 @@ func (q *Queries) GetArticlesByAnyTag(ctx context.Context, stringToArray string)
 }
 
 const getArticlesByTag = `-- name: GetArticlesByTag :many
-SELECT id, title, description, content, image, tags, created_at, updated_at
+SELECT id, title, description, content, image, tags, app_id, created_at, updated_at
 FROM articles 
 WHERE tags ILIKE '%' || $1 || '%'
 ORDER BY created_at DESC
@@ -183,6 +189,7 @@ func (q *Queries) GetArticlesByTag(ctx context.Context, dollar_1 sql.NullString)
 			&i.Content,
 			&i.Image,
 			&i.Tags,
+			&i.AppID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -201,9 +208,9 @@ func (q *Queries) GetArticlesByTag(ctx context.Context, dollar_1 sql.NullString)
 
 const updateArticle = `-- name: UpdateArticle :one
 UPDATE articles
-SET title = $1, content = $2, tags = $3, image = $4, description = $5, updated_at = CURRENT_TIMESTAMP
-WHERE id = $6
-RETURNING id, title, description, content, image, tags, created_at, updated_at
+SET title = $1, content = $2, tags = $3, image = $4, description = $5, app_id = $6, updated_at = CURRENT_TIMESTAMP
+WHERE id = $7
+RETURNING id, title, description, content, image, tags, app_id, created_at, updated_at
 `
 
 type UpdateArticleParams struct {
@@ -212,6 +219,7 @@ type UpdateArticleParams struct {
 	Tags        sql.NullString
 	Image       string
 	Description sql.NullString
+	AppID       uuid.UUID
 	ID          uuid.UUID
 }
 
@@ -222,6 +230,7 @@ func (q *Queries) UpdateArticle(ctx context.Context, arg UpdateArticleParams) (A
 		arg.Tags,
 		arg.Image,
 		arg.Description,
+		arg.AppID,
 		arg.ID,
 	)
 	var i Article
@@ -232,6 +241,7 @@ func (q *Queries) UpdateArticle(ctx context.Context, arg UpdateArticleParams) (A
 		&i.Content,
 		&i.Image,
 		&i.Tags,
+		&i.AppID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

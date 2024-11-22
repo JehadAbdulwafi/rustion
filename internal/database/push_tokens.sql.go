@@ -12,25 +12,32 @@ import (
 )
 
 const createPushToken = `-- name: CreatePushToken :one
-INSERT INTO push_tokens (token, fingerprint, provider)
-VALUES ($1, $2, $3)
-RETURNING id, token, provider, fingerprint, created_at, updated_at
+INSERT INTO push_tokens (token, fingerprint, provider, app_id)
+VALUES ($1, $2, $3, $4)
+RETURNING id, token, provider, fingerprint, app_id, created_at, updated_at
 `
 
 type CreatePushTokenParams struct {
 	Token       string
 	Fingerprint string
 	Provider    ProviderType
+	AppID       uuid.UUID
 }
 
 func (q *Queries) CreatePushToken(ctx context.Context, arg CreatePushTokenParams) (PushToken, error) {
-	row := q.db.QueryRowContext(ctx, createPushToken, arg.Token, arg.Fingerprint, arg.Provider)
+	row := q.db.QueryRowContext(ctx, createPushToken,
+		arg.Token,
+		arg.Fingerprint,
+		arg.Provider,
+		arg.AppID,
+	)
 	var i PushToken
 	err := row.Scan(
 		&i.ID,
 		&i.Token,
 		&i.Provider,
 		&i.Fingerprint,
+		&i.AppID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -56,7 +63,7 @@ func (q *Queries) DeletePushTokensByFingerprint(ctx context.Context, fingerprint
 }
 
 const getPushToken = `-- name: GetPushToken :one
-SELECT id, token, provider, fingerprint, created_at, updated_at FROM push_tokens WHERE token = $1
+SELECT id, token, provider, fingerprint, app_id, created_at, updated_at FROM push_tokens WHERE token = $1
 `
 
 func (q *Queries) GetPushToken(ctx context.Context, token string) (PushToken, error) {
@@ -67,6 +74,26 @@ func (q *Queries) GetPushToken(ctx context.Context, token string) (PushToken, er
 		&i.Token,
 		&i.Provider,
 		&i.Fingerprint,
+		&i.AppID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getPushTokenesByAppID = `-- name: GetPushTokenesByAppID :one
+SELECT id, token, provider, fingerprint, app_id, created_at, updated_at FROM push_tokens WHERE app_id = $1
+`
+
+func (q *Queries) GetPushTokenesByAppID(ctx context.Context, appID uuid.UUID) (PushToken, error) {
+	row := q.db.QueryRowContext(ctx, getPushTokenesByAppID, appID)
+	var i PushToken
+	err := row.Scan(
+		&i.ID,
+		&i.Token,
+		&i.Provider,
+		&i.Fingerprint,
+		&i.AppID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -74,7 +101,7 @@ func (q *Queries) GetPushToken(ctx context.Context, token string) (PushToken, er
 }
 
 const getPushTokensByFingerprint = `-- name: GetPushTokensByFingerprint :many
-SELECT id, token, provider, fingerprint, created_at, updated_at FROM push_tokens WHERE fingerprint = $1
+SELECT id, token, provider, fingerprint, app_id, created_at, updated_at FROM push_tokens WHERE fingerprint = $1
 `
 
 func (q *Queries) GetPushTokensByFingerprint(ctx context.Context, fingerprint string) ([]PushToken, error) {
@@ -91,6 +118,7 @@ func (q *Queries) GetPushTokensByFingerprint(ctx context.Context, fingerprint st
 			&i.Token,
 			&i.Provider,
 			&i.Fingerprint,
+			&i.AppID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -108,7 +136,7 @@ func (q *Queries) GetPushTokensByFingerprint(ctx context.Context, fingerprint st
 }
 
 const getPushTokensByID = `-- name: GetPushTokensByID :one
-SELECT id, token, provider, fingerprint, created_at, updated_at FROM push_tokens WHERE id = $1
+SELECT id, token, provider, fingerprint, app_id, created_at, updated_at FROM push_tokens WHERE id = $1
 `
 
 func (q *Queries) GetPushTokensByID(ctx context.Context, id uuid.UUID) (PushToken, error) {
@@ -119,6 +147,7 @@ func (q *Queries) GetPushTokensByID(ctx context.Context, id uuid.UUID) (PushToke
 		&i.Token,
 		&i.Provider,
 		&i.Fingerprint,
+		&i.AppID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

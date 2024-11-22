@@ -1,10 +1,10 @@
 -- name: CreateFeaturedSection :one
-INSERT INTO featured_sections (title)
-VALUES ($1)
-RETURNING id, title, created_at, updated_at;
+INSERT INTO featured_sections (title, app_id)
+VALUES ($1, $2)
+RETURNING *;
 
 -- name: GetFeaturedSection :one
-SELECT id, title, created_at, updated_at
+SELECT *
 FROM featured_sections
 WHERE id = $1;
 
@@ -20,15 +20,15 @@ WHERE id = $1;
 
 -- name: GetFeaturedSections :many
 SELECT id, title, created_at, updated_at
-FROM featured_sections;
+FROM featured_sections WHERE app_id = $1;
 
 -- name: CreateFeaturedArticle :one
 INSERT INTO featured_articles (featured_section_id, article_id)
 VALUES ($1, $2)
-RETURNING id, featured_section_id, article_id, created_at, updated_at;
+RETURNING *;
 
 -- name: GetFeaturedArticle :one
-SELECT id, featured_section_id, article_id, created_at, updated_at
+SELECT *
 FROM featured_articles
 WHERE id = $1;
 
@@ -36,7 +36,7 @@ WHERE id = $1;
 UPDATE featured_articles
 SET featured_section_id = $1, article_id = $2, updated_at = CURRENT_TIMESTAMP
 WHERE id = $3
-RETURNING id, featured_section_id, article_id, created_at, updated_at;
+RETURNING *;
 
 -- name: DeleteFeaturedArticle :exec
 DELETE FROM featured_articles

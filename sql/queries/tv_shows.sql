@@ -1,13 +1,13 @@
 -- name: CreateTVShow :one
-INSERT INTO tv_shows (title, genre, description, image)
-VALUES ($1, $2, $3, $4)
+INSERT INTO tv_shows (title, genre, description, image, app_id)
+VALUES ($1, $2, $3, $4, $5)
 RETURNING *;
 
 -- name: GetTVShowByID :one
 SELECT * FROM tv_shows WHERE id = $1;
 
 -- name: GetAllTVShows :many
-SELECT * FROM tv_shows;
+SELECT * FROM tv_shows WHERE app_id = $1;
 
 -- name: UpdateTVShow :one
 UPDATE tv_shows

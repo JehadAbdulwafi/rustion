@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/sqlc-dev/pqtype"
 )
 
 type DayEnum string
@@ -156,6 +157,15 @@ type Account struct {
 	TokenType         sql.NullString
 }
 
+type App struct {
+	ID        uuid.UUID
+	UserID    uuid.UUID
+	Name      string
+	Config    pqtype.NullRawMessage
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
+}
+
 type Article struct {
 	ID          uuid.UUID
 	Title       string
@@ -163,6 +173,7 @@ type Article struct {
 	Content     string
 	Image       string
 	Tags        sql.NullString
+	AppID       uuid.UUID
 	CreatedAt   sql.NullTime
 	UpdatedAt   sql.NullTime
 }
@@ -178,6 +189,7 @@ type FeaturedArticle struct {
 type FeaturedSection struct {
 	ID        uuid.UUID
 	Title     string
+	AppID     uuid.UUID
 	CreatedAt sql.NullTime
 	UpdatedAt sql.NullTime
 }
@@ -195,6 +207,7 @@ type PushToken struct {
 	Token       string
 	Provider    ProviderType
 	Fingerprint string
+	AppID       uuid.UUID
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
@@ -225,6 +238,7 @@ type StreamMetadatum struct {
 type Tag struct {
 	ID        uuid.UUID
 	Title     string
+	AppID     uuid.UUID
 	CreatedAt sql.NullTime
 	UpdatedAt sql.NullTime
 }
@@ -235,6 +249,7 @@ type TvShow struct {
 	Genre       sql.NullString
 	Description sql.NullString
 	Image       sql.NullString
+	AppID       uuid.UUID
 	CreatedAt   sql.NullTime
 	UpdatedAt   sql.NullTime
 }

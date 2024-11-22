@@ -7,22 +7,29 @@ package database
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/google/uuid"
 )
 
 const createTag = `-- name: CreateTag :one
-INSERT INTO tags (title)
-VALUES ($1)
-RETURNING id, title, created_at, updated_at
+INSERT INTO tags (title, app_id)
+VALUES ($1, $2)
+RETURNING id, title, app_id, created_at, updated_at
 `
 
-func (q *Queries) CreateTag(ctx context.Context, title string) (Tag, error) {
-	row := q.db.QueryRowContext(ctx, createTag, title)
+type CreateTagParams struct {
+	Title string
+	AppID uuid.UUID
+}
+
+func (q *Queries) CreateTag(ctx context.Context, arg CreateTagParams) (Tag, error) {
+	row := q.db.QueryRowContext(ctx, createTag, arg.Title, arg.AppID)
 	var i Tag
 	err := row.Scan(
 		&i.ID,
 		&i.Title,
+		&i.AppID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -45,9 +52,16 @@ FROM tags
 WHERE id = $1
 `
 
-func (q *Queries) GetTag(ctx context.Context, id uuid.UUID) (Tag, error) {
+type GetTagRow struct {
+	ID        uuid.UUID
+	Title     string
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
+}
+
+func (q *Queries) GetTag(ctx context.Context, id uuid.UUID) (GetTagRow, error) {
 	row := q.db.QueryRowContext(ctx, getTag, id)
-	var i Tag
+	var i GetTagRow
 	err := row.Scan(
 		&i.ID,
 		&i.Title,
@@ -58,11 +72,12 @@ func (q *Queries) GetTag(ctx context.Context, id uuid.UUID) (Tag, error) {
 }
 
 const getTags = `-- name: GetTags :many
-SELECT id, title, created_at, updated_at FROM tags
+SELECT id, title, app_id, created_at, updated_at FROM tags
+WHERE app_id = $1
 `
 
-func (q *Queries) GetTags(ctx context.Context) ([]Tag, error) {
-	rows, err := q.db.QueryContext(ctx, getTags)
+func (q *Queries) GetTags(ctx context.Context, appID uuid.UUID) ([]Tag, error) {
+	rows, err := q.db.QueryContext(ctx, getTags, appID)
 	if err != nil {
 		return nil, err
 	}
@@ -73,6 +88,7 @@ func (q *Queries) GetTags(ctx context.Context) ([]Tag, error) {
 		if err := rows.Scan(
 			&i.ID,
 			&i.Title,
+			&i.AppID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -101,9 +117,16 @@ type UpdateTagParams struct {
 	ID    uuid.UUID
 }
 
-func (q *Queries) UpdateTag(ctx context.Context, arg UpdateTagParams) (Tag, error) {
+type UpdateTagRow struct {
+	ID        uuid.UUID
+	Title     string
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
+}
+
+func (q *Queries) UpdateTag(ctx context.Context, arg UpdateTagParams) (UpdateTagRow, error) {
 	row := q.db.QueryRowContext(ctx, updateTag, arg.Title, arg.ID)
-	var i Tag
+	var i UpdateTagRow
 	err := row.Scan(
 		&i.ID,
 		&i.Title,
