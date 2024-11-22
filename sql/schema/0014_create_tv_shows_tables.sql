@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS tv_shows (
   genre VARCHAR(100),
   description TEXT,
   image TEXT,
+  app_id UUID NOT NULL REFERENCES apps(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP
 );
