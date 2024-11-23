@@ -59,22 +59,29 @@ func InsertSeedData() error {
 				`, v.ID, v.StreamID, v.Status, v.Title, v.Description, v.Thumbnail.String, v.LastPublishedAt.Time, v.Viewers.Int32); err != nil {
 					return fmt.Errorf("failed to insert stream_metadata fixture: %w", err)
 				}
+			case *database.App:
+				if _, err := db.Exec(`INSERT INTO apps
+				(id, user_id, name)
+				VALUES ($1, $2, $3)
+				`, v.ID, v.UserID, v.Name); err != nil {
+					return fmt.Errorf("failed to insert app fixture: %w", err)
+				}
 			case *database.Tag:
 				if _, err := db.Exec(`INSERT INTO tags
-					(id, title) VALUES ($1, $2)`,
-					v.ID, v.Title); err != nil {
+					(id, title, app_id) VALUES ($1, $2, $3)`,
+					v.ID, v.Title, v.AppID); err != nil {
 					return fmt.Errorf("failed to insert tags fixture: %w", err)
 				}
 			case *database.FeaturedSection:
 				if _, err := db.Exec(`INSERT INTO featured_sections
-					(id, title) VALUES ($1, $2)`,
-					v.ID, v.Title); err != nil {
+					(id, title, app_id) VALUES ($1, $2, $3)`,
+					v.ID, v.Title, v.AppID); err != nil {
 					return fmt.Errorf("failed to insert featured_sections fixture: %w", err)
 				}
 			case *database.Article:
 				if _, err := db.Exec(`INSERT INTO articles
-					(id, title, content, image, tags, description) VALUES ($1, $2, $3, $4, $5, $6)`,
-					v.ID, v.Title, v.Content, v.Image, v.Tags, v.Description.String); err != nil {
+					(id, title, content, image, tags, description, app_id) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+					v.ID, v.Title, v.Content, v.Image, v.Tags, v.Description.String, v.AppID); err != nil {
 					return fmt.Errorf("failed to insert articles fixture: %w", err)
 				}
 			case *database.FeaturedArticle:
@@ -85,9 +92,9 @@ func InsertSeedData() error {
 				}
 			case *database.TvShow:
 				if _, err := db.Exec(`INSERT INTO tv_shows
-				(id, title, genre, description, image)
-				VALUES ($1, $2, $3, $4, $5)
-				`, v.ID, v.Title, v.Genre, v.Description.String, v.Image.String); err != nil {
+				(id, title, genre, description, image, app_id)
+				VALUES ($1, $2, $3, $4, $5, $6)
+				`, v.ID, v.Title, v.Genre, v.Description.String, v.Image.String, v.AppID); err != nil {
 					return fmt.Errorf("failed to insert tv_show fixture: %w", err)
 				}
 			}

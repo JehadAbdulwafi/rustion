@@ -10,11 +10,17 @@ definitions:
       - id
       - title
       - image
+      - app_id
     properties:
       id:
         type: string
         format: uuid4
         description: ID of the TV show
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      app_id:
+        type: string
+        format: uuid4
+        description: ID of app
         example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
       title:
         type: string
@@ -43,7 +49,6 @@ definitions:
         format: date-time
         description: Timestamp when the TV show was last updated
         example: "2023-10-02T12:00:00Z"
-
   CreateTVShowRequest:
     type: object
     required:

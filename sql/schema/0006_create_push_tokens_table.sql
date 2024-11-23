@@ -9,7 +9,7 @@ CREATE TABLE push_tokens (
     token TEXT UNIQUE NOT NULL,
     provider provider_type NOT NULL,
     fingerprint TEXT NOT NULL,
-    app_id UUID NOT NULL REFERENCES apps(id) ON DELETE CASCADE,
+    app_id UUID REFERENCES apps(id) ON DELETE CASCADE,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL
 );

@@ -11,11 +11,17 @@ definitions:
       - title
       - content
       - image
+      - app_id
     properties:
       id:
         type: string
         format: uuid4
         description: ID of article
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      app_id:
+        type: string
+        format: uuid4
+        description: ID of app
         example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
       title:
         type: string

@@ -7,6 +7,9 @@ RETURNING *;
 SELECT * FROM tv_shows WHERE id = $1;
 
 -- name: GetAllTVShows :many
+SELECT * FROM tv_shows;
+
+-- name: GetAllTVShowsByApp :many
 SELECT * FROM tv_shows WHERE app_id = $1;
 
 -- name: UpdateTVShow :one

@@ -10,6 +10,7 @@ definitions:
       - newToken
       - provider
       - fingerprint
+      - app_id
     properties:
       newToken:
         description: New push token for given provider.
@@ -32,3 +33,8 @@ definitions:
         type: string
         maxLength: 500
         example: realme-RMX2001EEA-RMX2001L1:11-RP1A.200720.011-1647528410735:user-release-keys
+      app_id:
+        type: string
+        format: uuid4
+        description: ID of app
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc

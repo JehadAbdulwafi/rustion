@@ -8,6 +8,12 @@ SELECT *
 FROM apps
 WHERE id = $1;
 
+-- name: GetAppByUserID :one
+SELECT *
+FROM apps
+WHERE user_id = $1
+LIMIT 1;
+
 -- name: UpdateApp :one
 UPDATE apps
 SET name = $1, config = $2, updated_at = CURRENT_TIMESTAMP
@@ -18,6 +24,9 @@ RETURNING *;
 DELETE FROM apps
 WHERE id = $1;
 
--- name: GetApps :many
+-- name: GetAppsByUserID :many
 SELECT * FROM apps
 WHERE user_id = $1;
+
+-- name: GetApps :many
+SELECT * FROM apps;

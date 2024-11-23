@@ -12,15 +12,17 @@ WHERE id = $1;
 UPDATE featured_sections
 SET title = $1, updated_at = CURRENT_TIMESTAMP
 WHERE id = $2
-RETURNING id, title, created_at, updated_at;
+RETURNING *;
 
 -- name: DeleteFeaturedSection :exec
 DELETE FROM featured_sections
 WHERE id = $1;
 
 -- name: GetFeaturedSections :many
-SELECT id, title, created_at, updated_at
-FROM featured_sections WHERE app_id = $1;
+SELECT * FROM featured_sections;
+
+-- name: GetFeaturedSectionsByApp :many
+SELECT * FROM featured_sections WHERE app_id = $1;
 
 -- name: CreateFeaturedArticle :one
 INSERT INTO featured_articles (featured_section_id, article_id)
@@ -43,8 +45,7 @@ DELETE FROM featured_articles
 WHERE id = $1;
 
 -- name: GetFeaturedArticlesBySectionID :many
-SELECT id, featured_section_id, article_id, created_at, updated_at
-FROM featured_articles
+SELECT * FROM featured_articles
 WHERE featured_section_id = $1;
 
 -- name: GetArticlesBySectionID :many

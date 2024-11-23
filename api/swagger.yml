@@ -452,7 +452,7 @@ paths:
     /api/v1/tags/articles:
         get:
             description: Retrieves a tag with its associated articles
-            operationId: GetTagWithArticlesMixin6
+            operationId: GetTagWithArticles
             responses:
                 "200":
                     description: GetTagWithArticlesResponse
@@ -523,7 +523,7 @@ paths:
     /api/v1/tags/{id}/articles:
         get:
             description: Retrieves a tag with its associated articles
-            operationId: GetTagWithArticles
+            operationId: GetTagWithArticlesMixin6
             parameters:
                 - description: ID of the tag
                   format: uuid4
@@ -708,6 +708,11 @@ paths:
 definitions:
     article:
         properties:
+            app_id:
+                description: ID of app
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                format: uuid4
+                type: string
             content:
                 description: Content of the article
                 example: This is the content of the article.
@@ -749,6 +754,7 @@ definitions:
             - title
             - content
             - image
+            - app_id
         type: object
     createArticleRequest:
         properties:
@@ -881,6 +887,11 @@ definitions:
         type: object
     featuredSection:
         properties:
+            app_id:
+                description: ID of app
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                format: uuid4
+                type: string
             created_at:
                 description: Timestamp when the section was created
                 example: "2023-10-01T12:00:00Z"
@@ -903,6 +914,7 @@ definitions:
         required:
             - id
             - title
+            - app_id
         type: object
     getAllTVShowsWithSchedulesResponse:
         items:
@@ -927,6 +939,11 @@ definitions:
             articles:
                 items:
                     properties:
+                        app_id:
+                            description: ID of app
+                            example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                            format: uuid4
+                            type: string
                         content:
                             description: Content of the article
                             example: This is the content of the article.
@@ -968,6 +985,7 @@ definitions:
                         - title
                         - content
                         - image
+                        - app_id
                     type: object
                 type: array
             featured_section:
@@ -1009,6 +1027,11 @@ definitions:
             articles:
                 items:
                     properties:
+                        app_id:
+                            description: ID of app
+                            example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                            format: uuid4
+                            type: string
                         content:
                             description: Content of the article
                             example: This is the content of the article.
@@ -1050,6 +1073,7 @@ definitions:
                         - title
                         - content
                         - image
+                        - app_id
                     type: object
                 type: array
             tag:
@@ -1166,6 +1190,11 @@ definitions:
         type: object
     postUpdatePushTokenPayload:
         properties:
+            app_id:
+                description: ID of app
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                format: uuid4
+                type: string
             fingerprint:
                 description: uniquely identifies the build of the device.
                 example: realme-RMX2001EEA-RMX2001L1:11-RP1A.200720.011-1647528410735:user-release-keys
@@ -1191,6 +1220,7 @@ definitions:
             - newToken
             - provider
             - fingerprint
+            - app_id
         type: object
     publicHttpError:
         properties:
@@ -1280,6 +1310,11 @@ definitions:
         type: object
     tVShow:
         properties:
+            app_id:
+                description: ID of app
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                format: uuid4
+                type: string
             created_at:
                 description: Timestamp when the TV show was created
                 example: "2023-10-01T12:00:00Z"
@@ -1316,6 +1351,7 @@ definitions:
             - id
             - title
             - image
+            - app_id
         type: object
     tVShowSchedule:
         properties:
@@ -1351,6 +1387,11 @@ definitions:
         type: object
     tag:
         properties:
+            app_id:
+                description: ID of app
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                format: uuid4
+                type: string
             created_at:
                 description: Timestamp when the tag was created
                 example: "2023-10-01T12:00:00Z"
@@ -1373,6 +1414,7 @@ definitions:
         required:
             - id
             - title
+            - app_id
         type: object
     updateArticleRequest:
         properties:
