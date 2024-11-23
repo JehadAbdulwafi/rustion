@@ -21,7 +21,7 @@ type CreatePushTokenParams struct {
 	Token       string
 	Fingerprint string
 	Provider    ProviderType
-	AppID       uuid.UUID
+	AppID       uuid.NullUUID
 }
 
 func (q *Queries) CreatePushToken(ctx context.Context, arg CreatePushTokenParams) (PushToken, error) {
@@ -85,7 +85,7 @@ const getPushTokenesByAppID = `-- name: GetPushTokenesByAppID :one
 SELECT id, token, provider, fingerprint, app_id, created_at, updated_at FROM push_tokens WHERE app_id = $1
 `
 
-func (q *Queries) GetPushTokenesByAppID(ctx context.Context, appID uuid.UUID) (PushToken, error) {
+func (q *Queries) GetPushTokenesByAppID(ctx context.Context, appID uuid.NullUUID) (PushToken, error) {
 	row := q.db.QueryRowContext(ctx, getPushTokenesByAppID, appID)
 	var i PushToken
 	err := row.Scan(

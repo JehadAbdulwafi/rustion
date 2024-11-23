@@ -100,6 +100,46 @@ func (q *Queries) GetAllArticles(ctx context.Context) ([]Article, error) {
 	return items, nil
 }
 
+const getAllArticlesByApp = `-- name: GetAllArticlesByApp :many
+SELECT id, title, description, content, image, tags, app_id, created_at, updated_at
+FROM articles
+WHERE app_id = $1
+ORDER BY created_at DESC
+`
+
+func (q *Queries) GetAllArticlesByApp(ctx context.Context, appID uuid.UUID) ([]Article, error) {
+	rows, err := q.db.QueryContext(ctx, getAllArticlesByApp, appID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Article
+	for rows.Next() {
+		var i Article
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.Description,
+			&i.Content,
+			&i.Image,
+			&i.Tags,
+			&i.AppID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getArticle = `-- name: GetArticle :one
 SELECT id, title, description, content, image, tags, app_id, created_at, updated_at
 FROM articles
@@ -135,6 +175,54 @@ WHERE EXISTS (
 
 func (q *Queries) GetArticlesByAnyTag(ctx context.Context, stringToArray string) ([]Article, error) {
 	rows, err := q.db.QueryContext(ctx, getArticlesByAnyTag, stringToArray)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Article
+	for rows.Next() {
+		var i Article
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.Description,
+			&i.Content,
+			&i.Image,
+			&i.Tags,
+			&i.AppID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getArticlesByAnyTagByApp = `-- name: GetArticlesByAnyTagByApp :many
+SELECT id, title, description, content, image, tags, app_id, created_at, updated_at
+FROM articles
+WHERE EXISTS (
+    SELECT 1
+    FROM unnest(string_to_array($1, ',')) AS tag
+    WHERE tags ILIKE '%' || tag || '%'
+) AND app_id = $2
+`
+
+type GetArticlesByAnyTagByAppParams struct {
+	StringToArray string
+	AppID         uuid.UUID
+}
+
+func (q *Queries) GetArticlesByAnyTagByApp(ctx context.Context, arg GetArticlesByAnyTagByAppParams) ([]Article, error) {
+	rows, err := q.db.QueryContext(ctx, getArticlesByAnyTagByApp, arg.StringToArray, arg.AppID)
 	if err != nil {
 		return nil, err
 	}
@@ -206,10 +294,55 @@ func (q *Queries) GetArticlesByTag(ctx context.Context, dollar_1 sql.NullString)
 	return items, nil
 }
 
+const getArticlesByTagByApp = `-- name: GetArticlesByTagByApp :many
+SELECT id, title, description, content, image, tags, app_id, created_at, updated_at
+FROM articles 
+WHERE tags ILIKE '%' || $1 || '%' AND app_id = $2
+ORDER BY created_at DESC
+`
+
+type GetArticlesByTagByAppParams struct {
+	Column1 sql.NullString
+	AppID   uuid.UUID
+}
+
+func (q *Queries) GetArticlesByTagByApp(ctx context.Context, arg GetArticlesByTagByAppParams) ([]Article, error) {
+	rows, err := q.db.QueryContext(ctx, getArticlesByTagByApp, arg.Column1, arg.AppID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Article
+	for rows.Next() {
+		var i Article
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.Description,
+			&i.Content,
+			&i.Image,
+			&i.Tags,
+			&i.AppID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateArticle = `-- name: UpdateArticle :one
 UPDATE articles
-SET title = $1, content = $2, tags = $3, image = $4, description = $5, app_id = $6, updated_at = CURRENT_TIMESTAMP
-WHERE id = $7
+SET title = $1, content = $2, tags = $3, image = $4, description = $5, updated_at = CURRENT_TIMESTAMP
+WHERE id = $6
 RETURNING id, title, description, content, image, tags, app_id, created_at, updated_at
 `
 
@@ -219,7 +352,6 @@ type UpdateArticleParams struct {
 	Tags        sql.NullString
 	Image       string
 	Description sql.NullString
-	AppID       uuid.UUID
 	ID          uuid.UUID
 }
 
@@ -230,7 +362,6 @@ func (q *Queries) UpdateArticle(ctx context.Context, arg UpdateArticleParams) (A
 		arg.Tags,
 		arg.Image,
 		arg.Description,
-		arg.AppID,
 		arg.ID,
 	)
 	var i Article

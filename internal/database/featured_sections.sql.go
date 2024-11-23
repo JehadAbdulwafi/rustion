@@ -7,7 +7,6 @@ package database
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/google/uuid"
 )
@@ -140,8 +139,7 @@ func (q *Queries) GetFeaturedArticle(ctx context.Context, id uuid.UUID) (Feature
 }
 
 const getFeaturedArticlesBySectionID = `-- name: GetFeaturedArticlesBySectionID :many
-SELECT id, featured_section_id, article_id, created_at, updated_at
-FROM featured_articles
+SELECT id, featured_section_id, article_id, created_at, updated_at FROM featured_articles
 WHERE featured_section_id = $1
 `
 
@@ -194,29 +192,55 @@ func (q *Queries) GetFeaturedSection(ctx context.Context, id uuid.UUID) (Feature
 }
 
 const getFeaturedSections = `-- name: GetFeaturedSections :many
-SELECT id, title, created_at, updated_at
-FROM featured_sections WHERE app_id = $1
+SELECT id, title, app_id, created_at, updated_at FROM featured_sections
 `
 
-type GetFeaturedSectionsRow struct {
-	ID        uuid.UUID
-	Title     string
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
-}
-
-func (q *Queries) GetFeaturedSections(ctx context.Context, appID uuid.UUID) ([]GetFeaturedSectionsRow, error) {
-	rows, err := q.db.QueryContext(ctx, getFeaturedSections, appID)
+func (q *Queries) GetFeaturedSections(ctx context.Context) ([]FeaturedSection, error) {
+	rows, err := q.db.QueryContext(ctx, getFeaturedSections)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []GetFeaturedSectionsRow
+	var items []FeaturedSection
 	for rows.Next() {
-		var i GetFeaturedSectionsRow
+		var i FeaturedSection
 		if err := rows.Scan(
 			&i.ID,
 			&i.Title,
+			&i.AppID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getFeaturedSectionsByApp = `-- name: GetFeaturedSectionsByApp :many
+SELECT id, title, app_id, created_at, updated_at FROM featured_sections WHERE app_id = $1
+`
+
+func (q *Queries) GetFeaturedSectionsByApp(ctx context.Context, appID uuid.UUID) ([]FeaturedSection, error) {
+	rows, err := q.db.QueryContext(ctx, getFeaturedSectionsByApp, appID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []FeaturedSection
+	for rows.Next() {
+		var i FeaturedSection
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.AppID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -263,7 +287,7 @@ const updateFeaturedSection = `-- name: UpdateFeaturedSection :one
 UPDATE featured_sections
 SET title = $1, updated_at = CURRENT_TIMESTAMP
 WHERE id = $2
-RETURNING id, title, created_at, updated_at
+RETURNING id, title, app_id, created_at, updated_at
 `
 
 type UpdateFeaturedSectionParams struct {
@@ -271,19 +295,13 @@ type UpdateFeaturedSectionParams struct {
 	ID    uuid.UUID
 }
 
-type UpdateFeaturedSectionRow struct {
-	ID        uuid.UUID
-	Title     string
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
-}
-
-func (q *Queries) UpdateFeaturedSection(ctx context.Context, arg UpdateFeaturedSectionParams) (UpdateFeaturedSectionRow, error) {
+func (q *Queries) UpdateFeaturedSection(ctx context.Context, arg UpdateFeaturedSectionParams) (FeaturedSection, error) {
 	row := q.db.QueryRowContext(ctx, updateFeaturedSection, arg.Title, arg.ID)
-	var i UpdateFeaturedSectionRow
+	var i FeaturedSection
 	err := row.Scan(
 		&i.ID,
 		&i.Title,
+		&i.AppID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

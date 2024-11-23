@@ -68,13 +68,68 @@ func (q *Queries) GetApp(ctx context.Context, id uuid.UUID) (App, error) {
 	return i, err
 }
 
+const getAppByUserID = `-- name: GetAppByUserID :one
+SELECT id, user_id, name, config, created_at, updated_at
+FROM apps
+WHERE user_id = $1
+LIMIT 1
+`
+
+func (q *Queries) GetAppByUserID(ctx context.Context, userID uuid.UUID) (App, error) {
+	row := q.db.QueryRowContext(ctx, getAppByUserID, userID)
+	var i App
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Name,
+		&i.Config,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const getApps = `-- name: GetApps :many
+SELECT id, user_id, name, config, created_at, updated_at FROM apps
+`
+
+func (q *Queries) GetApps(ctx context.Context) ([]App, error) {
+	rows, err := q.db.QueryContext(ctx, getApps)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []App
+	for rows.Next() {
+		var i App
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.Name,
+			&i.Config,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getAppsByUserID = `-- name: GetAppsByUserID :many
 SELECT id, user_id, name, config, created_at, updated_at FROM apps
 WHERE user_id = $1
 `
 
-func (q *Queries) GetApps(ctx context.Context, userID uuid.UUID) ([]App, error) {
-	rows, err := q.db.QueryContext(ctx, getApps, userID)
+func (q *Queries) GetAppsByUserID(ctx context.Context, userID uuid.UUID) ([]App, error) {
+	rows, err := q.db.QueryContext(ctx, getAppsByUserID, userID)
 	if err != nil {
 		return nil, err
 	}

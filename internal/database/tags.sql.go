@@ -7,7 +7,6 @@ package database
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/google/uuid"
 )
@@ -47,24 +46,18 @@ func (q *Queries) DeleteTag(ctx context.Context, id uuid.UUID) error {
 }
 
 const getTag = `-- name: GetTag :one
-SELECT id, title, created_at, updated_at
+SELECT id, title, app_id, created_at, updated_at
 FROM tags
 WHERE id = $1
 `
 
-type GetTagRow struct {
-	ID        uuid.UUID
-	Title     string
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
-}
-
-func (q *Queries) GetTag(ctx context.Context, id uuid.UUID) (GetTagRow, error) {
+func (q *Queries) GetTag(ctx context.Context, id uuid.UUID) (Tag, error) {
 	row := q.db.QueryRowContext(ctx, getTag, id)
-	var i GetTagRow
+	var i Tag
 	err := row.Scan(
 		&i.ID,
 		&i.Title,
+		&i.AppID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -73,11 +66,44 @@ func (q *Queries) GetTag(ctx context.Context, id uuid.UUID) (GetTagRow, error) {
 
 const getTags = `-- name: GetTags :many
 SELECT id, title, app_id, created_at, updated_at FROM tags
+`
+
+func (q *Queries) GetTags(ctx context.Context) ([]Tag, error) {
+	rows, err := q.db.QueryContext(ctx, getTags)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Tag
+	for rows.Next() {
+		var i Tag
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.AppID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getTagsByApp = `-- name: GetTagsByApp :many
+SELECT id, title, app_id, created_at, updated_at FROM tags
 WHERE app_id = $1
 `
 
-func (q *Queries) GetTags(ctx context.Context, appID uuid.UUID) ([]Tag, error) {
-	rows, err := q.db.QueryContext(ctx, getTags, appID)
+func (q *Queries) GetTagsByApp(ctx context.Context, appID uuid.UUID) ([]Tag, error) {
+	rows, err := q.db.QueryContext(ctx, getTagsByApp, appID)
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +135,7 @@ const updateTag = `-- name: UpdateTag :one
 UPDATE tags
 SET title = $1, updated_at = CURRENT_TIMESTAMP
 WHERE id = $2
-RETURNING id, title, created_at, updated_at
+RETURNING id, title, app_id, created_at, updated_at
 `
 
 type UpdateTagParams struct {
@@ -117,19 +143,13 @@ type UpdateTagParams struct {
 	ID    uuid.UUID
 }
 
-type UpdateTagRow struct {
-	ID        uuid.UUID
-	Title     string
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
-}
-
-func (q *Queries) UpdateTag(ctx context.Context, arg UpdateTagParams) (UpdateTagRow, error) {
+func (q *Queries) UpdateTag(ctx context.Context, arg UpdateTagParams) (Tag, error) {
 	row := q.db.QueryRowContext(ctx, updateTag, arg.Title, arg.ID)
-	var i UpdateTagRow
+	var i Tag
 	err := row.Scan(
 		&i.ID,
 		&i.Title,
+		&i.AppID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

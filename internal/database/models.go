@@ -207,7 +207,7 @@ type PushToken struct {
 	Token       string
 	Provider    ProviderType
 	Fingerprint string
-	AppID       uuid.UUID
+	AppID       uuid.NullUUID
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }

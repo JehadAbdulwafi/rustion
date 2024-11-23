@@ -58,11 +58,47 @@ func (q *Queries) DeleteTVShow(ctx context.Context, id uuid.UUID) error {
 }
 
 const getAllTVShows = `-- name: GetAllTVShows :many
+SELECT id, title, genre, description, image, app_id, created_at, updated_at FROM tv_shows
+`
+
+func (q *Queries) GetAllTVShows(ctx context.Context) ([]TvShow, error) {
+	rows, err := q.db.QueryContext(ctx, getAllTVShows)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []TvShow
+	for rows.Next() {
+		var i TvShow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.Genre,
+			&i.Description,
+			&i.Image,
+			&i.AppID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getAllTVShowsByApp = `-- name: GetAllTVShowsByApp :many
 SELECT id, title, genre, description, image, app_id, created_at, updated_at FROM tv_shows WHERE app_id = $1
 `
 
-func (q *Queries) GetAllTVShows(ctx context.Context, appID uuid.UUID) ([]TvShow, error) {
-	rows, err := q.db.QueryContext(ctx, getAllTVShows, appID)
+func (q *Queries) GetAllTVShowsByApp(ctx context.Context, appID uuid.UUID) ([]TvShow, error) {
+	rows, err := q.db.QueryContext(ctx, getAllTVShowsByApp, appID)
 	if err != nil {
 		return nil, err
 	}
