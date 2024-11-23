@@ -30,6 +30,8 @@ type FixtureMap struct {
 	StreamMetadata2        *database.StreamMetadatum
 	Stream3                *database.Stream
 	StreamMetadata3        *database.StreamMetadatum
+	App1                   *database.App
+	App2                   *database.App
 	Article1               *database.Article
 	Article2               *database.Article
 	Article3               *database.Article
@@ -57,6 +59,9 @@ type FixtureMap struct {
 func Fixtures() FixtureMap {
 	now := time.Now()
 	f := FixtureMap{}
+
+	appID1 := uuid.New()
+	appID2 := uuid.New()
 
 	featuredSectionID1 := uuid.New()
 	featuredSectionID2 := uuid.New()
@@ -229,34 +234,52 @@ func Fixtures() FixtureMap {
 		Viewers: sql.NullInt32{},
 	}
 
+	f.App1 = &database.App{
+		ID:   appID1,
+		Name: "app1",
+		UserID: uuid.MustParse("6c46cdec-4fd3-4d25-8218-3b75df65f8ab"),
+	}
+
+	f.App2 = &database.App{
+		ID:   appID2,
+		Name: "app2",
+		UserID: uuid.MustParse("bafe468f-f756-499e-bd95-9a2980fd164e"),
+	}
+
 	f.Tag1 = &database.Tag{
 		ID:    uuid.New(),
 		Title: "go",
+		AppID: appID1,
 	}
 
 	f.Tag2 = &database.Tag{
 		ID:    uuid.New(),
 		Title: "rust",
+		AppID: appID1,
 	}
 
 	f.Tag3 = &database.Tag{
 		ID:    uuid.New(),
 		Title: "python",
+		AppID: appID2,
 	}
 
 	f.FeaturedSection1 = &database.FeaturedSection{
 		ID:    featuredSectionID1,
 		Title: "Latest Articles",
+		AppID: appID1,
 	}
 
 	f.FeaturedSection2 = &database.FeaturedSection{
 		ID:    featuredSectionID2,
 		Title: "Trending Articles",
+		AppID: appID2,
 	}
 
 	f.FeaturedSection3 = &database.FeaturedSection{
 		ID:    featuredSectionID3,
 		Title: "Popular Articles",
+		AppID: appID1,
 	}
 
 	f.Article1 = &database.Article{
@@ -264,7 +287,7 @@ func Fixtures() FixtureMap {
 		Title:   "Article Title",
 		Content: "Article Content",
 		Tags: sql.NullString{
-			String: strings.Join([]string{"go", "rust", "python"}, ", "),
+			String: strings.Join([]string{"go", "rust"}, ", "),
 			Valid:  true,
 		},
 		Description: sql.NullString{
@@ -272,6 +295,7 @@ func Fixtures() FixtureMap {
 			Valid:  true,
 		},
 		Image: "https://th.bing.com/th/id/OIP.EKxkhulCPo2M5eP6LEOAHAHaLL",
+		AppID: appID1,
 	}
 
 	f.Article2 = &database.Article{
@@ -279,7 +303,7 @@ func Fixtures() FixtureMap {
 		Title:   "Article Title",
 		Content: "Article Content",
 		Tags: sql.NullString{
-			String: strings.Join([]string{"rust", "python"}, ", "),
+			String: strings.Join([]string{"python"}, ", "),
 			Valid:  true,
 		},
 		Description: sql.NullString{
@@ -287,6 +311,7 @@ func Fixtures() FixtureMap {
 			Valid:  true,
 		},
 		Image: "https://i.pinimg.com/736x/79/84/2f/79842f01e8b3773916823961d6650605.jpg",
+		AppID: appID2,
 	}
 
 	f.Article3 = &database.Article{
@@ -302,25 +327,11 @@ func Fixtures() FixtureMap {
 			Valid:  true,
 		},
 		Image: "https://th.bing.com/th/id/OIP.QatFnF9HviYeE96kGdCpZgHaLH",
+		AppID: appID1,
 	}
 
 	f.Article4 = &database.Article{
 		ID:      articleID4,
-		Title:   "Article Title",
-		Content: "Article Content",
-		Tags: sql.NullString{
-			String: strings.Join([]string{"go", "python"}, ", "),
-			Valid:  true,
-		},
-		Description: sql.NullString{
-			String: "Article Description",
-			Valid:  true,
-		},
-		Image: "https://th.bing.com/th/id/OIP.yIEB-Z7KC38rkAwXNZxv5QHaLG",
-	}
-
-	f.Article5 = &database.Article{
-		ID:      articleID5,
 		Title:   "Article Title",
 		Content: "Article Content",
 		Tags: sql.NullString{
@@ -331,7 +342,24 @@ func Fixtures() FixtureMap {
 			String: "Article Description",
 			Valid:  true,
 		},
+		Image: "https://th.bing.com/th/id/OIP.yIEB-Z7KC38rkAwXNZxv5QHaLG",
+		AppID: appID1,
+	}
+
+	f.Article5 = &database.Article{
+		ID:      articleID5,
+		Title:   "Article Title",
+		Content: "Article Content",
+		Tags: sql.NullString{
+			String: strings.Join([]string{"python"}, ", "),
+			Valid:  true,
+		},
+		Description: sql.NullString{
+			String: "Article Description",
+			Valid:  true,
+		},
 		Image: "https://th.bing.com/th/id/OIP.HEWc4UQg4s-gNFlFgRxCBQHaLG",
+		AppID: appID2,
 	}
 
 	f.Article6 = &database.Article{
@@ -347,6 +375,7 @@ func Fixtures() FixtureMap {
 			Valid:  true,
 		},
 		Image: "https://th.bing.com/th/id/OIP._Fxv7pChiqxvz4QLubEXJgHaLH",
+		AppID: appID1,
 	}
 
 	f.FeaturedArticle1 = &database.FeaturedArticle{
@@ -400,6 +429,7 @@ func Fixtures() FixtureMap {
 			String: "https://th.bing.com/th/id/OIP.EKxkhulCPo2M5eP6LEOAHAHaLL",
 			Valid:  true,
 		},
+		AppID: appID1,
 	}
 
 	f.TvShow2 = &database.TvShow{
@@ -417,6 +447,7 @@ func Fixtures() FixtureMap {
 			String: "https://i.pinimg.com/736x/79/84/2f/79842f01e8b3773916823961d6650605.jpg",
 			Valid:  true,
 		},
+		AppID: appID1,
 	}
 
 	f.TvShow3 = &database.TvShow{
@@ -434,6 +465,7 @@ func Fixtures() FixtureMap {
 			String: "https://th.bing.com/th/id/OIP.QatFnF9HviYeE96kGdCpZgHaLH",
 			Valid:  true,
 		},
+		AppID: appID2,
 	}
 
 	return f
@@ -459,6 +491,9 @@ func Inserts() []Insertable {
 	inserts = append(inserts, fix.StreamMetadata2)
 	inserts = append(inserts, fix.Stream3)
 	inserts = append(inserts, fix.StreamMetadata3)
+
+	inserts = append(inserts, fix.App1)
+	inserts = append(inserts, fix.App2)
 
 	inserts = append(inserts, fix.Tag1)
 	inserts = append(inserts, fix.Tag2)

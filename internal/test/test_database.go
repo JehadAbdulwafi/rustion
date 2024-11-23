@@ -73,6 +73,13 @@ func ApplyTestFixtures(ctx context.Context, t *testing.T, db *sql.DB) (countFixt
 				if _, err := db.Exec("INSERT INTO users (id, name, email, password) VALUES ($1, $2, $3, $4)", v.ID, v.Name, v.Email, v.Password); err != nil {
 					return fmt.Errorf("failed to insert user fixture: %w", err)
 				}
+			case *database.App:
+				if _, err := db.Exec(`INSERT INTO apps
+				(id, user_id, name)
+				VALUES ($1, $2, $3)
+				`, v.ID, v.UserID, v.Name); err != nil {
+					return fmt.Errorf("failed to insert app fixture: %w", err)
+				}
 			case *database.Account:
 				if _, err := db.Exec(`INSERT INTO accounts 
 				(user_id, provider, provider_account_id, refresh_token, access_token, valid_until, scope, token_type)
@@ -80,7 +87,6 @@ func ApplyTestFixtures(ctx context.Context, t *testing.T, db *sql.DB) (countFixt
 				`, v.UserID, v.Provider, v.ProviderAccountID, v.RefreshToken, v.AccessToken, v.ValidUntil, v.Scope, v.TokenType); err != nil {
 					return fmt.Errorf("failed to insert account fixture: %w", err)
 				}
-
 			case *database.Stream:
 				if _, err := db.Exec(`INSERT INTO streams
 				(id, user_id, app, stream_name, url)
@@ -97,8 +103,8 @@ func ApplyTestFixtures(ctx context.Context, t *testing.T, db *sql.DB) (countFixt
 				}
 			case *database.TvShow:
 				if _, err := db.Exec(`INSERT INTO tv_shows
-				(id, title, genre, description, image)
-				VALUES ($1, $2, $3, $4, $5)
+				(id, title, genre, description, image, app_id)
+				VALUES ($1, $2, $3, $4, $5, $6)
 				`, v.ID, v.Title, v.Genre, v.Description.String, v.Image.String); err != nil {
 					return fmt.Errorf("failed to insert tv_show fixture: %w", err)
 				}
