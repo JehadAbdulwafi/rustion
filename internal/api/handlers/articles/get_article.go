@@ -41,6 +41,7 @@ func getArticleHandler(s *api.Server) echo.HandlerFunc {
 			Image:       &article.Image,
 			Description: article.Description.String,
 			Tags:        article.Tags.String,
+			AppID:       (*strfmt.UUID4)(swag.String(article.AppID.String())),
 			CreatedAt:   strfmt.DateTime(article.CreatedAt.Time),
 			UpdatedAt:   strfmt.DateTime(article.UpdatedAt.Time),
 		}

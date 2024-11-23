@@ -10,6 +10,7 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
 
@@ -20,8 +21,18 @@ func GetTagsWithAriclesRoute(s *api.Server) *echo.Route {
 func getTagsWithArticlesHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
+		appId := c.QueryParam("app_id")
 
-		Tags, err := s.Queries.GetTags(ctx)
+		if appId == "" {
+			return c.JSON(http.StatusBadRequest, "appId is required")
+		}
+
+		ID, err := uuid.Parse(appId)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, "invalid appId")
+		}
+
+		Tags, err := s.Queries.GetTagsByApp(ctx, ID)
 		if err != nil {
 			return err
 		}
@@ -52,6 +63,7 @@ func convertDBTagAndArticlesToTagsWithArticles(tag database.Tag, Artictles []dat
 		Tag: &types.Tag{
 			ID:        (*strfmt.UUID4)(swag.String(tag.ID.String())),
 			Title:     &tag.Title,
+			AppID:       (*strfmt.UUID4)(swag.String(tag.AppID.String())),
 			CreatedAt: strfmt.DateTime(tag.CreatedAt.Time),
 			UpdatedAt: strfmt.DateTime(tag.UpdatedAt.Time),
 		},

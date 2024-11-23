@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
+	"github.com/JehadAbdulwafi/rustion/internal/api/auth"
 	"github.com/JehadAbdulwafi/rustion/internal/database"
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
@@ -19,6 +20,7 @@ func PutUpdateArticleRoute(s *api.Server) *echo.Route {
 func updateArticleHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
+		_user := auth.UserFromContext(ctx)
 		id := c.Param("id")
 		if id == "" {
 			return c.JSON(http.StatusInternalServerError, "id is required")
@@ -31,7 +33,21 @@ func updateArticleHandler(s *api.Server) echo.HandlerFunc {
 
 		ID := uuid.MustParse(id)
 
-		_, err := s.Queries.UpdateArticle(ctx, database.UpdateArticleParams{
+		userApp, err := s.Queries.GetAppByUserID(ctx, _user.ID)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+
+		article, err := s.Queries.GetArticle(ctx, ID)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+
+		if article.AppID != userApp.ID {
+			return c.JSON(http.StatusUnauthorized, "unauthorized")
+		}
+
+		_, err = s.Queries.UpdateArticle(ctx, database.UpdateArticleParams{
 			ID:      ID,
 			Title:   *body.Title,
 			Content: *body.Content,

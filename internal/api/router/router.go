@@ -71,7 +71,7 @@ func Init(s *api.Server) {
 
 		APIV1Streams: s.Echo.Group("/api/v1/streams", middleware.AuthWithConfig(middleware.AuthConfig{
 			S:    s,
-			Mode: middleware.AuthModeOptional,
+			Mode: middleware.AuthModeRequired,
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
 				case "/api/v1/streams/publish",
@@ -85,7 +85,7 @@ func Init(s *api.Server) {
 
 		APIV1Articles: s.Echo.Group("/api/v1/articles", middleware.AuthWithConfig(middleware.AuthConfig{
 			S:    s,
-			Mode: middleware.AuthModeOptional,
+			Mode: middleware.AuthModeRequired,
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
 				case "/api/v1/articles/:id":
@@ -105,7 +105,7 @@ func Init(s *api.Server) {
 
 		APIV1Tags: s.Echo.Group("/api/v1/tags", middleware.AuthWithConfig(middleware.AuthConfig{
 			S:    s,
-			Mode: middleware.AuthModeOptional,
+			Mode: middleware.AuthModeRequired,
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
 				case "/api/v1/tags/:id":
@@ -125,7 +125,7 @@ func Init(s *api.Server) {
 
 		APIV1FeaturedSections: s.Echo.Group("/api/v1/featured-sections", middleware.AuthWithConfig(middleware.AuthConfig{
 			S:    s,
-			Mode: middleware.AuthModeOptional,
+			Mode: middleware.AuthModeRequired,
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
 				case "/api/v1/featured-sections/:id":
@@ -145,7 +145,22 @@ func Init(s *api.Server) {
 
 		APIV1TvShows: s.Echo.Group("/api/v1/tv-shows", middleware.AuthWithConfig(middleware.AuthConfig{
 			S:    s,
-			Mode: middleware.AuthModeOptional,
+			Mode: middleware.AuthModeRequired,
+			Skipper: func(c echo.Context) bool {
+				switch c.Path() {
+				case "/api/v1/tv-shows/:id":
+					if c.Request().Method == http.MethodGet {
+						return true
+					}
+					return false
+				case "/api/v1/tv-shows":
+					if c.Request().Method == http.MethodPost {
+						return false
+					}
+					return true
+				}
+				return false
+			},
 		})),
 
 		APIV1Push: s.Echo.Group("/api/v1/push", middleware.Auth(s)),

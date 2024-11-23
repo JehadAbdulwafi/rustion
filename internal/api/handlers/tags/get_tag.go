@@ -38,7 +38,8 @@ func getTagHandler(s *api.Server) echo.HandlerFunc {
 		res := &types.GetTagResponse{
 			Tag: &types.Tag{
 				ID:        (*strfmt.UUID4)(swag.String(Tag.ID.String())),
-				Title:      &Tag.Title,
+				Title:     &Tag.Title,
+				AppID:     (*strfmt.UUID4)(swag.String(Tag.AppID.String())),
 				CreatedAt: strfmt.DateTime(Tag.CreatedAt.Time),
 				UpdatedAt: strfmt.DateTime(Tag.UpdatedAt.Time),
 			},

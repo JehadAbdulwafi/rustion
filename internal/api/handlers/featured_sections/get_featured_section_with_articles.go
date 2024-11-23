@@ -45,6 +45,7 @@ func getFeaturedSectionWithArticlesHandler(s *api.Server) echo.HandlerFunc {
 			FeaturedSection: &types.FeaturedSection{
 				ID:        (*strfmt.UUID4)(swag.String(FeaturedSection.ID.String())),
 				Title:     &FeaturedSection.Title,
+				AppID:     (*strfmt.UUID4)(swag.String(FeaturedSection.AppID.String())),
 				CreatedAt: strfmt.DateTime(FeaturedSection.CreatedAt.Time),
 				UpdatedAt: strfmt.DateTime(FeaturedSection.UpdatedAt.Time),
 			},
@@ -65,6 +66,7 @@ func convertDBArticlesToArticles(articles []database.Article) []*types.GetFeatur
 			Image:       &article.Image,
 			Description: article.Description.String,
 			Tags:        article.Tags.String,
+			AppID:       (*strfmt.UUID4)(swag.String(article.AppID.String())),
 			CreatedAt:   strfmt.DateTime(article.CreatedAt.Time),
 			UpdatedAt:   strfmt.DateTime(article.UpdatedAt.Time),
 		}

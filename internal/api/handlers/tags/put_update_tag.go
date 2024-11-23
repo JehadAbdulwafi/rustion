@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
+	"github.com/JehadAbdulwafi/rustion/internal/api/auth"
 	"github.com/JehadAbdulwafi/rustion/internal/database"
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
@@ -18,6 +19,7 @@ func PutUpdateTagRoute(s *api.Server) *echo.Route {
 func updateTagHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
+		user := auth.UserFromContext(ctx)
 		id := c.Param("id")
 
 		if id == "" {
@@ -34,14 +36,23 @@ func updateTagHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, "invalid id")
 		}
 
-		_, err = s.Queries.GetTag(ctx, ID)
+		userApp, err := s.Queries.GetAppByUserID(ctx, user.ID)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+
+		tag, err := s.Queries.GetTag(ctx, ID)
 		if err != nil {
 			return c.JSON(http.StatusNotFound, "tag not found")
 		}
 
+		if tag.AppID != userApp.ID {
+			return c.JSON(http.StatusUnauthorized, "unauthorized")
+		}
+
 		_, err = s.Queries.UpdateTag(ctx, database.UpdateTagParams{
 			Title: *body.Title,
-			ID:   ID,
+			ID:    ID,
 		})
 
 		if err != nil {

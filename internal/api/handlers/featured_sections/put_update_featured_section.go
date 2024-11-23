@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
+	"github.com/JehadAbdulwafi/rustion/internal/api/auth"
 	"github.com/JehadAbdulwafi/rustion/internal/database"
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
@@ -18,6 +19,7 @@ func PutUpdateFeaturedSectionRoute(s *api.Server) *echo.Route {
 func updateFeaturedSectionHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
+		user := auth.UserFromContext(ctx)
 		id := c.Param("id")
 
 		if id == "" {
@@ -32,6 +34,20 @@ func updateFeaturedSectionHandler(s *api.Server) echo.HandlerFunc {
 		ID, err := uuid.Parse(id)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, "invalid id")
+		}
+
+		userApp, err := s.Queries.GetAppByUserID(ctx, user.ID)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+
+		FeaturedSection, err := s.Queries.GetFeaturedSection(ctx, ID)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err)
+		}
+
+		if FeaturedSection.AppID != userApp.ID {
+			return c.JSON(http.StatusUnauthorized, "unauthorized")
 		}
 
 		_, err = s.Queries.GetFeaturedSection(ctx, ID)

@@ -9,6 +9,7 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
 
@@ -19,7 +20,18 @@ func GetArticlesRoute(s *api.Server) *echo.Route {
 func getArticlesHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
-		articles, err := s.Queries.GetAllArticles(ctx)
+		appId := c.QueryParam("app_id")
+
+		if appId == "" {
+			return c.JSON(http.StatusBadRequest, "appId is required")
+		}
+
+		ID, err := uuid.Parse(appId)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, "invalid appId")
+		}
+
+		articles, err := s.Queries.GetAllArticlesByApp(ctx, ID)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, "failed to get all articles")
 		}
@@ -39,6 +51,7 @@ func convertDBArticlesToArticles(articles []database.Article) types.GetArticlesR
 			Image:       &article.Image,
 			Description: article.Description.String,
 			Tags:        article.Tags.String,
+			AppID:       (*strfmt.UUID4)(swag.String(article.AppID.String())),
 			CreatedAt:   strfmt.DateTime(article.CreatedAt.Time),
 			UpdatedAt:   strfmt.DateTime(article.UpdatedAt.Time),
 		}

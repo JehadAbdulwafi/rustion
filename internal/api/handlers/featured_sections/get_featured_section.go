@@ -39,6 +39,7 @@ func getFeaturedSectionHandler(s *api.Server) echo.HandlerFunc {
 			Section: &types.FeaturedSection{
 				ID:        (*strfmt.UUID4)(swag.String(FeaturedSection.ID.String())),
 				Title:     &FeaturedSection.Title,
+				AppID:     (*strfmt.UUID4)(swag.String(FeaturedSection.AppID.String())),
 				CreatedAt: strfmt.DateTime(FeaturedSection.CreatedAt.Time),
 				UpdatedAt: strfmt.DateTime(FeaturedSection.UpdatedAt.Time),
 			},

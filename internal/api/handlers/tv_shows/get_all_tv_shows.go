@@ -7,6 +7,7 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/database"
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
 
@@ -17,7 +18,17 @@ func GetAllTvShowsRoute(s *api.Server) *echo.Route {
 func getAllTvShowsHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
-		tvShows, err := s.Queries.GetAllTVShows(ctx)
+		appId := c.QueryParam("app_id")
+
+		if appId == "" {
+			return c.JSON(http.StatusBadRequest, "appId is required")
+		}
+
+		ID, err := uuid.Parse(appId)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, "invalid appId")
+		}
+		tvShows, err := s.Queries.GetAllTVShowsByApp(ctx, ID)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, "failed to get tv shows")
 		}

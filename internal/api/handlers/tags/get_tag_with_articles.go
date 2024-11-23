@@ -54,6 +54,7 @@ func convertDBTagAndArticlesToTagWithArticles(tag database.Tag, Artictles []data
 		Tag: &types.Tag{
 			ID:        (*strfmt.UUID4)(swag.String(tag.ID.String())),
 			Title:     &tag.Title,
+			AppID:       (*strfmt.UUID4)(swag.String(tag.AppID.String())),
 			CreatedAt: strfmt.DateTime(tag.CreatedAt.Time),
 			UpdatedAt: strfmt.DateTime(tag.UpdatedAt.Time),
 		},
@@ -73,6 +74,7 @@ func convertDBArticlesToArticles(articles []database.Article) []*types.GetTagWit
 			Image:       &article.Image,
 			Description: article.Description.String,
 			Tags:        article.Tags.String,
+			AppID:       (*strfmt.UUID4)(swag.String(article.AppID.String())),
 			CreatedAt:   strfmt.DateTime(article.CreatedAt.Time),
 			UpdatedAt:   strfmt.DateTime(article.UpdatedAt.Time),
 		}

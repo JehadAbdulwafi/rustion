@@ -1,10 +1,13 @@
 package auth
 
 import (
+	"database/sql"
 	"net/http"
+	"time"
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
 	"github.com/JehadAbdulwafi/rustion/internal/api/httperrors"
+	"github.com/JehadAbdulwafi/rustion/internal/database"
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/JehadAbdulwafi/rustion/internal/util/hashing"
@@ -27,6 +30,11 @@ func postLoginHandler(s *api.Server) echo.HandlerFunc {
 			return err
 		}
 
+		account, err := s.Queries.GetAccountByUserID(c.Request().Context(), user.ID)
+		if err != nil {
+			return err
+		}
+
 		matches, err := hashing.ComparePasswordAndHash(*body.Password, user.Password)
 		if err != nil {
 			return httperrors.ErrBadRequestInvalidPassword
@@ -42,6 +50,21 @@ func postLoginHandler(s *api.Server) echo.HandlerFunc {
 		}
 
 		refreshToken, err := util.GenerateJwt(user.Email, s.Config.Auth.RefreshTokenValidity)
+		if err != nil {
+			return err
+		}
+
+		_, err = s.Queries.UpdateAccountTokens(c.Request().Context(), database.UpdateAccountTokensParams{
+			RefreshToken: sql.NullString{
+				String: refreshToken.String,
+				Valid:  true,
+			},
+			AccessToken:       sql.NullString{String: accessToken.String, Valid: true},
+			ValidUntil:        time.Now().Add(s.Config.Auth.AccessTokenValidity),
+			UserID:            user.ID,
+			ProviderAccountID: account.ProviderAccountID,
+		})
+
 		if err != nil {
 			return err
 		}
