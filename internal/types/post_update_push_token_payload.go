@@ -19,6 +19,12 @@ import (
 // swagger:model postUpdatePushTokenPayload
 type PostUpdatePushTokenPayload struct {
 
+	// ID of app
+	// Example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+	// Required: true
+	// Format: uuid4
+	AppID *strfmt.UUID4 `json:"app_id"`
+
 	// uniquely identifies the build of the device.
 	// Example: realme-RMX2001EEA-RMX2001L1:11-RP1A.200720.011-1647528410735:user-release-keys
 	// Required: true
@@ -47,6 +53,10 @@ type PostUpdatePushTokenPayload struct {
 func (m *PostUpdatePushTokenPayload) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateAppID(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateFingerprint(formats); err != nil {
 		res = append(res, err)
 	}
@@ -66,6 +76,19 @@ func (m *PostUpdatePushTokenPayload) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *PostUpdatePushTokenPayload) validateAppID(formats strfmt.Registry) error {
+
+	if err := validate.Required("app_id", "body", m.AppID); err != nil {
+		return err
+	}
+
+	if err := validate.FormatOf("app_id", "body", "uuid4", m.AppID.String(), formats); err != nil {
+		return err
+	}
+
 	return nil
 }
 

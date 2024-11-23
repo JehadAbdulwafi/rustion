@@ -54,8 +54,8 @@ func (o *SwaggerSpec) initHandlerCache() {
 	o.Handlers["GET"]["/api/v1/tv-shows/{id}"] = true
 	o.Handlers["GET"]["/api/v1/tv-shows/{id}/schedules"] = true
 	o.Handlers["GET"]["/api/v1/tags/{id}"] = true
-	o.Handlers["GET"]["/api/v1/tags/{id}/articles"] = true
 	o.Handlers["GET"]["/api/v1/tags/articles"] = true
+	o.Handlers["GET"]["/api/v1/tags/{id}/articles"] = true
 	o.Handlers["GET"]["/api/v1/tags"] = true
 	o.Handlers["GET"]["/api/v1/auth/userinfo"] = true
 	o.Handlers["GET"]["/api/v1/version"] = true

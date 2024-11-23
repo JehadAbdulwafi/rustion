@@ -19,6 +19,12 @@ import (
 // swagger:model featuredSection
 type FeaturedSection struct {
 
+	// ID of app
+	// Example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+	// Required: true
+	// Format: uuid4
+	AppID *strfmt.UUID4 `json:"app_id"`
+
 	// Timestamp when the section was created
 	// Example: 2023-10-01T12:00:00Z
 	// Format: date-time
@@ -45,6 +51,10 @@ type FeaturedSection struct {
 func (m *FeaturedSection) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateAppID(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateCreatedAt(formats); err != nil {
 		res = append(res, err)
 	}
@@ -64,6 +74,19 @@ func (m *FeaturedSection) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *FeaturedSection) validateAppID(formats strfmt.Registry) error {
+
+	if err := validate.Required("app_id", "body", m.AppID); err != nil {
+		return err
+	}
+
+	if err := validate.FormatOf("app_id", "body", "uuid4", m.AppID.String(), formats); err != nil {
+		return err
+	}
+
 	return nil
 }
 
