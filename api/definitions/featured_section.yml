@@ -122,6 +122,19 @@ definitions:
       message:
         type: string
         example: "Featured Section updated successfully."
+  UpdateFeaturedArticlesRequest:
+    type: array
+    items:
+      type: string
+      format: uuid4
+      description: ID of article
+      example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+  UpdateFeaturedArticlesResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "Featured Section articles updated successfully."
   DeleteFeaturedSectionResponse:
     type: object
     properties:

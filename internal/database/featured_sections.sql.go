@@ -69,6 +69,16 @@ func (q *Queries) DeleteFeaturedArticle(ctx context.Context, id uuid.UUID) error
 	return err
 }
 
+const deleteFeaturedArticleBySection = `-- name: DeleteFeaturedArticleBySection :exec
+DELETE FROM featured_articles
+WHERE featured_section_id = $1
+`
+
+func (q *Queries) DeleteFeaturedArticleBySection(ctx context.Context, featuredSectionID uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, deleteFeaturedArticleBySection, featuredSectionID)
+	return err
+}
+
 const deleteFeaturedSection = `-- name: DeleteFeaturedSection :exec
 DELETE FROM featured_sections
 WHERE id = $1

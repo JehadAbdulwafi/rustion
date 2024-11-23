@@ -27,7 +27,6 @@ func getTagWithArticlesHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, "id is required")
 		}
 
-		// TODO: add check for valid uuid
 		ID, err := uuid.Parse(id)
 
 		if err != nil {

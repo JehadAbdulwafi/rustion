@@ -5,6 +5,7 @@ import (
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
 	"github.com/JehadAbdulwafi/rustion/internal/api/auth"
+	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
@@ -48,13 +49,19 @@ func deleteFeaturedSectionHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusNotFound, "featured section not found")
 		}
 
+		err = s.Queries.DeleteFeaturedArticleBySection(ctx, ID)
+
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, "failed to update featured section")
+		}
+
 		err = s.Queries.DeleteFeaturedSection(ctx, ID)
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, "failed to update featured section")
 		}
 
-		return util.ValidateAndReturn(c, http.StatusOK, nil)
+		return util.ValidateAndReturn(c, http.StatusOK, &types.DeleteFeaturedSectionResponse{Message: "featured section deleted successfully"})
 
 	}
 }

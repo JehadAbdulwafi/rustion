@@ -26,16 +26,21 @@ func deleteTvShowHandler(s *api.Server) echo.HandlerFunc {
 
 		userApp, err := s.Queries.GetAppByUserID(ctx, user.ID)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, err)
+			return c.JSON(http.StatusInternalServerError, "unauthorized")
 		}
 
 		tvShow, err := s.Queries.GetTVShowByID(ctx, uuid.MustParse(id))
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, err)
+			return c.JSON(http.StatusInternalServerError, "tv show not found")
 		}
 
 		if tvShow.AppID != userApp.ID {
 			return c.JSON(http.StatusUnauthorized, "unauthorized")
+		}
+
+		err = s.Queries.DeleteTVShowSchedules(ctx, uuid.MustParse(id))
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, "failed to delete tv show schedules")
 		}
 
 		err = s.Queries.DeleteTVShow(ctx, uuid.MustParse(id))

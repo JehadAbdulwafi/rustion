@@ -35,7 +35,7 @@ func putUpdateTVShowScheduleHandler(s *api.Server) echo.HandlerFunc {
 
 		userApp, err := s.Queries.GetAppByUserID(ctx, user.ID)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, err)
+			return c.JSON(http.StatusInternalServerError, "failed to get app by user id")
 		}
 
 		tvShow, err := s.Queries.GetTVShowByID(ctx, uuid.MustParse(id))
@@ -51,7 +51,7 @@ func putUpdateTVShowScheduleHandler(s *api.Server) echo.HandlerFunc {
 			layout := "15:04:05"
 			parsedTime, err := time.Parse(layout, *item.Time)
 			if err != nil {
-				return err
+				return c.JSON(http.StatusBadRequest, "invalid time format")
 			}
 			err = s.Queries.UpdateTVShowSchedule(ctx, database.UpdateTVShowScheduleParams{
 				TvShowID: uuid.MustParse(id),

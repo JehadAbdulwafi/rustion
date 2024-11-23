@@ -21,6 +21,9 @@ RETURNING *;
 -- name: DeleteTVShow :exec
 DELETE FROM tv_shows WHERE id = $1;
 
+-- name: DeleteTVShowSchedules :exec
+DELETE FROM tv_show_schedules WHERE tv_show_id = $1;
+
 -- name: GetTVShowSchedulesByTVShowID :many
 SELECT * FROM tv_show_schedules WHERE tv_show_id = $1;
 

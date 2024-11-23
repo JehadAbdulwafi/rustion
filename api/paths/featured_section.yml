@@ -109,6 +109,28 @@ paths:
           description: GetFeaturedSectionWithArticlesResponse
           schema:
             $ref: "../definitions/featured_section.yml#/definitions/GetFeaturedSectionWithArticlesResponse"
+    put:
+      description: Updates a featured articles by ID
+      tags:
+        - featured_sections
+      summary: Updates a featured articles
+      operationId: UpdateFeaturedArticles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid4
+          description: ID of the featured section
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/featured_section.yml#/definitions/UpdateFeaturedArticlesRequest"
+      responses:
+        "200":
+          description: UpdateFeaturedSectionResponse
+          schema:
+            $ref: "../definitions/featured_section.yml#/definitions/UpdateFeaturedArticlesResponse"
   /api/v1/featured-sections/articles:
     get:
       description: Retrieves a featured sections with its associated articles

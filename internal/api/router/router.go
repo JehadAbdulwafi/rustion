@@ -113,6 +113,18 @@ func Init(s *api.Server) {
 						return true
 					}
 					return false
+
+				case "/api/v1/tags/:id/articles":
+					if c.Request().Method == http.MethodGet {
+						return true
+					}
+					return false
+
+				case "/api/v1/tags/articles":
+					if c.Request().Method == http.MethodGet {
+						return true
+					}
+					return false
 				case "/api/v1/tags":
 					if c.Request().Method == http.MethodPost {
 						return false
@@ -133,6 +145,16 @@ func Init(s *api.Server) {
 						return true
 					}
 					return false
+				case "/api/v1/featured-sections/:id/articles":
+					if c.Request().Method == http.MethodGet {
+						return true
+					}
+					return false
+				case "/api/v1/featured-sections/articles":
+					if c.Request().Method == http.MethodGet {
+						return true
+					}
+					return false
 				case "/api/v1/featured-sections":
 					if c.Request().Method == http.MethodPost {
 						return false
@@ -149,6 +171,18 @@ func Init(s *api.Server) {
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
 				case "/api/v1/tv-shows/:id":
+					if c.Request().Method == http.MethodGet {
+						return true
+					}
+					return false
+
+				case "/api/v1/tv-shows/:id/schedules":
+					if c.Request().Method == http.MethodGet {
+						return true
+					}
+					return false
+
+				case "/api/v1/tv-shows/schedules":
 					if c.Request().Method == http.MethodGet {
 						return true
 					}

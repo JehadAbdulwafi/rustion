@@ -284,6 +284,28 @@ paths:
             summary: Gets a featured section with articles
             tags:
                 - featured_sections
+        put:
+            description: Updates a featured articles by ID
+            operationId: UpdateFeaturedArticles
+            parameters:
+                - description: ID of the featured section
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/updateFeaturedArticlesRequest'
+            responses:
+                "200":
+                    description: UpdateFeaturedSectionResponse
+                    schema:
+                        $ref: '#/definitions/updateFeaturedArticlesResponse'
+            summary: Updates a featured articles
+            tags:
+                - featured_sections
     /api/v1/healthy:
         get:
             description: |-
@@ -452,7 +474,7 @@ paths:
     /api/v1/tags/articles:
         get:
             description: Retrieves a tag with its associated articles
-            operationId: GetTagWithArticles
+            operationId: GetTagWithArticlesMixin6
             responses:
                 "200":
                     description: GetTagWithArticlesResponse
@@ -523,7 +545,7 @@ paths:
     /api/v1/tags/{id}/articles:
         get:
             description: Retrieves a tag with its associated articles
-            operationId: GetTagWithArticlesMixin6
+            operationId: GetTagWithArticles
             parameters:
                 - description: ID of the tag
                   format: uuid4
@@ -1448,6 +1470,19 @@ definitions:
         properties:
             message:
                 example: Article updated successfully.
+                type: string
+        type: object
+    updateFeaturedArticlesRequest:
+        items:
+            description: ID of article
+            example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+            format: uuid4
+            type: string
+        type: array
+    updateFeaturedArticlesResponse:
+        properties:
+            message:
+                example: Featured Section articles updated successfully.
                 type: string
         type: object
     updateFeaturedSectionRequest:

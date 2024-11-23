@@ -44,6 +44,10 @@ RETURNING *;
 DELETE FROM featured_articles
 WHERE id = $1;
 
+-- name: DeleteFeaturedArticleBySection :exec
+DELETE FROM featured_articles
+WHERE featured_section_id = $1;
+
 -- name: GetFeaturedArticlesBySectionID :many
 SELECT * FROM featured_articles
 WHERE featured_section_id = $1;

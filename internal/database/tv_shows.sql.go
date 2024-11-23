@@ -57,6 +57,15 @@ func (q *Queries) DeleteTVShow(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+const deleteTVShowSchedules = `-- name: DeleteTVShowSchedules :exec
+DELETE FROM tv_show_schedules WHERE tv_show_id = $1
+`
+
+func (q *Queries) DeleteTVShowSchedules(ctx context.Context, tvShowID uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, deleteTVShowSchedules, tvShowID)
+	return err
+}
+
 const getAllTVShows = `-- name: GetAllTVShows :many
 SELECT id, title, genre, description, image, app_id, created_at, updated_at FROM tv_shows
 `
