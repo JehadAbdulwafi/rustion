@@ -10,4 +10,5 @@ var (
 	ErrNotFoundTokenNotFound     = NewHTTPError(http.StatusNotFound, "TOKEN_NOT_FOUND", "Provided token was not found")
 	ErrConflictTokenExpired      = NewHTTPError(http.StatusConflict, "TOKEN_EXPIRED", "Provided token has expired and is no longer valid")
 	ErrConflictUserAlreadyExists = NewHTTPError(http.StatusConflict, "USER_ALREADY_EXISTS", "User with given username already exists")
+	ErrNotFoundUser              = NewHTTPError(http.StatusNotFound, "USER_NOT_FOUND", "User with given ID was not found")
 )

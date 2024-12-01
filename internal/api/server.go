@@ -20,11 +20,14 @@ type Router struct {
 	Root                  *echo.Group
 	APIV1Auth             *echo.Group
 	APIV1Push             *echo.Group
-	APIV1Streams          *echo.Group
+	APIV1Stream           *echo.Group
 	APIV1Articles         *echo.Group
 	APIV1Tags             *echo.Group
 	APIV1FeaturedSections *echo.Group
 	APIV1TvShows          *echo.Group
+	APIV1App              *echo.Group
+	APIV1Faq              *echo.Group
+	APIV1Feedback         *echo.Group
 }
 
 type Server struct {

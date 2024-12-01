@@ -11,6 +11,7 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/api/httperrors"
 	"github.com/JehadAbdulwafi/rustion/internal/database"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/rs/zerolog/log"
@@ -161,7 +162,19 @@ func DefaultAuthTokenValidator(c echo.Context, config AuthConfig, token string) 
 		return auth.AuthenticationResult{}, ErrAuthTokenValidationFailed
 	}
 
-	user, err := config.S.Queries.GetUserByEmail(c.Request().Context(), claims["sub"].(string))
+	userId := claims["sub"]
+	if userId == nil {
+		log.Debug().Err(err).Msg("User ID not found in JWT")
+		return auth.AuthenticationResult{}, ErrAuthTokenValidationFailed
+	}
+
+	ID, err := uuid.Parse(userId.(string))
+	if err != nil {
+		log.Debug().Err(err).Msg("Failed to parse user ID")
+		return auth.AuthenticationResult{}, ErrAuthTokenValidationFailed
+	}
+
+	user, err := config.S.Queries.GetUserByID(c.Request().Context(), ID)
 	if err != nil {
 		log.Debug().Err(err).Msg("User not found in database")
 		return auth.AuthenticationResult{}, ErrAuthTokenValidationFailed
@@ -263,15 +276,15 @@ func AuthWithConfig(config AuthConfig) echo.MiddlewareFunc {
 
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			log := util.LogFromEchoContext(c).With().Str("middleware", "auth").Str("auth_mode", config.Mode.String()).Logger()
+			log := util.LogFromEchoContext(c).With().Str("middleware", "auth").Str("path", c.Path()).Str("auth_mode", config.Mode.String()).Logger()
 
 			if config.Mode == AuthModeNone {
-				log.Debug().Msg("No authentication required, allowing request")
+				log.Debug().Str("path", c.Path()).Msg("No authentication required, allowing request")
 				return next(c)
 			}
 
 			if config.Skipper(c) {
-				log.Debug().Msg("Skipping auth middleware, allowing request")
+				log.Debug().Str("path", c.Path()).Msg("Skipping auth middleware, allowing request")
 				return next(c)
 			}
 
@@ -285,28 +298,28 @@ func AuthWithConfig(config AuthConfig) echo.MiddlewareFunc {
 					return ErrUnauthorizedLastAuthenticatedAtExceeded
 				}
 
-				log.Debug().Msg("Authentication already performed, allowing request")
+				log.Debug().Str("path", c.Path()).Msg("Authentication already performed, allowing request")
 				return next(c)
 			}
 
 			token, exists := config.TokenSource.Extract(c, config.TokenSourceKey, config.Scheme)
 			if len(token) == 0 {
 				if config.Mode == AuthModeRequired || config.Mode == AuthModeSecure || (exists && config.Mode == AuthModeOptional) {
-					log.Debug().Bool("token_exists", exists).Msg("Request has missing or malformed token, rejecting")
+					log.Debug().Bool("token_exists", exists).Str("path", c.Path()).Msg("Request has missing or malformed token, rejecting")
 					return config.FailureMode.Error()
 				}
 
-				log.Debug().Bool("token_exists", exists).Msg("Request does not have valid token, but auth mode permits access, allowing request")
+				log.Debug().Bool("token_exists", exists).Str("path", c.Path()).Msg("Request does not have valid token, but auth mode permits access, allowing request")
 				return next(c)
 			}
 
 			if !config.FormatValidator(token) {
 				if config.Mode == AuthModeRequired || config.Mode == AuthModeSecure || config.Mode == AuthModeOptional {
-					log.Debug().Msg("Request has malformed token, rejecting")
+					log.Debug().Str("path", c.Path()).Msg("Request has malformed token, rejecting")
 					return ErrBadRequestMalformedToken
 				}
 
-				log.Debug().Msg("Request have malformed token, but auth mode permits access, allowing request")
+				log.Debug().Str("path", c.Path()).Msg("Request have malformed token, but auth mode permits access, allowing request")
 				return next(c)
 			}
 
@@ -314,37 +327,37 @@ func AuthWithConfig(config AuthConfig) echo.MiddlewareFunc {
 			if err != nil {
 				if errors.Is(err, ErrAuthTokenValidationFailed) {
 					if config.Mode == AuthModeTry {
-						log.Debug().Msg("Auth token validation failed, but auth mode permits access, allowing request")
+						log.Debug().Str("path", c.Path()).Msg("Auth token validation failed, but auth mode permits access, allowing request")
 						return next(c)
 					}
 
-					log.Debug().Msg("Auth token validation failed, rejecting request")
+					log.Debug().Str("path", c.Path()).Msg("Auth token validation failed, rejecting request")
 					return config.FailureMode.Error()
 				}
 
-				log.Debug().Err(err).Msg("Failed to validate auth token, aborting request")
+				log.Debug().Str("path", c.Path()).Err(err).Msg("Failed to validate auth token, aborting request")
 				return echo.ErrInternalServerError
 			}
 
 			dbUser := res.User
 
 			if res.ValidUntil.IsZero() {
-				log.Debug().Str("user_id", dbUser.ID.String()).Msg("Auth token has no expiry, allowing request")
+				log.Debug().Str("user_id", dbUser.ID.String()).Str("path", c.Path()).Msg("Auth token has no expiry, allowing request")
 			} else {
 				if time.Now().After(res.ValidUntil) {
 					if config.Mode == AuthModeTry {
-						log.Debug().Time("valid_until", res.ValidUntil).Str("user_id", dbUser.ID.String()).Msg("Auth token is expired, but auth mode permits access, allowing request")
+						log.Debug().Time("valid_until", res.ValidUntil).Str("path", c.Path()).Str("user_id", dbUser.ID.String()).Msg("Auth token is expired, but auth mode permits access, allowing request")
 						return next(c)
 					}
 
-					log.Debug().Time("valid_until", res.ValidUntil).Str("user_id", dbUser.ID.String()).Msg("Auth token is expired, rejecting request")
+					log.Debug().Time("valid_until", res.ValidUntil).Str("path", c.Path()).Str("user_id", dbUser.ID.String()).Msg("Auth token is expired, rejecting request")
 					return config.FailureMode.Error()
 				}
 			}
 
 			auth.EnrichEchoContextWithCredentials(c, res)
 
-			log.Debug().Str("user_id", dbUser.ID.String()).Msg("Auth token is valid, allowing request")
+			log.Debug().Str("user_id", dbUser.ID.String()).Str("path", c.Path()).Msg("Auth token is valid, allowing request")
 
 			return next(c)
 		}

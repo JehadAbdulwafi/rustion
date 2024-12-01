@@ -69,14 +69,72 @@ func Init(s *api.Server) {
 			},
 		})),
 
-		APIV1Streams: s.Echo.Group("/api/v1/streams", middleware.AuthWithConfig(middleware.AuthConfig{
+		APIV1Stream: s.Echo.Group("/api/v1/streams", middleware.AuthWithConfig(middleware.AuthConfig{
 			S:    s,
 			Mode: middleware.AuthModeRequired,
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
-				case "/api/v1/streams/publish",
-					"/api/v1/streams/unpublish",
-					"/api/v1/streams/ws":
+				case "/api/v1/streams/:id/ws":
+					return true
+				}
+				return false
+			},
+		})),
+
+		APIV1Faq: s.Echo.Group("/api/v1/faqs", middleware.AuthWithConfig(middleware.AuthConfig{
+			S:    s,
+			Mode: middleware.AuthModeRequired,
+			Skipper: func(c echo.Context) bool {
+				switch c.Path() {
+				case "/api/v1/faqs/:id":
+					if c.Request().Method == http.MethodGet {
+						return true
+					}
+					return false
+				case "/api/v1/faqs":
+					if c.Request().Method == http.MethodGet {
+						return true
+					}
+					return false
+				}
+				return false
+			},
+		})),
+
+		APIV1Feedback: s.Echo.Group("/api/v1/feedbacks", middleware.AuthWithConfig(middleware.AuthConfig{
+			S:    s,
+			Mode: middleware.AuthModeRequired,
+			Skipper: func(c echo.Context) bool {
+				switch c.Path() {
+				case "/api/v1/feedbacks/:id":
+					if c.Request().Method == http.MethodGet {
+						return true
+					}
+					return false
+				case "/api/v1/feedbacks":
+					if c.Request().Method == http.MethodGet {
+						return true
+					}
+					return false
+				}
+				return false
+			},
+		})),
+
+		APIV1App: s.Echo.Group("/api/v1/apps", middleware.AuthWithConfig(middleware.AuthConfig{
+			S:    s,
+			Mode: middleware.AuthModeRequired,
+			Skipper: func(c echo.Context) bool {
+				switch c.Path() {
+				case "/api/v1/apps/:id":
+					if c.Request().Method == http.MethodGet {
+						return true
+					}
+					return false
+				case "/api/v1/apps":
+					if c.Request().Method == http.MethodPost {
+						return false
+					}
 					return true
 				}
 				return false
