@@ -1,4 +1,4 @@
-package streams
+package stream
 
 import (
 	"context"
@@ -26,7 +26,7 @@ type WebSocketMessage struct {
 }
 
 func GetStreamStatusRoute(s *api.Server) *echo.Route {
-	return s.Router.APIV1Streams.GET("/:id/ws", getStreamStatusHandler(s))
+	return s.Router.APIV1Stream.GET("/:id/ws", getStreamStatusHandler(s))
 }
 
 func getStreamStatusHandler(s *api.Server) echo.HandlerFunc {
@@ -78,19 +78,19 @@ func getStreamStatusHandler(s *api.Server) echo.HandlerFunc {
 	}
 }
 func sendStreamStatus(ws *websocket.Conn, s *api.Server, ctx context.Context, streamID uuid.UUID) {
-	streamMetadata, err := s.Queries.GetStreamMetadata(ctx, streamID)
+	stream, err := s.Queries.GetStream(ctx, streamID)
 	if err != nil {
 		log.Error().Err(err).Msg("Error fetching stream metadata:")
 		return
 	}
 
 	currentStreamStatus := StreamStatus{
-		StreamID:    streamMetadata.StreamID,
-		Title:       streamMetadata.Title,
-		Description: streamMetadata.Description,
-		Status:      string(streamMetadata.Status),
-		Viewers:     streamMetadata.Viewers.Int32,
-		Thumbnail:   streamMetadata.Thumbnail.String,
+		StreamID:    stream.ID,
+		Title:       stream.LiveTitle.String,
+		Description: stream.LiveDescription.String,
+		Status:      string(stream.Status),
+		Viewers:     stream.Viewers.Int32,
+		Thumbnail:   stream.Thumbnail.String,
 	}
 
 	statusMessage := WebSocketMessage{

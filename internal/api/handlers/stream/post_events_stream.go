@@ -1,4 +1,4 @@
-package streams
+package stream
 
 import (
 	"net/http"
@@ -11,7 +11,7 @@ import (
 )
 
 func PostStreamEventsRoute(s *api.Server) *echo.Route {
-	return s.Router.APIV1Streams.POST("/events", postStreamEventsHandler(s))
+	return s.Router.APIV1Stream.POST("/events", postStreamEventsHandler(s))
 }
 
 func postStreamEventsHandler(s *api.Server) echo.HandlerFunc {
