@@ -1,0 +1,53 @@
+swagger: "2.0"
+info:
+  title: ""
+  version: 0.1.0
+paths: {}
+definitions:
+  Feedback:
+    type: object
+    required:
+      - id
+      - subject
+      - type
+      - message
+    properties:
+      id:
+        type: string
+        format: uuid4
+      userID:
+        type: string
+        format: uuid4
+      subject:
+        type: string
+      type:
+        type: string
+      message:
+        type: string
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+
+  FeedbackPayload:
+    type: object
+    required:
+      - subject
+      - type
+      - message
+      - userID
+    properties:
+      userID:
+        type: string
+        format: uuid4
+      subject:
+        type: string
+      type:
+        type: string
+      message:
+        type: string
+
+  FeedbackList:
+    type: array
+    items: 
+      $ref: "#/definitions/Feedback"

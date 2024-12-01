@@ -1,0 +1,98 @@
+swagger: "2.0"
+info:
+  title: ""
+  version: 0.1.0
+parameters:
+  FeedbackIdParam:
+    type: string
+    format: uuid4
+    name: id
+    description: ID of Feedback
+    in: path
+    required: true
+
+paths:
+  /api/v1/feedbacks:
+    get:
+      security:
+        - Bearer: []
+      description: "Return a list of Feedback"
+      tags:
+        - Feedback
+      summary: "Return a list of Feedback"
+      operationId: GetFeedbackListRoute
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/feedback.yml#/definitions/FeedbackList"
+
+    post:
+      security:
+        - Bearer: []
+      description: "Update the given Feedback"
+      tags:
+        - Feedback
+      summary: "Update the given Feedback"
+      operationId: PostFeedbackRoute
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/feedback.yml#/definitions/FeedbackPayload"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/feedback.yml#/definitions/Feedback"
+
+  /api/v1/feedbacks/{id}:
+    get:
+      security:
+        - Bearer: []
+      description: "Return Feedback with ID"
+      tags:
+        - Feedback
+      summary: "Return Feedback with ID"
+      operationId: GetFeedbackRoute
+      parameters:
+        - $ref: "#/parameters/FeedbackIdParam"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/feedback.yml#/definitions/Feedback"
+
+    put:
+      security:
+        - Bearer: []
+      description: "Update the given Feedback"
+      tags:
+        - Feedback
+      summary: "Update the given Feedback"
+      operationId: PutFeedbackRoute
+      parameters:
+        - $ref: "#/parameters/FeedbackIdParam"
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/feedback.yml#/definitions/FeedbackPayload"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/feedback.yml#/definitions/Feedback"
+
+    delete:
+      security:
+        - Bearer: []
+      description: "Delete Feedback with ID"
+      tags:
+        - Feedback
+      summary: "Delete Feedback with ID"
+      operationId: DeleteFeedbackRoute
+      parameters:
+        - $ref: "#/parameters/FeedbackIdParam"
+      responses:
+        "204":
+          description: Success
