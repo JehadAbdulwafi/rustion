@@ -46,3 +46,25 @@ paths:
       responses:
         "200":
           description: "ModuleName @ Commit (BuildDate)"
+  /api/v1/upload/image:
+    post:
+      tags:
+        - common
+      summary: Upload an image
+      description: Upload an image file. Supports JPEG, PNG, GIF, and WebP formats.
+      operationId: postUploadImage
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: image
+          in: formData
+          description: The image file to upload
+          required: true
+          type: file
+      responses:
+        200:
+          description: Image uploaded successfully
+          schema:
+            $ref: "../definitions/common.yml#/definitions/ImageUploadResponse"

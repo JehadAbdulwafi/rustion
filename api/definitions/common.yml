@@ -20,6 +20,20 @@ definitions:
       total:
         type: integer
         description: Total number of records available
+  ImageUploadResponse:
+    type: object
+    required:
+      - url
+      - filename
+    properties:
+      url:
+        type: string
+        description: The URL path where the uploaded image can be accessed
+        example: /assets/images/550e8400-e29b-41d4-a716-446655440000.jpg
+      filename:
+        type: string
+        description: The unique filename of the uploaded image
+        example: 550e8400-e29b-41d4-a716-446655440000.jpg
 parameters:
   offsetParam:
     type: integer
