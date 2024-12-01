@@ -1,0 +1,98 @@
+swagger: "2.0"
+info:
+  title: ""
+  version: 0.1.0
+parameters:
+  AppIdParam:
+    type: string
+    format: uuid4
+    name: id
+    description: ID of App
+    in: path
+    required: true
+
+paths:
+  /api/v1/apps:
+    get:
+      security:
+        - Bearer: []
+      description: "Return a list of App"
+      tags:
+        - App
+      summary: "Return a list of App"
+      operationId: GetAppListRoute
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/app.yml#/definitions/AppList"
+
+    post:
+      security:
+        - Bearer: []
+      description: "Update the given App"
+      tags:
+        - App
+      summary: "Update the given App"
+      operationId: PostAppRoute
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/app.yml#/definitions/AppPayload"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/app.yml#/definitions/App"
+
+  /api/v1/apps/{id}:
+    get:
+      security:
+        - Bearer: []
+      description: "Return App with ID"
+      tags:
+        - App
+      summary: "Return App with ID"
+      operationId: GetAppRoute
+      parameters:
+        - $ref: "#/parameters/AppIdParam"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/app.yml#/definitions/App"
+
+    put:
+      security:
+        - Bearer: []
+      description: "Update the given App"
+      tags:
+        - App
+      summary: "Update the given App"
+      operationId: PutAppRoute
+      parameters:
+        - $ref: "#/parameters/AppIdParam"
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/app.yml#/definitions/AppPayload"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/app.yml#/definitions/App"
+
+    delete:
+      security:
+        - Bearer: []
+      description: "Delete App with ID"
+      tags:
+        - App
+      summary: "Delete App with ID"
+      operationId: DeleteAppRoute
+      parameters:
+        - $ref: "#/parameters/AppIdParam"
+      responses:
+        "204":
+          description: Success

@@ -1,0 +1,48 @@
+swagger: "2.0"
+info:
+  title: ""
+  version: 0.1.0
+paths: {}
+definitions:
+  App:
+    type: object
+    required:
+      - id
+      - userID
+      - name
+      - config
+    properties:
+      id:
+        type: string
+        format: uuid4
+      userID:
+        type: string
+        format: uuid4
+      name:
+        type: string
+      config:
+        type: string
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+
+  AppPayload:
+    type: object
+    required:
+      - userID
+      - name
+      - config
+    properties:
+      userID:
+        type: string
+        format: uuid4
+      name:
+        type: string
+      config:
+        type: string
+
+  AppList:
+    type: array
+    items: 
+      $ref: "#/definitions/App"
