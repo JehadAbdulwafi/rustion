@@ -61,6 +61,49 @@ func (ns NullDayEnum) Value() (driver.Value, error) {
 	return string(ns.DayEnum), nil
 }
 
+type FeedbackTypeEnum string
+
+const (
+	FeedbackTypeEnumSuggestion FeedbackTypeEnum = "suggestion"
+	FeedbackTypeEnumBug        FeedbackTypeEnum = "bug"
+	FeedbackTypeEnumGeneral    FeedbackTypeEnum = "general"
+)
+
+func (e *FeedbackTypeEnum) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = FeedbackTypeEnum(s)
+	case string:
+		*e = FeedbackTypeEnum(s)
+	default:
+		return fmt.Errorf("unsupported scan type for FeedbackTypeEnum: %T", src)
+	}
+	return nil
+}
+
+type NullFeedbackTypeEnum struct {
+	FeedbackTypeEnum FeedbackTypeEnum
+	Valid            bool // Valid is true if FeedbackTypeEnum is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullFeedbackTypeEnum) Scan(value interface{}) error {
+	if value == nil {
+		ns.FeedbackTypeEnum, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.FeedbackTypeEnum.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullFeedbackTypeEnum) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.FeedbackTypeEnum), nil
+}
+
 type ProviderType string
 
 const (
@@ -178,6 +221,14 @@ type Article struct {
 	UpdatedAt   sql.NullTime
 }
 
+type Faq struct {
+	ID        uuid.UUID
+	Question  string
+	Answer    string
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
+}
+
 type FeaturedArticle struct {
 	ID                uuid.UUID
 	FeaturedSectionID uuid.UUID
@@ -190,6 +241,16 @@ type FeaturedSection struct {
 	ID        uuid.UUID
 	Title     string
 	AppID     uuid.UUID
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
+}
+
+type Feedback struct {
+	ID        uuid.UUID
+	UserID    uuid.NullUUID
+	Subject   string
+	Type      FeedbackTypeEnum
+	Message   string
 	CreatedAt sql.NullTime
 	UpdatedAt sql.NullTime
 }
@@ -213,24 +274,18 @@ type PushToken struct {
 }
 
 type Stream struct {
-	ID         uuid.UUID
-	App        string
-	StreamName string
-	Url        string
-	UserID     uuid.UUID
-	CreatedAt  sql.NullTime
-	UpdatedAt  sql.NullTime
-}
-
-type StreamMetadatum struct {
 	ID              uuid.UUID
-	StreamID        uuid.UUID
-	Status          StreamStatusEnum
-	Title           string
-	Description     string
+	UserID          uuid.UUID
+	App             string
+	Name            string
+	Url             string
+	Password        string
 	Thumbnail       sql.NullString
-	LastPublishedAt sql.NullTime
+	Status          StreamStatusEnum
 	Viewers         sql.NullInt32
+	LastPublishedAt sql.NullTime
+	LiveTitle       sql.NullString
+	LiveDescription sql.NullString
 	CreatedAt       sql.NullTime
 	UpdatedAt       sql.NullTime
 }
