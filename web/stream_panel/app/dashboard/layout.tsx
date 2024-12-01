@@ -14,39 +14,41 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { getUser } from "@/lib/dal"
+import { cache } from 'react'
+import { Toaster } from "@/components/ui/toaster"
 
-export default function DashboardLayout({
+// Cache the getUser function to ensure consistent data
+const getCachedUser = cache(async () => {
+  try {
+    return await getUser()
+  } catch (error) {
+    // Implement error boundary
+    console.error('Error fetching user:', error)
+    throw error
+  }
+})
+
+export default async function DashboardLayout({
   children
 }: {
+
   children: React.ReactNode
 }) {
+  const user = await getCachedUser();
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar user={user} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center justify-between gap-2 px-4">
           <div className="flex items-center gap-2">
             <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
           </div>
           <ModeSwitcher />
         </header>
         {children}
+        <Toaster />
       </SidebarInset>
     </SidebarProvider >
   )
 }
-
