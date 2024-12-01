@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  title: github.com/JehadAbdulwafi/rustion
+  title: ""
   version: 0.1.0
 paths: {}
 definitions:
@@ -8,39 +8,115 @@ definitions:
     type: object
     required:
       - id
+      - userID
       - app
-      - stream_name
+      - name
       - url
-      - user_id
+      - thumbnail
+      - status
+      - viewers
+      - lastPublishedAt
+      - liveTitle
+      - liveDescription
     properties:
       id:
         type: string
         format: uuid4
-        description: ID of stream
-        example: 891d37d3-c74f-493e-aea8-af73efd92016
-      app:
-        description: App of stream
-        type: string
-        maxLength: 255
-        minLength: 1
-        example: app
-      stream_name:
-        description: Stream name of stream
-        type: string
-        maxLength: 255
-        minLength: 1
-        example: stream_name
-      url:
-        description: URL of stream
-        type: string
-        maxLength: 255
-        minLength: 1
-        example: url
-      user_id:
-        description: User ID of stream
+      userID:
         type: string
         format: uuid4
-        example: 891d37d3-c74f-493e-aea8-af73efd92016
+      app:
+        type: string
+      name:
+        type: string
+      url:
+        type: string
+      password:
+        type: string
+      thumbnail:
+        type: string
+      status:
+        type: string
+      viewers:
+        type: string
+      lastPublishedAt:
+        type: string
+      liveTitle:
+        type: string
+      liveDescription:
+        type: string
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+
+  StreamPayload:
+    type: object
+    required:
+      - userID
+      - app
+      - name
+      - url
+      - thumbnail
+      - status
+      - viewers
+      - lastPublishedAt
+      - liveTitle
+      - liveDescription
+    properties:
+      userID:
+        type: string
+        format: uuid4
+      app:
+        type: string
+      name:
+        type: string
+      url:
+        type: string
+      password:
+        type: string
+      thumbnail:
+        type: string
+      status:
+        type: string
+      viewers:
+        type: string
+      lastPublishedAt:
+        type: string
+      liveTitle:
+        type: string
+      liveDescription:
+        type: string
+
+  UpdateStreamPayload:
+    type: object
+    properties:
+      thumbnail:
+        type: string
+      liveTitle:
+        type: string
+      liveDescription:
+        type: string
+  UpdateStreamNamePayload:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+
+  CreateStreamPayload:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+
+  StreamList:
+    type: array
+    items:
+      $ref: "#/definitions/Stream"
   StreamEvent:
     type: object
     required:
@@ -88,17 +164,3 @@ definitions:
         description: Response code
         type: integer
         example: 0
-  CreateStreamResponse:
-    type: object
-    required:
-      - id
-    properties:
-      id:
-        description: ID of stream
-        type: string
-        format: uuid4
-        example: 891d37d3-c74f-493e-aea8-af73efd92016
-      url:
-        description: URL of stream
-        type: string
-        example: url

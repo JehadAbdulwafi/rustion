@@ -16,18 +16,18 @@ import (
 	"github.com/JehadAbdulwafi/rustion/tmp/testdata/types"
 )
 
-// NewPostUnpublishStreamRouteParams creates a new PostUnpublishStreamRouteParams object
+// NewPostStreamEventRouteParams creates a new PostStreamEventRouteParams object
 // no default values defined in spec.
-func NewPostUnpublishStreamRouteParams() PostUnpublishStreamRouteParams {
+func NewPostStreamEventRouteParams() PostStreamEventRouteParams {
 
-	return PostUnpublishStreamRouteParams{}
+	return PostStreamEventRouteParams{}
 }
 
-// PostUnpublishStreamRouteParams contains all the bound params for the post unpublish stream route operation
+// PostStreamEventRouteParams contains all the bound params for the post stream event route operation
 // typically these are obtained from a http.Request
 //
-// swagger:parameters PostUnpublishStreamRoute
-type PostUnpublishStreamRouteParams struct {
+// swagger:parameters PostStreamEventRoute
+type PostStreamEventRouteParams struct {
 
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
@@ -41,8 +41,8 @@ type PostUnpublishStreamRouteParams struct {
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
 // for simple values it will use straight method calls.
 //
-// To ensure default values, the struct must have been initialized with NewPostUnpublishStreamRouteParams() beforehand.
-func (o *PostUnpublishStreamRouteParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
+// To ensure default values, the struct must have been initialized with NewPostStreamEventRouteParams() beforehand.
+func (o *PostStreamEventRouteParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
 	var res []error
 
 	o.HTTPRequest = r
@@ -69,7 +69,7 @@ func (o *PostUnpublishStreamRouteParams) BindRequest(r *http.Request, route *mid
 	return nil
 }
 
-func (o *PostUnpublishStreamRouteParams) Validate(formats strfmt.Registry) error {
+func (o *PostStreamEventRouteParams) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	// Payload

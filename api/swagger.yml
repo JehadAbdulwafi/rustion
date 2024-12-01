@@ -9,6 +9,101 @@ info:
     title: github.com/JehadAbdulwafi/rustion
     version: 0.1.0
 paths:
+    /api/v1/apps:
+        get:
+            description: Return a list of App
+            operationId: GetAppListRoute
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/appList'
+            security:
+                - Bearer: []
+            summary: Return a list of App
+            tags:
+                - App
+        post:
+            description: Update the given App
+            operationId: PostAppRoute
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/appPayload'
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/app'
+            security:
+                - Bearer: []
+            summary: Update the given App
+            tags:
+                - App
+    /api/v1/apps/{id}:
+        delete:
+            description: Delete App with ID
+            operationId: DeleteAppRoute
+            parameters:
+                - description: ID of App
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "204":
+                    description: Success
+            security:
+                - Bearer: []
+            summary: Delete App with ID
+            tags:
+                - App
+        get:
+            description: Return App with ID
+            operationId: GetAppRoute
+            parameters:
+                - description: ID of App
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/app'
+            security:
+                - Bearer: []
+            summary: Return App with ID
+            tags:
+                - App
+        put:
+            description: Update the given App
+            operationId: PutAppRoute
+            parameters:
+                - description: ID of App
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/appPayload'
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/app'
+            security:
+                - Bearer: []
+            summary: Update the given App
+            tags:
+                - App
     /api/v1/articles:
         get:
             description: Retrieves all articles
@@ -125,6 +220,29 @@ paths:
             summary: Login with local user
             tags:
                 - auth
+    /api/v1/auth/refresh:
+        post:
+            description: Returns a new access token on successful refresh
+            operationId: PostRefreshRoute
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/postRefreshPayload'
+            responses:
+                "200":
+                    description: PostLoginResponse
+                    schema:
+                        $ref: '#/definitions/postLoginResponse'
+                "401":
+                    description: PublicHTTPError
+                    schema:
+                        $ref: '#/definitions/publicHttpError'
+            security:
+                - Bearer: []
+            summary: Refresh access token
+            tags:
+                - auth
     /api/v1/auth/register:
         post:
             description: Returns an access and refresh token on successful registration
@@ -166,6 +284,101 @@ paths:
             summary: Get user info
             tags:
                 - auth
+    /api/v1/faqs:
+        get:
+            description: Return a list of Faq
+            operationId: GetFaqListRoute
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/faqList'
+            security:
+                - Bearer: []
+            summary: Return a list of Faq
+            tags:
+                - Faq
+        post:
+            description: Update the given Faq
+            operationId: PostFaqRoute
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/faqPayload'
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/faq'
+            security:
+                - Bearer: []
+            summary: Update the given Faq
+            tags:
+                - Faq
+    /api/v1/faqs/{id}:
+        delete:
+            description: Delete Faq with ID
+            operationId: DeleteFaqRoute
+            parameters:
+                - description: ID of Faq
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "204":
+                    description: Success
+            security:
+                - Bearer: []
+            summary: Delete Faq with ID
+            tags:
+                - Faq
+        get:
+            description: Return Faq with ID
+            operationId: GetFaqRoute
+            parameters:
+                - description: ID of Faq
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/faq'
+            security:
+                - Bearer: []
+            summary: Return Faq with ID
+            tags:
+                - Faq
+        put:
+            description: Update the given Faq
+            operationId: PutFaqRoute
+            parameters:
+                - description: ID of Faq
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/faqPayload'
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/faq'
+            security:
+                - Bearer: []
+            summary: Update the given Faq
+            tags:
+                - Faq
     /api/v1/featured-sections:
         get:
             description: Retrieves all featured sections with their associated articles
@@ -306,6 +519,101 @@ paths:
             summary: Updates a featured articles
             tags:
                 - featured_sections
+    /api/v1/feedbacks:
+        get:
+            description: Return a list of Feedback
+            operationId: GetFeedbackListRoute
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/feedbackList'
+            security:
+                - Bearer: []
+            summary: Return a list of Feedback
+            tags:
+                - Feedback
+        post:
+            description: Update the given Feedback
+            operationId: PostFeedbackRoute
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/feedbackPayload'
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/feedback'
+            security:
+                - Bearer: []
+            summary: Update the given Feedback
+            tags:
+                - Feedback
+    /api/v1/feedbacks/{id}:
+        delete:
+            description: Delete Feedback with ID
+            operationId: DeleteFeedbackRoute
+            parameters:
+                - description: ID of Feedback
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "204":
+                    description: Success
+            security:
+                - Bearer: []
+            summary: Delete Feedback with ID
+            tags:
+                - Feedback
+        get:
+            description: Return Feedback with ID
+            operationId: GetFeedbackRoute
+            parameters:
+                - description: ID of Feedback
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/feedback'
+            security:
+                - Bearer: []
+            summary: Return Feedback with ID
+            tags:
+                - Feedback
+        put:
+            description: Update the given Feedback
+            operationId: PutFeedbackRoute
+            parameters:
+                - description: ID of Feedback
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/feedbackPayload'
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/feedback'
+            security:
+                - Bearer: []
+            summary: Update the given Feedback
+            tags:
+                - Feedback
     /api/v1/healthy:
         get:
             description: |-
@@ -322,6 +630,23 @@ paths:
             summary: Get healthy
             tags:
                 - common
+    /api/v1/push/notifications:
+        post:
+            description: Send push notifications to all users
+            operationId: PostPushNotificationsRoute
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/sendPushNotificationPayload'
+            responses:
+                "200":
+                    description: OK
+            security:
+                - Bearer: []
+            summary: Send push notifications to all users
+            tags:
+                - push
     /api/v1/push/test:
         get:
             deprecated: true
@@ -364,21 +689,41 @@ paths:
             tags:
                 - push
     /api/v1/streams:
-        post:
-            description: Creates a stream
-            operationId: PostCreateStreamRoute
+        get:
+            description: Return a list of Stream
+            operationId: GetStreamListRoute
             responses:
                 "200":
-                    description: PostCreateStreamResponse
+                    description: Success
                     schema:
-                        $ref: '#/definitions/createStreamResponse'
-            summary: Creates a stream
+                        $ref: '#/definitions/streamList'
+            security:
+                - Bearer: []
+            summary: Return a list of Stream
             tags:
-                - stream
-    /api/v1/streams/play:
+                - Stream
         post:
-            description: Plays a stream
-            operationId: PostPlayStreamRoute
+            description: Update the given Stream
+            operationId: PostStreamRoute
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/createStreamPayload'
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/stream'
+            security:
+                - Bearer: []
+            summary: Update the given Stream
+            tags:
+                - Stream
+    /api/v1/streams/events:
+        post:
+            description: ' Stream event'
+            operationId: PostStreamEventRoute
             parameters:
                 - in: body
                   name: Payload
@@ -386,63 +731,98 @@ paths:
                     $ref: '#/definitions/streamEvent'
             responses:
                 "200":
-                    description: PostPublishResponse
+                    description: Success
                     schema:
                         $ref: '#/definitions/streamEventResponse'
-            summary: Plays a stream
+            summary: Stream event
             tags:
-                - stream
-    /api/v1/streams/publish:
-        post:
-            description: Publishes a stream
-            operationId: PostPublishStreamRoute
+                - Stream
+    /api/v1/streams/{id}:
+        delete:
+            description: Delete Stream with ID
+            operationId: DeleteStreamRoute
             parameters:
+                - description: ID of Stream
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "204":
+                    description: Success
+            security:
+                - Bearer: []
+            summary: Delete Stream with ID
+            tags:
+                - Stream
+        get:
+            description: Return Stream with ID
+            operationId: GetStreamRoute
+            parameters:
+                - description: ID of Stream
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/stream'
+            security:
+                - Bearer: []
+            summary: Return Stream with ID
+            tags:
+                - Stream
+        put:
+            description: Update the given Stream
+            operationId: PutStreamRoute
+            parameters:
+                - description: ID of Stream
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
                 - in: body
                   name: Payload
                   schema:
-                    $ref: '#/definitions/streamEvent'
+                    $ref: '#/definitions/updateStreamPayload'
             responses:
                 "200":
-                    description: PostPublishResponse
+                    description: Success
                     schema:
-                        $ref: '#/definitions/streamEventResponse'
-            summary: Publishes a stream
+                        $ref: '#/definitions/stream'
+            security:
+                - Bearer: []
+            summary: Update the given Stream
             tags:
-                - stream
-    /api/v1/streams/stop:
-        post:
-            description: Stops a stream
-            operationId: PostStopStreamRoute
+                - Stream
+    /api/v1/streams/{id}/name:
+        put:
+            description: Update the given Stream name
+            operationId: PutStreamNameRoute
             parameters:
+                - description: ID of Stream
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
                 - in: body
                   name: Payload
                   schema:
-                    $ref: '#/definitions/streamEvent'
+                    $ref: '#/definitions/updateStreamNamePayload'
             responses:
                 "200":
-                    description: PostStopStreamResponse
-                    schema:
-                        $ref: '#/definitions/streamEventResponse'
-            summary: Stops a stream
+                    description: Success
+            security:
+                - Bearer: []
+            summary: Update the given Stream name
             tags:
-                - stream
-    /api/v1/streams/unpublish:
-        post:
-            description: Unpublishes a stream
-            operationId: PostUnpublishStreamRoute
-            parameters:
-                - in: body
-                  name: Payload
-                  schema:
-                    $ref: '#/definitions/streamEvent'
-            responses:
-                "200":
-                    description: PostUnpublishResponse
-                    schema:
-                        $ref: '#/definitions/streamEventResponse'
-            summary: Unpublishes a stream
-            tags:
-                - stream
+                - Stream
     /api/v1/tags:
         get:
             description: Retrieves all tags with their associated articles
@@ -474,7 +854,7 @@ paths:
     /api/v1/tags/articles:
         get:
             description: Retrieves a tag with its associated articles
-            operationId: GetTagWithArticlesMixin6
+            operationId: GetTagWithArticlesMixin9
             responses:
                 "200":
                     description: GetTagWithArticlesResponse
@@ -701,6 +1081,28 @@ paths:
             summary: Updates a TV show schedule
             tags:
                 - tv_show_schedules
+    /api/v1/upload/image:
+        post:
+            consumes:
+                - multipart/form-data
+            description: Upload an image file. Supports JPEG, PNG, GIF, and WebP formats.
+            operationId: postUploadImage
+            parameters:
+                - description: The image file to upload
+                  in: formData
+                  name: image
+                  required: true
+                  type: file
+            produces:
+                - application/json
+            responses:
+                "200":
+                    description: Image uploaded successfully
+                    schema:
+                        $ref: '#/definitions/imageUploadResponse'
+            summary: Upload an image
+            tags:
+                - common
     /api/v1/version:
         get:
             description: This endpoint returns the module name, commit and build-date baked into the app binary.
@@ -728,6 +1130,46 @@ paths:
             tags:
                 - common
 definitions:
+    app:
+        properties:
+            config:
+                type: string
+            createdAt:
+                type: string
+            id:
+                format: uuid4
+                type: string
+            name:
+                type: string
+            updatedAt:
+                type: string
+            userID:
+                format: uuid4
+                type: string
+        required:
+            - id
+            - userID
+            - name
+            - config
+        type: object
+    appList:
+        items:
+            $ref: '#/definitions/app'
+        type: array
+    appPayload:
+        properties:
+            config:
+                type: string
+            name:
+                type: string
+            userID:
+                format: uuid4
+                type: string
+        required:
+            - userID
+            - name
+            - config
+        type: object
     article:
         properties:
             app_id:
@@ -826,19 +1268,12 @@ definitions:
                 example: Featured section created successfully.
                 type: string
         type: object
-    createStreamResponse:
+    createStreamPayload:
         properties:
-            id:
-                description: ID of stream
-                example: 891d37d3-c74f-493e-aea8-af73efd92016
-                format: uuid4
-                type: string
-            url:
-                description: URL of stream
-                example: url
+            name:
                 type: string
         required:
-            - id
+            - name
         type: object
     createTVShowRequest:
         properties:
@@ -907,6 +1342,38 @@ definitions:
                 example: Tag deleted successfully.
                 type: string
         type: object
+    faq:
+        properties:
+            answer:
+                type: string
+            createdAt:
+                type: string
+            id:
+                format: uuid4
+                type: string
+            question:
+                type: string
+            updatedAt:
+                type: string
+        required:
+            - id
+            - question
+            - answer
+        type: object
+    faqList:
+        items:
+            $ref: '#/definitions/faq'
+        type: array
+    faqPayload:
+        properties:
+            answer:
+                type: string
+            question:
+                type: string
+        required:
+            - question
+            - answer
+        type: object
     featuredSection:
         properties:
             app_id:
@@ -937,6 +1404,51 @@ definitions:
             - id
             - title
             - app_id
+        type: object
+    feedback:
+        properties:
+            createdAt:
+                type: string
+            id:
+                format: uuid4
+                type: string
+            message:
+                type: string
+            subject:
+                type: string
+            type:
+                type: string
+            updatedAt:
+                type: string
+            userID:
+                format: uuid4
+                type: string
+        required:
+            - id
+            - subject
+            - type
+            - message
+        type: object
+    feedbackList:
+        items:
+            $ref: '#/definitions/feedback'
+        type: array
+    feedbackPayload:
+        properties:
+            message:
+                type: string
+            subject:
+                type: string
+            type:
+                type: string
+            userID:
+                format: uuid4
+                type: string
+        required:
+            - subject
+            - type
+            - message
+            - userID
         type: object
     getAllTVShowsWithSchedulesResponse:
         items:
@@ -1146,6 +1658,20 @@ definitions:
             - in
             - error
         type: object
+    imageUploadResponse:
+        properties:
+            filename:
+                description: The unique filename of the uploaded image
+                example: 550e8400-e29b-41d4-a716-446655440000.jpg
+                type: string
+            url:
+                description: The URL path where the uploaded image can be accessed
+                example: /assets/images/550e8400-e29b-41d4-a716-446655440000.jpg
+                type: string
+        required:
+            - url
+            - filename
+        type: object
     orderDir:
         enum:
             - asc
@@ -1182,6 +1708,15 @@ definitions:
                 type: string
         required:
             - access_token
+            - refresh_token
+        type: object
+    postRefreshPayload:
+        properties:
+            refresh_token:
+                description: Refresh token for refreshing the access token once it expires
+                example: eyJhdWQiOiJjdXN0b2...
+                type: string
+        required:
             - refresh_token
         type: object
     postRegisterPayload:
@@ -1283,6 +1818,70 @@ definitions:
         required:
             - validationErrors
         type: object
+    sendPushNotificationPayload:
+        properties:
+            body:
+                description: Body of the notification
+                example: This is the body of the notification.
+                type: string
+            image:
+                description: Image of the notification
+                example: https://example.com/picture.jpg
+                type: string
+            subject:
+                description: Title of the notification
+                example: Notification subject
+                maxLength: !!float 255
+                type: string
+        required:
+            - subject
+            - body
+        type: object
+    stream:
+        properties:
+            app:
+                type: string
+            createdAt:
+                type: string
+            id:
+                format: uuid4
+                type: string
+            lastPublishedAt:
+                type: string
+            liveDescription:
+                type: string
+            liveTitle:
+                type: string
+            name:
+                type: string
+            password:
+                type: string
+            status:
+                type: string
+            thumbnail:
+                type: string
+            updatedAt:
+                type: string
+            url:
+                type: string
+            userID:
+                format: uuid4
+                type: string
+            viewers:
+                type: string
+        required:
+            - id
+            - userID
+            - app
+            - name
+            - url
+            - thumbnail
+            - status
+            - viewers
+            - lastPublishedAt
+            - liveTitle
+            - liveDescription
+        type: object
     streamEvent:
         properties:
             action:
@@ -1330,6 +1929,10 @@ definitions:
         required:
             - code
         type: object
+    streamList:
+        items:
+            $ref: '#/definitions/stream'
+        type: array
     tVShow:
         properties:
             app_id:
@@ -1499,6 +2102,22 @@ definitions:
                 example: Featured Section updated successfully.
                 type: string
         type: object
+    updateStreamNamePayload:
+        properties:
+            name:
+                type: string
+        required:
+            - name
+        type: object
+    updateStreamPayload:
+        properties:
+            liveDescription:
+                type: string
+            liveTitle:
+                type: string
+            thumbnail:
+                type: string
+        type: object
     updateTVShowRequest:
         properties:
             description:
@@ -1570,6 +2189,35 @@ definitions:
                 example: Tag updated successfully.
                 type: string
         type: object
+parameters:
+    AppIdParam:
+        description: ID of App
+        format: uuid4
+        in: path
+        name: id
+        required: true
+        type: string
+    FaqIdParam:
+        description: ID of Faq
+        format: uuid4
+        in: path
+        name: id
+        required: true
+        type: string
+    FeedbackIdParam:
+        description: ID of Feedback
+        format: uuid4
+        in: path
+        name: id
+        required: true
+        type: string
+    StreamIdParam:
+        description: ID of Stream
+        format: uuid4
+        in: path
+        name: id
+        required: true
+        type: string
 responses:
     AuthForbiddenResponse:
         description: PublicHTTPError, type `USER_DEACTIVATED`/`NOT_LOCAL_USER`

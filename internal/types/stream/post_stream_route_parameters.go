@@ -16,18 +16,18 @@ import (
 	"github.com/JehadAbdulwafi/rustion/tmp/testdata/types"
 )
 
-// NewPostPlayStreamRouteParams creates a new PostPlayStreamRouteParams object
+// NewPostStreamRouteParams creates a new PostStreamRouteParams object
 // no default values defined in spec.
-func NewPostPlayStreamRouteParams() PostPlayStreamRouteParams {
+func NewPostStreamRouteParams() PostStreamRouteParams {
 
-	return PostPlayStreamRouteParams{}
+	return PostStreamRouteParams{}
 }
 
-// PostPlayStreamRouteParams contains all the bound params for the post play stream route operation
+// PostStreamRouteParams contains all the bound params for the post stream route operation
 // typically these are obtained from a http.Request
 //
-// swagger:parameters PostPlayStreamRoute
-type PostPlayStreamRouteParams struct {
+// swagger:parameters PostStreamRoute
+type PostStreamRouteParams struct {
 
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
@@ -35,21 +35,21 @@ type PostPlayStreamRouteParams struct {
 	/*
 	  In: body
 	*/
-	Payload *types.StreamEvent
+	Payload *types.CreateStreamPayload
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
 // for simple values it will use straight method calls.
 //
-// To ensure default values, the struct must have been initialized with NewPostPlayStreamRouteParams() beforehand.
-func (o *PostPlayStreamRouteParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
+// To ensure default values, the struct must have been initialized with NewPostStreamRouteParams() beforehand.
+func (o *PostStreamRouteParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
 	var res []error
 
 	o.HTTPRequest = r
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body types.StreamEvent
+		var body types.CreateStreamPayload
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			res = append(res, errors.NewParseError("payload", "body", "", err))
 		} else {
@@ -69,7 +69,7 @@ func (o *PostPlayStreamRouteParams) BindRequest(r *http.Request, route *middlewa
 	return nil
 }
 
-func (o *PostPlayStreamRouteParams) Validate(formats strfmt.Registry) error {
+func (o *PostStreamRouteParams) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	// Payload
