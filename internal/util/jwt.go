@@ -10,12 +10,12 @@ import (
 
 var secretKey = []byte("SecretYouShouldHide")
 
-func GenerateJwt(email string, exp time.Duration) (sql.NullString, error) {
+func GenerateJwt(id string, exp time.Duration) (sql.NullString, error) {
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": email,             // Subject (user identifier)
+		"sub": id,                // Subject (user identifier)
 		"iss": "rustion",         // Issuer
 		"aud": "customer",        // Audience (user role)
-		"exp": exp,               // Expiration time
+		"exp": time.Now().Add(exp).Unix(), // Expiration time as Unix timestamp
 		"iat": time.Now().Unix(), // Issued at
 	})
 
