@@ -25,11 +25,8 @@ type FixtureMap struct {
 	UserDeactivated        *database.User
 	UserDeactivatedAccount *database.Account
 	Stream1                *database.Stream
-	StreamMetadata1        *database.StreamMetadatum
 	Stream2                *database.Stream
-	StreamMetadata2        *database.StreamMetadatum
 	Stream3                *database.Stream
-	StreamMetadata3        *database.StreamMetadatum
 	App1                   *database.App
 	App2                   *database.App
 	Article1               *database.Article
@@ -160,19 +157,20 @@ func Fixtures() FixtureMap {
 	}
 
 	f.Stream1 = &database.Stream{
-		ID:         uuid.MustParse("8f866d1a-a9ae-4bf1-8198-0fbd2646a7c4"),
-		App:        "live",
-		StreamName: "cFwLFDa329",
-		Url:        "http://localhost:2022/live/cFwLFDa329",
-		UserID:     uuid.MustParse("6c46cdec-4fd3-4d25-8218-3b75df65f8ab"),
-	}
-
-	f.StreamMetadata1 = &database.StreamMetadatum{
-		ID:          uuid.New(),
-		StreamID:    f.Stream1.ID,
-		Status:      "published",
-		Title:       "Stream1 title",
-		Description: "Stream1 description",
+		ID:       uuid.MustParse("6c46cdec-4fd3-4d25-8218-3b75df65f8ab"),
+		App:      "live",
+		Name:     "cFwLFDa329",
+		Url:      "http://localhost:2022/live/cFwLFDa329",
+		Status:   "published",
+		Password: "password",
+		LiveTitle: sql.NullString{
+			String: "Stream1 title",
+			Valid:  true,
+		},
+		LiveDescription: sql.NullString{
+			String: "Stream1 description",
+			Valid:  true,
+		},
 		Thumbnail: sql.NullString{
 			String: "https://th.bing.com/th/id/OIP.yIEB-Z7KC38rkAwXNZxv5QHaLG",
 			Valid:  true,
@@ -182,22 +180,25 @@ func Fixtures() FixtureMap {
 			Valid: true,
 		},
 		Viewers: sql.NullInt32{},
+		UserID:  uuid.MustParse("6c46cdec-4fd3-4d25-8218-3b75df65f8ab"),
 	}
 
 	f.Stream2 = &database.Stream{
-		ID:         uuid.MustParse("e4762503-d387-48d6-b417-283cd14ebaf0"),
-		App:        "live",
-		StreamName: "y6N3dLPYtx",
-		Url:        "http://localhost:2022/live/y6N3dLPYtx",
-		UserID:     uuid.MustParse("bafe468f-f756-499e-bd95-9a2980fd164e"),
-	}
-
-	f.StreamMetadata2 = &database.StreamMetadatum{
-		ID:          uuid.New(),
-		StreamID:    f.Stream2.ID,
-		Status:      "unpublished",
-		Title:       "Stream2 title",
-		Description: "Stream2 description",
+		ID:       uuid.MustParse("e4762503-d387-48d6-b417-283cd14ebaf0"),
+		App:      "live",
+		Name:     "y6N3dLPYtx",
+		Url:      "http://localhost:2022/live/y6N3dLPYtx",
+		Password: "password",
+		UserID:   uuid.MustParse("bafe468f-f756-499e-bd95-9a2980fd164e"),
+		Status:   "unpublished",
+		LiveTitle: sql.NullString{
+			String: "Stream2 title",
+			Valid:  true,
+		},
+		LiveDescription: sql.NullString{
+			String: "Stream2 description",
+			Valid:  true,
+		},
 		Thumbnail: sql.NullString{
 			String: "https://th.bing.com/th/id/OIP.yIEB-Z7KC38rkAwXNZxv5QHaLG",
 			Valid:  true,
@@ -210,19 +211,20 @@ func Fixtures() FixtureMap {
 	}
 
 	f.Stream3 = &database.Stream{
-		ID:         uuid.MustParse("47658727-adbd-4e06-84ec-0ba2043973e5"),
-		App:        "live",
-		StreamName: "h2NSaFwRww",
-		Url:        "http://localhost:2022/live/h2NSaFwRww",
-		UserID:     uuid.MustParse("19211b77-c579-4e6e-95c1-35735fcaaae1"),
-	}
-
-	f.StreamMetadata3 = &database.StreamMetadatum{
-		ID:          uuid.New(),
-		StreamID:    f.Stream3.ID,
-		Status:      "unpublished",
-		Title:       "Stream3 title",
-		Description: "Stream3 description",
+		ID:       uuid.MustParse("47658727-adbd-4e06-84ec-0ba2043973e5"),
+		App:      "live",
+		Name:     "h2NSaFwRww",
+		Url:      "http://localhost:2022/live/h2NSaFwRww",
+		Status:   "unpublished",
+		Password: "password",
+		LiveTitle: sql.NullString{
+			String: "Stream3 title",
+			Valid:  true,
+		},
+		LiveDescription: sql.NullString{
+			String: "Stream3 description",
+			Valid:  true,
+		},
 		Thumbnail: sql.NullString{
 			String: "https://th.bing.com/th/id/OIP.yIEB-Z7KC38rkAwXNZxv5QHaLG",
 			Valid:  true,
@@ -232,17 +234,18 @@ func Fixtures() FixtureMap {
 			Valid: true,
 		},
 		Viewers: sql.NullInt32{},
+		UserID:  uuid.MustParse("19211b77-c579-4e6e-95c1-35735fcaaae1"),
 	}
 
 	f.App1 = &database.App{
-		ID:   appID1,
-		Name: "app1",
+		ID:     appID1,
+		Name:   "app1",
 		UserID: uuid.MustParse("6c46cdec-4fd3-4d25-8218-3b75df65f8ab"),
 	}
 
 	f.App2 = &database.App{
-		ID:   appID2,
-		Name: "app2",
+		ID:     appID2,
+		Name:   "app2",
 		UserID: uuid.MustParse("bafe468f-f756-499e-bd95-9a2980fd164e"),
 	}
 
@@ -486,11 +489,8 @@ func Inserts() []Insertable {
 	inserts = append(inserts, fix.UserDeactivatedAccount)
 
 	inserts = append(inserts, fix.Stream1)
-	inserts = append(inserts, fix.StreamMetadata1)
 	inserts = append(inserts, fix.Stream2)
-	inserts = append(inserts, fix.StreamMetadata2)
 	inserts = append(inserts, fix.Stream3)
-	inserts = append(inserts, fix.StreamMetadata3)
 
 	inserts = append(inserts, fix.App1)
 	inserts = append(inserts, fix.App2)
