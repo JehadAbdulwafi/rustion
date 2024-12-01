@@ -1,0 +1,98 @@
+swagger: "2.0"
+info:
+  title: ""
+  version: 0.1.0
+parameters:
+  FaqIdParam:
+    type: string
+    format: uuid4
+    name: id
+    description: ID of Faq
+    in: path
+    required: true
+
+paths:
+  /api/v1/faqs:
+    get:
+      security:
+        - Bearer: []
+      description: "Return a list of Faq"
+      tags:
+        - Faq
+      summary: "Return a list of Faq"
+      operationId: GetFaqListRoute
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/faq.yml#/definitions/FaqList"
+
+    post:
+      security:
+        - Bearer: []
+      description: "Update the given Faq"
+      tags:
+        - Faq
+      summary: "Update the given Faq"
+      operationId: PostFaqRoute
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/faq.yml#/definitions/FaqPayload"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/faq.yml#/definitions/Faq"
+
+  /api/v1/faqs/{id}:
+    get:
+      security:
+        - Bearer: []
+      description: "Return Faq with ID"
+      tags:
+        - Faq
+      summary: "Return Faq with ID"
+      operationId: GetFaqRoute
+      parameters:
+        - $ref: "#/parameters/FaqIdParam"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/faq.yml#/definitions/Faq"
+
+    put:
+      security:
+        - Bearer: []
+      description: "Update the given Faq"
+      tags:
+        - Faq
+      summary: "Update the given Faq"
+      operationId: PutFaqRoute
+      parameters:
+        - $ref: "#/parameters/FaqIdParam"
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/faq.yml#/definitions/FaqPayload"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/faq.yml#/definitions/Faq"
+
+    delete:
+      security:
+        - Bearer: []
+      description: "Delete Faq with ID"
+      tags:
+        - Faq
+      summary: "Delete Faq with ID"
+      operationId: DeleteFaqRoute
+      parameters:
+        - $ref: "#/parameters/FaqIdParam"
+      responses:
+        "204":
+          description: Success
