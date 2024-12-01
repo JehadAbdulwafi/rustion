@@ -94,3 +94,12 @@ definitions:
         maxLength: 255
         minLength: 1
         example: John Doe
+  PostRefreshPayload:
+    type: object
+    required:
+      - refresh_token
+    properties:
+      refresh_token:
+        description: Refresh token for refreshing the access token once it expires
+        type: string
+        example: "eyJhdWQiOiJjdXN0b2..."
