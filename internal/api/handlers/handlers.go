@@ -3,12 +3,15 @@ package handlers
 
 import (
 	"github.com/JehadAbdulwafi/rustion/internal/api"
+	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/app"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/articles"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/auth"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/common"
+	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/faq"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/featured_sections"
+	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/feedback"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/push"
-	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/streams"
+	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/stream"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/tags"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/tv_shows"
 	"github.com/labstack/echo/v4"
@@ -17,6 +20,11 @@ import (
 func AttachAllRoutes(s *api.Server) {
 	// attach our routes
 	s.Router.Routes = []*echo.Route{
+		app.DeleteAppRoute(s),
+		app.GetAppListRoute(s),
+		app.GetAppRoute(s),
+		app.PostAppRoute(s),
+		app.PutAppRoute(s),
 		articles.DeleteArticleRoute(s),
 		articles.GetArticleRoute(s),
 		articles.GetArticlesRoute(s),
@@ -24,10 +32,17 @@ func AttachAllRoutes(s *api.Server) {
 		articles.PutUpdateArticleRoute(s),
 		auth.GetUserInfoRoute(s),
 		auth.PostLoginRoute(s),
+		auth.PostRefreshRoute(s),
 		auth.PostRegisterRoute(s),
 		common.GetHealthyRoute(s),
 		common.GetSwaggerRoute(s),
 		common.GetVersionRoute(s),
+		common.PostUploadImageRoute(s),
+		faq.DeleteFaqRoute(s),
+		faq.GetFaqListRoute(s),
+		faq.GetFaqRoute(s),
+		faq.PostFaqRoute(s),
+		faq.PutFaqRoute(s),
 		featuredsections.DeleteFeaturedSectionRoute(s),
 		featuredsections.GetAllFeaturedSectionsRoute(s),
 		featuredsections.GetFeaturedSectionRoute(s),
@@ -36,12 +51,22 @@ func AttachAllRoutes(s *api.Server) {
 		featuredsections.PostCreateFeaturedSectionRoute(s),
 		featuredsections.PutUpdateFeaturedArticlesRoute(s),
 		featuredsections.PutUpdateFeaturedSectionRoute(s),
+		feedback.DeleteFeedbackRoute(s),
+		feedback.GetFeedbackListRoute(s),
+		feedback.GetFeedbackRoute(s),
+		feedback.PostFeedbackRoute(s),
+		feedback.PutFeedbackRoute(s),
 		push.GetPushTestRoute(s),
+		push.PostPushNotificationsRoute(s),
 		push.PostUpdatePushTokenRoute(s),
-		streams.GetStreamStatusRoute(s),
-		streams.PostCreateStreamRoute(s),
-		streams.PostPublishStreamRoute(s),
-		streams.PostStreamEventsRoute(s),
+		stream.DeleteStreamRoute(s),
+		stream.GetStreamListRoute(s),
+		stream.GetStreamRoute(s),
+		stream.GetStreamStatusRoute(s),
+		stream.PostStreamEventsRoute(s),
+		stream.PostStreamRoute(s),
+		stream.PutStreamNameRoute(s),
+		stream.PutStreamRoute(s),
 		tags.DeleteTagRoute(s),
 		tags.GetAllTagsRoute(s),
 		tags.GetTagRoute(s),
