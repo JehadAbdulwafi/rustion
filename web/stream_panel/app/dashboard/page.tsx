@@ -1,9 +1,12 @@
+"use client"
 import Banner from "@/components/banner"
 import { OverviewBar } from "@/components/charts/overview-bar"
 import GettingStarted from "@/components/getting-started"
+import { withHydration } from "@/components/hoc/with-hydration"
 import RecentUpdates from "@/components/recent-updates"
 
-export default function Page() {
+function Page() {
+
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <Banner />
@@ -21,3 +24,4 @@ export default function Page() {
     </div>
   )
 }
+export default withHydration(Page)
