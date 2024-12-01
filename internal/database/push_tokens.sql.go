@@ -81,23 +81,39 @@ func (q *Queries) GetPushToken(ctx context.Context, token string) (PushToken, er
 	return i, err
 }
 
-const getPushTokenesByAppID = `-- name: GetPushTokenesByAppID :one
+const getPushTokenesByAppID = `-- name: GetPushTokenesByAppID :many
 SELECT id, token, provider, fingerprint, app_id, created_at, updated_at FROM push_tokens WHERE app_id = $1
 `
 
-func (q *Queries) GetPushTokenesByAppID(ctx context.Context, appID uuid.NullUUID) (PushToken, error) {
-	row := q.db.QueryRowContext(ctx, getPushTokenesByAppID, appID)
-	var i PushToken
-	err := row.Scan(
-		&i.ID,
-		&i.Token,
-		&i.Provider,
-		&i.Fingerprint,
-		&i.AppID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
+func (q *Queries) GetPushTokenesByAppID(ctx context.Context, appID uuid.NullUUID) ([]PushToken, error) {
+	rows, err := q.db.QueryContext(ctx, getPushTokenesByAppID, appID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []PushToken
+	for rows.Next() {
+		var i PushToken
+		if err := rows.Scan(
+			&i.ID,
+			&i.Token,
+			&i.Provider,
+			&i.Fingerprint,
+			&i.AppID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getPushTokensByFingerprint = `-- name: GetPushTokensByFingerprint :many

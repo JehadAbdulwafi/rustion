@@ -38,3 +38,22 @@ definitions:
         format: uuid4
         description: ID of app
         example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+  SendPushNotificationPayload:
+    type: object
+    required:
+      - subject
+      - body
+    properties:
+      subject:
+        type: string
+        description: Title of the notification
+        maxLength: 255
+        example: "Notification subject"
+      body:
+        type: string
+        description: Body of the notification
+        example: "This is the body of the notification."
+      image:
+        type: string
+        description: Image of the notification
+        example: "https://example.com/picture.jpg"

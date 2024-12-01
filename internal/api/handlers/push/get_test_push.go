@@ -5,6 +5,7 @@ import (
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
 
@@ -19,7 +20,7 @@ func getPushTestHandler(s *api.Server) echo.HandlerFunc {
 
 		fingerprint := c.QueryParam("fingerprint")
 
-		err := s.Push.SendToUser(ctx, fingerprint, "Hello", "World")
+		err := s.Push.SendToUsers(ctx, uuid.New(), "Hello", "World", "")
 		if err != nil {
 			log.Debug().Err(err).Str("fingerprint", fingerprint).Msg("Error while sending push to user.")
 			return err

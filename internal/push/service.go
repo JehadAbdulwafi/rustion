@@ -6,6 +6,7 @@ import (
 
 	"github.com/JehadAbdulwafi/rustion/internal/database"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
+	"github.com/google/uuid"
 )
 
 type ProviderType string
@@ -33,8 +34,8 @@ type ProviderSendResponse struct {
 }
 
 type Provider interface {
-	Send(token string, title string, message string) ProviderSendResponse
-	SendMulticast(tokens []string, title, message string) []ProviderSendResponse
+	Send(token string, title string, message string, image string) ProviderSendResponse
+	SendMulticast(tokens []string, title, message string, image string) []ProviderSendResponse
 	GetProviderType() ProviderType
 }
 
@@ -57,7 +58,7 @@ func (s *Service) GetProviderCount() int {
 	return len(s.provider)
 }
 
-func (s *Service) SendToUser(ctx context.Context, fingerprint string, title string, message string) error {
+func (s *Service) SendToUsers(ctx context.Context, appID uuid.UUID, title string, message string, image string) error {
 	if s.GetProviderCount() < 1 {
 		return errors.New("No provider found")
 	}
@@ -65,7 +66,7 @@ func (s *Service) SendToUser(ctx context.Context, fingerprint string, title stri
 
 	for _, p := range s.provider {
 		// get all registered tokens for provider
-		pushTokens, err := s.Queries.GetPushTokensByFingerprint(ctx, fingerprint)
+		pushTokens, err := s.Queries.GetPushTokenesByAppID(ctx, uuid.NullUUID{UUID: appID, Valid: true})
 		if err != nil {
 			return err
 		}
@@ -75,7 +76,7 @@ func (s *Service) SendToUser(ctx context.Context, fingerprint string, title stri
 			tokens = append(tokens, token.Token)
 		}
 
-		responseSlice := p.SendMulticast(tokens, title, message)
+		responseSlice := p.SendMulticast(tokens, title, message, image)
 		tokenToDelete := make([]string, 0)
 		for _, res := range responseSlice {
 			if res.Err != nil && res.Valid {

@@ -38,7 +38,7 @@ func (p *FCM) GetProviderType() ProviderType {
 	return ProviderTypeFCM
 }
 
-func (p *FCM) Send(token string, title string, message string) ProviderSendResponse {
+func (p *FCM) Send(token string, title string, message string, image string) ProviderSendResponse {
 	messageRequest := &fcm.SendMessageRequest{
 		ValidateOnly: p.Config.ValidateOnly,
 		Message: &fcm.Message{
@@ -46,6 +46,7 @@ func (p *FCM) Send(token string, title string, message string) ProviderSendRespo
 			Notification: &fcm.Notification{
 				Title: title,
 				Body:  message,
+				Image: image,
 			},
 		},
 	}
@@ -68,11 +69,11 @@ func (p *FCM) Send(token string, title string, message string) ProviderSendRespo
 	}
 }
 
-func (p *FCM) SendMulticast(tokens []string, title, message string) []ProviderSendResponse {
+func (p *FCM) SendMulticast(tokens []string, title, message string, image string) []ProviderSendResponse {
 	responseSlice := make([]ProviderSendResponse, 0)
 
 	for _, token := range tokens {
-		responseSlice = append(responseSlice, p.Send(token, title, message))
+		responseSlice = append(responseSlice, p.Send(token, title, message, image))
 	}
 
 	return responseSlice

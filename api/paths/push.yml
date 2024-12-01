@@ -44,3 +44,21 @@ paths:
         "200":
           description: OK
       deprecated: true
+      
+  /api/v1/push/notifications:
+    post:
+      security:
+        - Bearer: []
+      description: Send push notifications to all users
+      tags:
+        - push
+      summary: Send push notifications to all users
+      operationId: PostPushNotificationsRoute
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            "$ref": "../definitions/push.yml#/definitions/SendPushNotificationPayload"
+      responses:
+        "200":
+          description: OK

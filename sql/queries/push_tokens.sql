@@ -6,7 +6,7 @@ RETURNING *;
 -- name: GetPushToken :one
 SELECT * FROM push_tokens WHERE token = $1;
 
--- name: GetPushTokenesByAppID :one
+-- name: GetPushTokenesByAppID :many
 SELECT * FROM push_tokens WHERE app_id = $1;
 
 -- name: GetPushTokensByID :one
