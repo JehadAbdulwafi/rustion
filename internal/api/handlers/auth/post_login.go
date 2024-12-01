@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
-	"github.com/JehadAbdulwafi/rustion/internal/api/httperrors"
 	"github.com/JehadAbdulwafi/rustion/internal/database"
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
@@ -27,29 +26,29 @@ func postLoginHandler(s *api.Server) echo.HandlerFunc {
 
 		user, err := s.Queries.GetUserByEmail(c.Request().Context(), body.Email.String())
 		if err != nil {
-			return err
+			return echo.ErrNotFound
 		}
 
 		account, err := s.Queries.GetAccountByUserID(c.Request().Context(), user.ID)
 		if err != nil {
-			return err
+			return echo.ErrNotFound
 		}
 
 		matches, err := hashing.ComparePasswordAndHash(*body.Password, user.Password)
 		if err != nil {
-			return httperrors.ErrBadRequestInvalidPassword
+			return echo.ErrUnauthorized
 		}
 
 		if !matches {
-			return httperrors.ErrBadRequestInvalidPassword
+			return echo.ErrUnauthorized
 		}
 
-		accessToken, err := util.GenerateJwt(user.Email, s.Config.Auth.AccessTokenValidity)
+		accessToken, err := util.GenerateJwt(user.ID.String(), s.Config.Auth.AccessTokenValidity)
 		if err != nil {
 			return err
 		}
 
-		refreshToken, err := util.GenerateJwt(user.Email, s.Config.Auth.RefreshTokenValidity)
+		refreshToken, err := util.GenerateJwt(user.ID.String(), s.Config.Auth.RefreshTokenValidity)
 		if err != nil {
 			return err
 		}

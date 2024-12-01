@@ -53,7 +53,7 @@ func postRegisterHandler(s *api.Server) echo.HandlerFunc {
 			return err
 		}
 
-		accessToken, err := util.GenerateJwt(user.Email, s.Config.Auth.AccessTokenValidity)
+		accessToken, err := util.GenerateJwt(user.ID.String(), s.Config.Auth.AccessTokenValidity)
 
 		if err != nil {
 			log.Debug().Err(err).Msg("Failed to generate access token")
@@ -62,7 +62,7 @@ func postRegisterHandler(s *api.Server) echo.HandlerFunc {
 
 		response.AccessToken = &accessToken.String
 
-		refreshToken, err := util.GenerateJwt(user.Email, s.Config.Auth.RefreshTokenValidity)
+		refreshToken, err := util.GenerateJwt(user.ID.String(), s.Config.Auth.RefreshTokenValidity)
 
 		if err != nil {
 			log.Debug().Err(err).Msg("Failed to generate refresh token")
