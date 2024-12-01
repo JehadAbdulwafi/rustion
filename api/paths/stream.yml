@@ -1,27 +1,58 @@
 swagger: "2.0"
 info:
-  title: github.com/JehadAbdulwafi/rustion
+  title: ""
   version: 0.1.0
+parameters:
+  StreamIdParam:
+    type: string
+    format: uuid4
+    name: id
+    description: ID of Stream
+    in: path
+    required: true
+
 paths:
   /api/v1/streams:
-    post:
-      description: Creates a stream
+    get:
+      security:
+        - Bearer: []
+      description: "Return a list of Stream"
       tags:
-        - stream
-      summary: Creates a stream
-      operationId: PostCreateStreamRoute
+        - Stream
+      summary: "Return a list of Stream"
+      operationId: GetStreamListRoute
       responses:
         "200":
-          description: PostCreateStreamResponse
+          description: Success
           schema:
-            $ref: "../definitions/stream.yml#/definitions/CreateStreamResponse"
-  /api/v1/streams/publish:
+            $ref: "../definitions/stream.yml#/definitions/StreamList"
+
     post:
-      description: Publishes a stream
+      security:
+        - Bearer: []
+      description: "Update the given Stream"
       tags:
-        - stream
-      summary: Publishes a stream
-      operationId: PostPublishStreamRoute
+        - Stream
+      summary: "Update the given Stream"
+      operationId: PostStreamRoute
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/stream.yml#/definitions/CreateStreamPayload"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/stream.yml#/definitions/Stream"
+
+  /api/v1/streams/events:
+    post:
+      description: " Stream event"
+      tags:
+        - Stream
+      summary: "Stream event"
+      operationId: PostStreamEventRoute
       parameters:
         - name: Payload
           in: body
@@ -29,57 +60,76 @@ paths:
             $ref: "../definitions/stream.yml#/definitions/StreamEvent"
       responses:
         "200":
-          description: PostPublishResponse
+          description: Success
           schema:
             $ref: "../definitions/stream.yml#/definitions/StreamEventResponse"
-  /api/v1/streams/unpublish:
-    post:
-      description: Unpublishes a stream
+
+  /api/v1/streams/{id}:
+    get:
+      security:
+        - Bearer: []
+      description: "Return Stream with ID"
       tags:
-        - stream
-      summary: Unpublishes a stream
-      operationId: PostUnpublishStreamRoute
+        - Stream
+      summary: "Return Stream with ID"
+      operationId: GetStreamRoute
       parameters:
+        - $ref: "#/parameters/StreamIdParam"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/stream.yml#/definitions/Stream"
+
+    put:
+      security:
+        - Bearer: []
+      description: "Update the given Stream"
+      tags:
+        - Stream
+      summary: "Update the given Stream"
+      operationId: PutStreamRoute
+      parameters:
+        - $ref: "#/parameters/StreamIdParam"
         - name: Payload
           in: body
           schema:
-            $ref: "../definitions/stream.yml#/definitions/StreamEvent"
+            $ref: "../definitions/stream.yml#/definitions/UpdateStreamPayload"
       responses:
         "200":
-          description: PostUnpublishResponse
+          description: Success
           schema:
-            $ref: "../definitions/stream.yml#/definitions/StreamEventResponse"
-  /api/v1/streams/play:
-    post:
-      description: Plays a stream
+            $ref: "../definitions/stream.yml#/definitions/Stream"
+
+    delete:
+      security:
+        - Bearer: []
+      description: "Delete Stream with ID"
       tags:
-        - stream
-      summary: Plays a stream
-      operationId: PostPlayStreamRoute
+        - Stream
+      summary: "Delete Stream with ID"
+      operationId: DeleteStreamRoute
       parameters:
+        - $ref: "#/parameters/StreamIdParam"
+      responses:
+        "204":
+          description: Success
+
+  /api/v1/streams/{id}/name:
+    put:
+      security:
+        - Bearer: []
+      description: "Update the given Stream name"
+      tags:
+        - Stream
+      summary: "Update the given Stream name"
+      operationId: PutStreamNameRoute
+      parameters:
+        - $ref: "#/parameters/StreamIdParam"
         - name: Payload
           in: body
           schema:
-            $ref: "../definitions/stream.yml#/definitions/StreamEvent"
+            $ref: "../definitions/stream.yml#/definitions/UpdateStreamNamePayload"
       responses:
         "200":
-          description: PostPublishResponse
-          schema:
-            $ref: "../definitions/stream.yml#/definitions/StreamEventResponse"
-  /api/v1/streams/stop:
-    post:
-      description: Stops a stream
-      tags:
-        - stream
-      summary: Stops a stream
-      operationId: PostStopStreamRoute
-      parameters:
-        - name: Payload
-          in: body
-          schema:
-            $ref: "../definitions/stream.yml#/definitions/StreamEvent"
-      responses:
-        "200":
-          description: PostStopStreamResponse
-          schema:
-            $ref: "../definitions/stream.yml#/definitions/StreamEventResponse"
+          description: Success
