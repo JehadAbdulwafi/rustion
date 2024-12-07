@@ -3,6 +3,8 @@ package stream
 import (
 	"context"
 	"encoding/json"
+	"sync"
+	"time"
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
 	"github.com/google/uuid"
@@ -25,6 +27,54 @@ type WebSocketMessage struct {
 	Payload interface{} `json:"payload"`
 }
 
+type ViewerInfo struct {
+	ViewerID string    // User ID or device fingerprint
+	JoinedAt time.Time
+}
+
+// StreamViewers stores active viewers for each stream
+var streamViewers = struct {
+	sync.RWMutex
+	viewers map[uuid.UUID]map[string]ViewerInfo
+}{viewers: make(map[uuid.UUID]map[string]ViewerInfo)}
+
+// addViewer adds a viewer to the stream and returns true if the viewer was not already present
+func addViewer(streamID uuid.UUID, viewerID string) bool {
+	streamViewers.Lock()
+	defer streamViewers.Unlock()
+
+	if _, exists := streamViewers.viewers[streamID]; !exists {
+		streamViewers.viewers[streamID] = make(map[string]ViewerInfo)
+	}
+
+	if _, exists := streamViewers.viewers[streamID][viewerID]; exists {
+		return false
+	}
+
+	streamViewers.viewers[streamID][viewerID] = ViewerInfo{
+		ViewerID: viewerID,
+		JoinedAt: time.Now(),
+	}
+	return true
+}
+
+// removeViewer removes a viewer from the stream
+func removeViewer(streamID uuid.UUID, viewerID string) bool {
+	streamViewers.Lock()
+	defer streamViewers.Unlock()
+
+	if viewers, exists := streamViewers.viewers[streamID]; exists {
+		if _, found := viewers[viewerID]; found {
+			delete(viewers, viewerID)
+			if len(viewers) == 0 {
+				delete(streamViewers.viewers, streamID)
+			}
+			return true
+		}
+	}
+	return false
+}
+
 func GetStreamStatusRoute(s *api.Server) *echo.Route {
 	return s.Router.APIV1Stream.GET("/:id/ws", getStreamStatusHandler(s))
 }
@@ -35,6 +85,11 @@ func getStreamStatusHandler(s *api.Server) echo.HandlerFunc {
 			defer ws.Close()
 
 			ctx := c.Request().Context()
+			viewerID := c.QueryParam("viewer_id")
+			if viewerID == "" {
+				log.Error().Msg("No viewer ID provided")
+				return
+			}
 
 			log.Info().Msg("new user joining stream")
 			// Get stream ID from request
@@ -45,18 +100,22 @@ func getStreamStatusHandler(s *api.Server) echo.HandlerFunc {
 				return
 			}
 
-			// Increment viewer count
-			err = s.Queries.IncrementStreamViewers(ctx, streamID)
-			if err != nil {
-				log.Error().Err(err).Msg("Error incrementing viewers in DB: ")
+			// Only increment if this is a new viewer
+			if addViewer(streamID, viewerID) {
+				err = s.Queries.IncrementStreamViewers(ctx, streamID)
+				if err != nil {
+					log.Error().Err(err).Msg("Error incrementing viewers in DB: ")
+				}
 			}
 
-			// Decrement viewer count on disconnect
+			// Decrement viewer count on disconnect if viewer exists
 			defer func() {
-				log.Info().Msg("Attempting to decrement viewer count")
-				err := s.Queries.DecrementStreamViewers(ctx, streamID)
-				if err != nil {
-					log.Error().Err(err).Msg("Error decrementing viewers in DB:")
+				if removeViewer(streamID, viewerID) {
+					log.Info().Msg("Attempting to decrement viewer count")
+					err := s.Queries.DecrementStreamViewers(ctx, streamID)
+					if err != nil {
+						log.Error().Err(err).Msg("Error decrementing viewers in DB:")
+					}
 				}
 			}()
 
@@ -77,10 +136,11 @@ func getStreamStatusHandler(s *api.Server) echo.HandlerFunc {
 		return nil
 	}
 }
+
 func sendStreamStatus(ws *websocket.Conn, s *api.Server, ctx context.Context, streamID uuid.UUID) {
 	stream, err := s.Queries.GetStream(ctx, streamID)
 	if err != nil {
-		log.Error().Err(err).Msg("Error fetching stream metadata:")
+		log.Error().Err(err).Msg("Error fetching stream metadata: ")
 		return
 	}
 
@@ -106,6 +166,6 @@ func sendStreamStatus(ws *websocket.Conn, s *api.Server, ctx context.Context, st
 
 	err = websocket.Message.Send(ws, string(jsonData))
 	if err != nil {
-		log.Error().Err(err).Msg("Error sending WebSocket message:")
+		log.Error().Err(err).Msg("Error sending WebSocket message: ")
 	}
 }
