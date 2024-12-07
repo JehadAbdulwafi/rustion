@@ -4,9 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 
 	"github.com/JehadAbdulwafi/rustion/internal/config"
 	"github.com/JehadAbdulwafi/rustion/internal/database"
+	"github.com/JehadAbdulwafi/rustion/internal/mailer"
+	"github.com/JehadAbdulwafi/rustion/internal/mailer/transport"
 	"github.com/JehadAbdulwafi/rustion/internal/push"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
@@ -37,6 +40,7 @@ type Server struct {
 	Echo    *echo.Echo
 	Router  *Router
 	Push    *push.Service
+	Mailer  *mailer.Mailer
 }
 
 func NewServer(config config.Server) *Server {
@@ -100,6 +104,20 @@ func (s *Server) InitPush() error {
 	}
 
 	return nil
+}
+
+func (s *Server) InitMailer() error {
+	switch config.MailerTransporter(s.Config.Mailer.Transporter) {
+	case config.MailerTransporterMock:
+		log.Warn().Msg("Initializing mock mailer")
+		s.Mailer = mailer.New(s.Config.Mailer, transport.NewMock())
+	case config.MailerTransporterSMTP:
+		s.Mailer = mailer.New(s.Config.Mailer, transport.NewSMTP(s.Config.SMTP))
+	default:
+		return fmt.Errorf("Unsupported mail transporter: %s", s.Config.Mailer.Transporter)
+	}
+
+	return s.Mailer.ParseTemplates()
 }
 
 func (s *Server) Start() error {

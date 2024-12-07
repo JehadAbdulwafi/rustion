@@ -58,6 +58,10 @@ func runServer() {
 		log.Fatal().Err(err).Msg("Failed to initialize push service")
 	}
 
+	if err := s.InitMailer(); err != nil {
+		log.Fatal().Err(err).Msg("Failed to initialize mailer")
+	}
+
 	router.Init(s)
 
 	go func() {

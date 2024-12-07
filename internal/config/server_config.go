@@ -1,9 +1,11 @@
 package config
 
 import (
+	"path/filepath"
 	"runtime"
 	"time"
 
+	"github.com/JehadAbdulwafi/rustion/internal/mailer/transport"
 	"github.com/JehadAbdulwafi/rustion/internal/push"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/rs/zerolog"
@@ -52,6 +54,11 @@ type PushService struct {
 	UseFCMProvider bool
 }
 
+type FrontendServer struct {
+	BaseURL               string
+	PasswordResetEndpoint string
+}
+
 type LoggerServer struct {
 	Level              zerolog.Level
 	RequestLevel       zerolog.Level
@@ -68,9 +75,12 @@ type Server struct {
 	Database  Database
 	Echo      EchoServer
 	Auth      AuthServer
+	Frontend  FrontendServer
 	Logger    LoggerServer
 	Push      PushService
 	FCMConfig push.FCMConfig
+	Mailer    Mailer
+	SMTP      transport.SMTPMailTransportConfig
 }
 
 func DefaultServiceConfigFromEnv() Server {
@@ -90,7 +100,7 @@ func DefaultServiceConfigFromEnv() Server {
 		},
 		Echo: EchoServer{
 			Debug:                          util.GetEnvAsBool("SERVER_ECHO_DEBUG", false),
-			ListenAddress:                  util.GetEnv("SERVER_ECHO_LISTEN_ADDRESS", "192.168.1.10:9973"),
+			ListenAddress:                  util.GetEnv("SERVER_ECHO_LISTEN_ADDRESS", "192.168.1.2:9973"),
 			HideInternalServerErrorDetails: util.GetEnvAsBool("SERVER_ECHO_HIDE_INTERNAL_SERVER_ERROR_DETAILS", true),
 			BaseURL:                        util.GetEnv("SERVER_ECHO_BASE_URL", "http://localhost:8080"),
 			EnableCORSMiddleware:           util.GetEnvAsBool("SERVER_ECHO_ENABLE_CORS_MIDDLEWARE", true),
@@ -141,6 +151,25 @@ func DefaultServiceConfigFromEnv() Server {
 			GoogleApplicationCredentials: util.GetEnv("GOOGLE_APPLICATION_CREDENTIALS", ""),
 			ProjectID:                    util.GetEnv("SERVER_FCM_PROJECT_ID", "no-fcm-project-id-set"),
 			ValidateOnly:                 util.GetEnvAsBool("SERVER_FCM_VALIDATE_ONLY", true),
+		},
+		Frontend: FrontendServer{
+			BaseURL:               util.GetEnv("SERVER_FRONTEND_BASE_URL", "http://localhost:3000"),
+			PasswordResetEndpoint: util.GetEnv("SERVER_FRONTEND_PASSWORD_RESET_ENDPOINT", "/set-new-password"),
+		},
+		Mailer: Mailer{
+			DefaultSender:               util.GetEnv("SERVER_MAILER_DEFAULT_SENDER", "support@rustion.com"),
+			Send:                        util.GetEnvAsBool("SERVER_MAILER_SEND", true),
+			WebTemplatesEmailBaseDirAbs: util.GetEnv("SERVER_MAILER_WEB_TEMPLATES_EMAIL_BASE_DIR_ABS", filepath.Join(util.GetProjectRootDir(), "../web/templates/email")), // /app/web/templates/email
+			Transporter:                 util.GetEnvEnum("SERVER_MAILER_TRANSPORTER", MailerTransporterSMTP.String(), []string{MailerTransporterSMTP.String(), MailerTransporterMock.String()}),
+		},
+		SMTP: transport.SMTPMailTransportConfig{
+			Host:      util.GetEnv("SERVER_SMTP_HOST", "localhost"),
+			Port:      util.GetEnvAsInt("SERVER_SMTP_PORT", 1025),
+			Username:  util.GetEnv("SERVER_SMTP_USERNAME", ""),
+			Password:  util.GetEnv("SERVER_SMTP_PASSWORD", ""),
+			AuthType:  transport.SMTPAuthTypeFromString(util.GetEnv("SERVER_SMTP_AUTH_TYPE", transport.SMTPAuthTypeNone.String())),
+			UseTLS:    util.GetEnvAsBool("SERVER_SMTP_USE_TLS", false),
+			TLSConfig: nil,
 		},
 	}
 
