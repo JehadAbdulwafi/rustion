@@ -1,4 +1,6 @@
+import { getAppIdSession } from "@/actions"
 import { API } from "./axios"
+import { ApiError } from "./ApiError"
 
 export type AppSettings = {
   app_icon_url: string
@@ -19,11 +21,25 @@ export type AppSettings = {
 }
 
 export async function getAppSettings() {
-  const { data } = await API.get<AppSettings>("/settings")
-  return data
+  try {
+    const id = await getAppIdSession();
+    const { data } = await API.get<App>(`/apps/${id}`)
+    return data
+  } catch (error) {
+    console.log(`APP_SETTINGS GET_APP_SETTINGS, ERR: ${error}`)
+    throw new ApiError("FAILED TO GET APP SETTINGS")
+  }
 }
 
-export async function updateAppSettings(settings: Partial<AppSettings>) {
-  const { data } = await API.patch<AppSettings>("/settings", settings)
-  return data
+export async function updateAppSettings(values: Partial<AppSettings>) {
+  try {
+    const id = await getAppIdSession();
+    const config = JSON.stringify(values)
+    const { data } = await API.put(`/apps/${id}`, { config })
+    return data
+  } catch (error) {
+    console.log(`APP_SETTINGS UPDATE_APP_SETTINGS, ERR: ${error}`)
+    throw new ApiError("FAILED TO UPDATE APP SETTINGS")
+
+  }
 }

@@ -1,38 +1,79 @@
-import { APP_ID } from "@/config/app";
+import { ApiError } from "./ApiError";
 import { API } from "./axios";
+import { getAppIdSession } from "@/actions";
 
 async function getTag(id: string): Promise<Tag> {
-  const res = await API.get<Tag>(`tags/${id}`, { params: { app_id: APP_ID } });
-  return res.data
+  try {
+    const appId = await getAppIdSession();
+    const res = await API.get<Tag>(`tags/${id}`, { params: { app_id: appId } });
+    return res.data
+  } catch (error) {
+    console.log(`TAGS_API GET_TAG ID: ${id}, ERR: ${error}`)
+    throw new ApiError("FAILED TO GET TAG")
+  }
 }
 
 async function getTags(): Promise<Tag[]> {
-  const res = await API.get<Tag[]>('tags', { params: { app_id: APP_ID } });
-  return res.data
+  try {
+    const appId = await getAppIdSession();
+    const res = await API.get<Tag[]>('tags', { params: { app_id: appId } });
+    return res.data
+  } catch (error) {
+    console.log(`TAGS_API GET_TAGS, ERR: ${error}`)
+    throw new ApiError("FAILED TO GET TAGS")
+  }
 }
 
 async function createTag(title: string): Promise<Tag> {
-  const res = await API.post<Tag>('tags', { title, app_id: APP_ID });
-  return res.data;
+  try {
+    const res = await API.post<Tag>('tags', { title });
+    return res.data;
+  } catch (error) {
+    console.log(`TAGS_API CREATE_TAG, ERR: ${error}`)
+    throw new ApiError("FAILED TO CREATE TAG")
+  }
 }
 
 async function updateTag(id: string, title: string): Promise<Tag> {
-  const res = await API.put<Tag>(`tags/${id}`, { title, app_id: APP_ID });
-  return res.data;
+  try {
+    const res = await API.put<Tag>(`tags/${id}`, { title });
+    return res.data;
+  } catch (error) {
+    console.log(`TAGS_API UPDATE_TAG ID: ${id}, ERR: ${error}`)
+    throw new ApiError("FAILED TO UPDATE TAG")
+  }
 }
 
 async function deleteTag(id: string): Promise<void> {
-  await API.delete(`tags/${id}`, { params: { app_id: APP_ID } });
+  try {
+    await API.delete(`tags/${id}`);
+  } catch (error) {
+    console.log(`TAGS_API DELETE_TAG ID: ${id}, ERR: ${error}`)
+    throw new ApiError("FAILED TO DELETE TAG")
+  }
 }
 
 async function getTagWithArticles(id: string): Promise<TagWithArticles> {
-  const res = await API.get<TagWithArticles>(`tags/${id}/articles`, { params: { app_id: APP_ID } });
-  return res.data
+  try {
+    const appId = await getAppIdSession();
+    const res = await API.get<TagWithArticles>(`tags/${id}/articles`, { params: { app_id: appId } });
+    return res.data
+  } catch (error) {
+    console.log(`TAGS_API GET_TAG_WITH_ARTICLES ID: ${id}, ERR: ${error}`)
+    throw new ApiError("FAILED TO GET TAG WITH ARTICLES")
+
+  }
 }
 
 async function getTagsWithArticles(): Promise<TagWithArticles[]> {
-  const res = await API.get<TagWithArticles[]>('tags/articles', { params: { app_id: APP_ID } });
-  return res.data
+  try {
+    const appId = await getAppIdSession();
+    const res = await API.get<TagWithArticles[]>('tags/articles', { params: { app_id: appId } });
+    return res.data
+  } catch (error) {
+    console.log(`TAGS_API GET_TAGS_WITH_ARTICLES ID, ERR: ${error}`)
+    throw new ApiError("FAILED TO GET TAGS WITH ARTICLES")
+  }
 }
 
 export {

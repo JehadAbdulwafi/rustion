@@ -1,39 +1,60 @@
-import { APP_ID } from "@/config/app";
+import { getAppIdSession } from "@/actions";
 import { API } from "./axios";
+import { ApiError } from "./ApiError";
 
 async function getTvShow(id: string): Promise<TvShow> {
-  const res = await API.get<TvShow>(`tv-shows/${id}`, { params: { app_id: APP_ID } });
-  return res.data
+  try {
+    const appId = await getAppIdSession();
+    const res = await API.get<TvShow>(`tv-shows/${id}`, { params: { app_id: appId } });
+    return res.data
+  } catch (error) {
+    throw new ApiError("FAILED TO GET TV SHOW")
+  }
 }
 async function getTvShows(): Promise<TvShow[]> {
-  const res = await API.get<TvShow[]>('tv-shows', { params: { app_id: APP_ID } });
-  return res.data
+  try {
+    const appId = await getAppIdSession();
+    const res = await API.get<TvShow[]>('tv-shows', { params: { app_id: appId } });
+    return res.data
+  } catch (error) {
+    throw new ApiError("FAILED TO GET TV SHOWS")
+  }
 }
 
 async function createTvShow(title: string, description: string, image: string, genre: string): Promise<TvShow> {
-  const res = await API.post<TvShow>('tv-shows', {
-    title,
-    description,
-    image,
-    genre,
-    app_id: APP_ID,
-  });
-  return res.data;
+  try {
+    const res = await API.post<TvShow>('tv-shows', {
+      title,
+      description,
+      image,
+      genre,
+    });
+    return res.data;
+  } catch (error) {
+    throw new ApiError("FAILED TO CREATE TV SHOW")
+  }
 }
 
 async function updateTvShow(id: string, title: string, description: string, image: string, genre: string): Promise<TvShow> {
-  const res = await API.put<TvShow>(`tv-shows/${id}`, {
-    title,
-    description,
-    image,
-    genre,
-    app_id: APP_ID,
-  });
-  return res.data;
+  try {
+    const res = await API.put<TvShow>(`tv-shows/${id}`, {
+      title,
+      description,
+      image,
+      genre,
+    });
+    return res.data;
+  } catch (error) {
+    throw new ApiError("FAILED TO UPDATE TV SHOW")
+  }
 }
 
 async function deleteTvShow(id: string): Promise<void> {
-  await API.delete(`tv-shows/${id}`);
+  try {
+    await API.delete(`tv-shows/${id}`);
+  } catch (error) {
+    throw new ApiError("FAILED TO DELETE TV SHOW")
+  }
 }
 
 export {
