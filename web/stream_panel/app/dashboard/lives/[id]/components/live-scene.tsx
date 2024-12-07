@@ -6,19 +6,19 @@ import StreamInfo from "@/components/stream-info";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Check, Pencil, Trash2, X } from "lucide-react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { deleteStream, updateStreamName } from "@/api/LiveApi";
 import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/dialogs/confirm-dialog";
+import { formatStreamDuration } from "@/utils/format-time";
+import useStream from "@/hooks/use-stream";
 
-export default function LiveScene({ stream }: { stream: Stream }) {
-  const { id } = useParams<{ id: string }>();
+export default function LiveScene({ stream, userID }: { stream: Stream, userID: string }) {
   const router = useRouter();
   const wsRef = useRef<WebSocket | null>(null);
-  const [isConnected, setIsConnected] = useState(false);
-  const [streamStatus, setStreamStatus] = useState<StreamStatus>();
+  const { streamStatus, setStreamStatus, setIsConnected } = useStream();
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState(stream?.name || "");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -27,7 +27,9 @@ export default function LiveScene({ stream }: { stream: Stream }) {
   const connect = () => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) return;
 
-    const ws = new WebSocket(`ws://192.168.1.10:9973/api/v1/streams/${id}/ws`);
+    const ws = new WebSocket(
+      `ws://192.168.1.2:9973/api/v1/streams/${stream.id}/ws?viewer_id=${userID}`
+    );
     wsRef.current = ws;
 
     ws.onopen = () => {
@@ -37,14 +39,17 @@ export default function LiveScene({ stream }: { stream: Stream }) {
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       setStreamStatus(data.payload);
+      console.log("New message:", data);
     };
 
     ws.onclose = () => {
+      console.log("WebSocket closed");
       setIsConnected(false);
       wsRef.current = null;
     };
 
-    ws.onerror = () => {
+    ws.onerror = (event) => {
+      console.error("WebSocket error:", event);
       wsRef.current = null;
       setTimeout(connect, 1000);
     };
@@ -57,14 +62,26 @@ export default function LiveScene({ stream }: { stream: Stream }) {
     }
   };
 
+  useEffect(() => {
+    // Only connect if we don't have an active connection
+    if (!wsRef.current) {
+      connect();
+    }
+
+    return () => {
+      closeConnection();
+    };
+  }, []);
+
   const handleNameUpdate = async () => {
     try {
-      await updateStreamName(id, { name: newName });
+      await updateStreamName(stream.id, { name: newName });
       setIsEditing(false);
       toast({
         title: "Success",
         description: "Stream name has been updated",
       });
+      router.refresh();
     } catch (error) {
       toast({
         title: "Error",
@@ -76,7 +93,7 @@ export default function LiveScene({ stream }: { stream: Stream }) {
 
   const handleDelete = async () => {
     try {
-      await deleteStream(id);
+      await deleteStream(stream.id);
       toast({
         title: "Success",
         description: "Stream has been deleted",
@@ -90,13 +107,6 @@ export default function LiveScene({ stream }: { stream: Stream }) {
       });
     }
   };
-
-  useEffect(() => {
-    connect();
-    return () => {
-      closeConnection();
-    };
-  }, []);
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
@@ -164,16 +174,7 @@ export default function LiveScene({ stream }: { stream: Stream }) {
               title="Stream Time"
               value={
                 streamStatus?.status === "published"
-                  ? (() => {
-                    const diffMs =
-                      Date.now() - new Date(stream?.lastPublishedAt).getTime();
-                    const minutes = Math.floor(diffMs / (1000 * 60));
-                    const hours = Math.floor(minutes / 60);
-                    const remainingMinutes = minutes % 60;
-                    return hours > 0
-                      ? `${hours}h ${remainingMinutes}m`
-                      : `${minutes}m`;
-                  })()
+                  ? formatStreamDuration(stream?.lastPublishedAt)
                   : "-"
               }
             />
@@ -182,8 +183,10 @@ export default function LiveScene({ stream }: { stream: Stream }) {
         <div className="col-span-1 flex flex-col gap-4">
           <SourceSetup stream={stream} />
           <StreamInfo
+            id={stream?.id}
             title={stream?.liveTitle}
             description={stream?.liveDescription}
+            thumbnail={stream?.thumbnail}
           />
         </div>
       </div>

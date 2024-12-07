@@ -4,24 +4,25 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { CopyButton, ResetButton } from './copy-button'
-import { Eye, EyeOff, RefreshCw } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
 import { resetStreamPassword } from '@/api/LiveApi'
-import { Button } from './ui/button'
 import { useToast } from '@/hooks/use-toast'
+import { useRouter } from 'next/navigation'
 
 const generateRtmpUrl = (stream: Stream) => {
   return `rtmp://${stream.host || 'localhost'}/${stream.app || ''}`;
 };
 
 const generateRtmpPassword = (stream: Stream) => {
-  return `/${stream.name}?secret=${stream.secret}&password=${stream.password}`;
+  return `/${stream.name}?password=${stream.password}`;
 };
 
 const generateSrtUrl = (stream: Stream) => {
-  return `srt://${stream.host || 'localhost:10800'}?streamid=#!::r=${stream.app}/${stream.name}?secret=${stream.secret}&password=${stream.password},m=publish`;
+  return `srt://${stream.host || 'localhost:10800'}?streamid=#!::r=${stream.app}/${stream.name}?password=${stream.password},m=publish`;
 };
 
 export default function SourceSetup({ stream }: { stream: Stream }) {
+  const router = useRouter();
   const [showStreamKey, setShowStreamKey] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const { toast } = useToast();
@@ -34,6 +35,7 @@ export default function SourceSetup({ stream }: { stream: Stream }) {
         title: "Success",
         description: "Stream password has been reset",
       });
+      router.refresh()
     } catch (error) {
       toast({
         title: "Error",

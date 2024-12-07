@@ -28,7 +28,7 @@ export default async function middleware(req: NextRequest) {
           console.log("refresh token found", refresh_token)
 
           try {
-            const res = await fetch("http://192.168.1.10:9973/api/v1/auth/refresh", {
+            const res = await fetch("http://192.168.1.2:9973/api/v1/auth/refresh", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",

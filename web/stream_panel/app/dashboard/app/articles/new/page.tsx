@@ -96,10 +96,11 @@ function NewArticlePage() {
               <div className="max-w-[400px]">
                 <ImagePicker
                   onImageChange={(url) => {
-                    form.setValue("image", url)
+                    form.setValue("image", url!)
                   }}
                   ratio={16 / 9}
                   placeholder="Drop your article cover image here"
+                  defaultImage={form.watch("image")}
                 />
               </div>
               <FormField

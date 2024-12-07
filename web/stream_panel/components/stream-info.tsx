@@ -13,23 +13,30 @@ import {
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation'
+import { useToast } from '@/hooks/use-toast'
+import { updateStream } from '@/api/LiveApi'
+import { ImagePicker } from './ui/image-picker'
 
 const formSchema = z.object({
-  title: z
+  liveTitle: z
     .string()
     .min(1, { message: "fullName_required" }),
-  description: z
-    .string()
-    .min(1, { message: "message_required" }),
+  liveDescription: z
+    .string().nullish(),
+  thumbnail: z
+    .string().nullish(),
 });
 
 type FormValues = z.infer<typeof formSchema>
 
-export default function StreamInfo({ title, description }: { title?: string, description?: string }) {
-
+export default function StreamInfo({ id, title, description, thumbnail }: { id: string, title?: string, description?: string, thumbnail?: string }) {
+  const router = useRouter();
+  const { toast } = useToast();
   const defaultValues: Partial<FormValues> = {
-    title: title || "",
-    description: description || "",
+    liveTitle: title || "",
+    liveDescription: description || "",
+    thumbnail: thumbnail || null,
   };
 
   const form = useForm<FormValues>({
@@ -39,9 +46,19 @@ export default function StreamInfo({ title, description }: { title?: string, des
 
   const onSubmit = async (data: FormValues) => {
     try {
-      // await submitContactForm(data);
+      await updateStream(id, data);
+      toast({
+        title: "Success",
+        description: "Stream info updated successfully",
+      });
+      router.refresh();
     } catch (error) {
       console.log("submitPartnerRequestForm", error);
+      toast({
+        title: "Error",
+        description: "Failed to update stream info",
+        variant: "destructive",
+      });
     }
   };
 
@@ -56,9 +73,14 @@ export default function StreamInfo({ title, description }: { title?: string, des
             </div>
           </CardHeader>
           <CardContent className="flex flex-col mt-2 gap-3">
+            <ImagePicker
+              defaultImage={defaultValues.thumbnail}
+              onImageChange={(url) => form.setValue("thumbnail", url)}
+              placeholder='Upload a thumbnail'
+            />
             <FormField
               control={form.control}
-              name="title"
+              name="liveTitle"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Title</FormLabel>
@@ -71,12 +93,12 @@ export default function StreamInfo({ title, description }: { title?: string, des
             />
             <FormField
               control={form.control}
-              name="description"
+              name="liveDescription"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your stream description" {...field} />
+                    <Input placeholder="Enter your stream description" {...field} value={field.value || ""} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

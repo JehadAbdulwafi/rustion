@@ -7,6 +7,12 @@ type StreamStatus = {
   thumbnail: string;
 }
 
+type App = {
+  userID: string
+  name: string
+  config: string
+}
+
 type Stream = {
   id: string;
   title: string;
@@ -32,6 +38,7 @@ type User = {
   id: string
   name: string
   email: string
+  app_id: string | null;
 }
 
 type FeaturedSection = {
@@ -67,6 +74,13 @@ type FeaturedSectionWithArticles = {
   articles: Article[]
 }
 
+type FAQ = {
+  id: string
+  question: string
+  answer: string
+  created_at: string
+  updated_at: string
+}
 
 type Tag = {
   id: string
@@ -79,3 +93,13 @@ type TagWithArticles = {
   category: Tag
   articles: Article[]
 }
+
+type Feedback = {
+  id: string
+  name: string
+  email: string
+  message: string
+  created_at: string
+  updated_at: string
+}
+

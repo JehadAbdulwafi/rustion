@@ -14,7 +14,7 @@ export default function ArticleCard({ article }: { article: Article }) {
           <div className="relative aspect-video bg-muted/50">
             <div className="w-full relative h-full items-center justify-center">
               <Image
-                src={"https://picsum.photos/350/200"}
+                src={article.image}
                 alt={article.image}
                 fill
                 objectFit="cover"

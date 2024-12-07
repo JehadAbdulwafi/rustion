@@ -9,8 +9,7 @@ import {
 } from "@/components/ui/card"
 import { withHydration } from "@/components/hoc/with-hydration"
 import { useEffect, useState } from "react"
-import { type AppSettings, getAppSettings, updateAppSettings } from "@/api/SettingsApi"
-import { toast } from "sonner"
+import { getAppSettings, updateAppSettings } from "@/api/SettingsApi"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -28,24 +27,47 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Loader2 } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 
 const formSchema = z.object({
-  app_icon_url: z.string().url("Must be a valid URL"),
-  splash_screen_url: z.string().url("Must be a valid URL"),
-  privacy_policy_url: z.string().url("Must be a valid URL"),
-  terms_url: z.string().url("Must be a valid URL"),
-  support_url: z.string().url("Must be a valid URL"),
-  app_store_url: z.string().url("Must be a valid URL"),
-  play_store_url: z.string().url("Must be a valid URL"),
-  app_version: z.string().min(1, "Version is required"),
-  force_update: z.boolean(),
-  maintenance_mode: z.boolean(),
-  maintenance_message: z.string().optional(),
+  app_icon_url: z.string().nullish().refine(
+    (val) => !val || z.string().url().safeParse(val).success,
+    "Must be a valid URL"
+  ),
+  splash_screen_url: z.string().nullish().refine(
+    (val) => !val || z.string().url().safeParse(val).success,
+    "Must be a valid URL"
+  ),
+  privacy_policy_url: z.string().nullish().refine(
+    (val) => !val || z.string().url().safeParse(val).success,
+    "Must be a valid URL"
+  ),
+  terms_url: z.string().nullish().refine(
+    (val) => !val || z.string().url().safeParse(val).success,
+    "Must be a valid URL"
+  ),
+  support_url: z.string().nullish().refine(
+    (val) => !val || z.string().url().safeParse(val).success,
+    "Must be a valid URL"
+  ),
+  app_store_url: z.string().nullish().refine(
+    (val) => !val || z.string().url().safeParse(val).success,
+    "Must be a valid URL"
+  ),
+  play_store_url: z.string().nullish().refine(
+    (val) => !val || z.string().url().safeParse(val).success,
+    "Must be a valid URL"
+  ),
+  app_version: z.string().min(1, "Version is required").nullish(),
+  force_update: z.boolean().default(false),
+  maintenance_mode: z.boolean().default(false),
+  maintenance_message: z.string().optional().nullish(),
 })
 
 function SettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -67,11 +89,17 @@ function SettingsPage() {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const settings = await getAppSettings()
-        form.reset(settings)
+        const app = await getAppSettings()
+        console.log("Settings:", app)
+        const appConfig = JSON.parse(app.config)
+
+        form.reset(appConfig)
       } catch (error) {
         console.error("Failed to load settings:", error)
-        toast.error("Failed to load settings")
+        toast({
+          variant: "destructive",
+          description: "Failed to load settings.",
+        })
       } finally {
         setLoading(false)
       }
@@ -83,10 +111,16 @@ function SettingsPage() {
     try {
       setSaving(true)
       await updateAppSettings(values)
-      toast.success("Settings saved successfully")
+      toast({
+        variant: "default",
+        description: "saved successfully",
+      })
     } catch (error) {
       console.error("Failed to save settings:", error)
-      toast.error("Failed to save settings")
+      toast({
+        variant: "destructive",
+        description: "Failed to save",
+      })
     } finally {
       setSaving(false)
     }

@@ -13,6 +13,10 @@ export default async function Page({
   const articles = await getArticles()
   const tags = await getTags()
 
+  if (articles === null) {
+    return <div>Something went wrong</div>
+  }
+
   const selectedTags = (searchParams.tags as string)?.split(',') || []
   const filteredArticles = selectedTags.length > 0
     ? articles.filter(article =>

@@ -21,11 +21,15 @@ import {
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { createTvShow } from "@/api/TvShowApi"
+import { Label } from "@/components/ui/label"
+import { ImagePicker } from "@/components/ui/image-picker"
+import { useToast } from "@/hooks/use-toast"
 
 const tvShowSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   genre: z.string().min(1, "Genre is required"),
+  image: z.string().min(1, "Image is required"),
 })
 
 type FormData = z.infer<typeof tvShowSchema>
@@ -33,6 +37,7 @@ type FormData = z.infer<typeof tvShowSchema>
 function NewTvShowPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const { toast } = useToast();
 
   const form = useForm<FormData>({
     resolver: zodResolver(tvShowSchema),
@@ -40,17 +45,26 @@ function NewTvShowPage() {
       title: "",
       description: "",
       genre: "",
+      image: undefined,
     }
   })
 
   const onSubmit = async (data: FormData) => {
     try {
       setIsLoading(true)
-      const imageUrl = "https://picsum.photos/350/200"
-      await createTvShow(data.title, data.description, imageUrl, data.genre)
+      await createTvShow(data.title, data.description, data.image, data.genre)
+      toast({
+        variant: "default",
+        title: "Success",
+        description: "Tv show created successfully",
+      })
       router.push("/dashboard/app/tv-shows")
     } catch (error) {
       console.error(error)
+      toast({
+        variant: "destructive",
+        description: "Something went wrong.",
+      })
     } finally {
       setIsLoading(false)
     }
@@ -78,54 +92,64 @@ function NewTvShowPage() {
             <CardHeader>
               <CardTitle>TV Show Details</CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col gap-6">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter TV show title" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Enter TV show description"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="genre"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Genre</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter TV show genre"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <CardContent className="grid grid-cols-1 md:grid-cols-[1fr_300px] gap-6">
+              <div className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Title</FormLabel>
+                      <FormControl>
+                        <Input className="w-full" placeholder="Enter title" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Enter description"
+                          className="resize-none w-full h-24"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="genre"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Genre</FormLabel>
+                      <FormControl>
+                        <Input className="w-full" placeholder="Enter genre" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex flex-col">
+                <Label className="mb-4">Image</Label>
+                <div className="w-full">
+                  <ImagePicker
+                    onImageChange={(url) => {
+                      form.setValue("image", url!)
+                    }}
+                    ratio={9 / 16}
+                    placeholder="Drop your article cover image here"
+                  />
+                </div>
+              </div>
             </CardContent>
             <CardFooter className="flex justify-end gap-2">
               <Link href="/dashboard/app/tv-shows">

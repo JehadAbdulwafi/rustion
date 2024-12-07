@@ -33,7 +33,7 @@ export async function updateSession(name: string, NewSession: string, days: numb
   const cookieStore = await cookies()
   cookieStore.set(name, NewSession, {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
     expires: expires,
     sameSite: 'lax',
     path: '/',

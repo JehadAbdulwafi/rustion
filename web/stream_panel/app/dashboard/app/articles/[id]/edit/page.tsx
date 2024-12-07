@@ -25,6 +25,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { useParams, useRouter } from "next/navigation"
+import { Label } from "@/components/ui/label"
+import { ImagePicker } from "@/components/ui/image-picker"
 
 type FormData = z.infer<typeof articleSchema>
 
@@ -40,6 +42,7 @@ function EditArticlePage() {
       title: "",
       description: "",
       content: "",
+      image: "",
       tags: []
     }
   })
@@ -53,13 +56,12 @@ function EditArticlePage() {
         ])
 
         setTags(fetchedTags)
-        console.log(article)
-
         // Pre-fill form with article data
         form.reset({
           title: article.title,
           description: article.description,
           content: article.content,
+          image: article.image,
           tags: article.tags?.split(',') || []
         })
       } catch (error) {
@@ -75,9 +77,8 @@ function EditArticlePage() {
   const onSubmit = async (data: FormData) => {
     try {
       setIsLoading(true)
-      const imageUrl = "https://picsum.photos/350/200"
       const tagsString = data.tags.join(',')
-      await updateArticle(params.id as string, data.title, data.description, imageUrl, data.content, tagsString)
+      await updateArticle(params.id as string, data.title, data.description, data.image, data.content, tagsString)
       router.push("/dashboard/app/articles")
     } catch (error) {
       console.error(error)
@@ -109,6 +110,17 @@ function EditArticlePage() {
               <CardTitle>Article Details</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
+              <Label>Image</Label>
+              <div className="max-w-[400px]">
+                <ImagePicker
+                  onImageChange={(url) => {
+                    form.setValue("image", url!)
+                  }}
+                  ratio={16 / 9}
+                  placeholder="Drop your article cover image here"
+                  defaultImage={form.watch("image")}
+                />
+              </div>
               <FormField
                 control={form.control}
                 name="title"

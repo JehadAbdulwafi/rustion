@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useCallback, useState } from "react";
+import { ChangeEvent, useCallback, useState, useEffect } from "react";
 import { Upload, X } from "lucide-react";
 import { API } from "@/api/axios";
 import Image from "next/image";
@@ -25,6 +25,12 @@ export const ImagePicker = ({
   const [imageUrl, setImageUrl] = useState<string | null>(defaultImage ?? null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (defaultImage !== undefined) {
+      setImageUrl(defaultImage);
+    }
+  }, [defaultImage]);
 
   const handleImageUpload = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
