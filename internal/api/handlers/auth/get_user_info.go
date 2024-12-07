@@ -9,6 +9,7 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
 
@@ -22,10 +23,18 @@ func getUserInfoHandler(s *api.Server) echo.HandlerFunc {
 		user := auth.UserFromContext(ctx)
 
 		email := strfmt.Email(user.Email)
+		userApp, err := s.Queries.GetAppByUserID(ctx, user.ID)
+		var appID *string
+		if err == nil && userApp.ID != uuid.Nil {
+			appIDStr := userApp.ID.String()
+			appID = &appIDStr
+		}
+
 		response := &types.GetUserInfoResponse{
 			Email: &email,
 			ID:    swag.String(user.ID.String()),
-			Name:  swag.String(user.Name),
+			Name:  &user.Name,
+			AppID: *swag.String(util.StringValue(appID)), // safely handle nil appID
 		}
 
 		return util.ValidateAndReturn(c, http.StatusOK, response)
