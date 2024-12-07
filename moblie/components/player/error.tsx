@@ -6,14 +6,14 @@ type Props = {
   isLive: boolean;
 };
 const PlayerError = ({ error, isLive }: Props) => {
-  if (!isLive) {
-    return (
-      <View style={styles.container}>
-        <CloudOff size={24} color="#eee" />
-        <Text style={styles.text}>Stream not available now!</Text>
-      </View>
-    );
-  }
+  // if (!isLive) {
+  //   return (
+  //     <View style={styles.container}>
+  //       <CloudOff size={24} color="#eee" />
+  //       <Text style={styles.text}>Stream not available now!</Text>
+  //     </View>
+  //   );
+  // }
 
   if (error) {
     return (

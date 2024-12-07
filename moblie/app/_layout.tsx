@@ -3,7 +3,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import { Stack } from "expo-router";
-import { PlayerProvider, Provider } from "@/providers";
+import { Provider } from "@/providers";
 import TabBar from "@/components/ui/TabBar";
 
 SplashScreen.preventAutoHideAsync();
@@ -27,16 +27,20 @@ export default function RootLayout() {
 
   return (
     <Provider>
-      <PlayerProvider>
-        <Stack screenOptions={{ headerShown: false, animation: "slide_from_right" }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="+not-found" />
-          <Stack.Screen name="tabs" />
-          <Stack.Screen name="articles" />
-        </Stack>
+      <Stack screenOptions={{
+        headerShown: false,
+        animation: "slide_from_right",
+        statusBarStyle: "light",
+        statusBarBackgroundColor: "#000"
+      }}
+      >
+        <Stack.Screen name="index" />
+        <Stack.Screen name="+not-found" />
+        <Stack.Screen name="tabs" />
+        <Stack.Screen name="articles" />
+      </Stack>
 
-        <TabBar />
-      </PlayerProvider>
+      <TabBar />
     </Provider>
   );
 }

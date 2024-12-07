@@ -32,7 +32,26 @@
       "expo-router",
       "expo-localization",
       "expo-font",
-      "expo-screen-orientation"
+      "expo-screen-orientation",
+      [
+        "expo-video",
+        {
+          "supportsPictureInPicture": true
+        }
+      ],
+      [
+        "react-native-video",
+        {
+          "enableNotificationControls": true,
+          "enableBackgroundAudio": true,
+          "androidExtensions": {
+            "useExoplayerRtsp": true,
+            "useExoplayerSmoothStreaming": true,
+            "useExoplayerHls": true,
+            "useExoplayerDash": true
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

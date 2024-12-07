@@ -3,15 +3,16 @@ import { VideoPlayer } from "./player";
 import Animated from "react-native-reanimated";
 import * as Orientation from "expo-screen-orientation";
 import { Accelerometer } from "expo-sensors";
-import { usePlayerContext } from "@/providers/PlayerProvider";
+import useStream from "@/hooks/streamStatus";
+import { useState } from "react";
 
 const videoSource =
   'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
 
-export default function Player({ isLive }: { isLive: boolean }) {
-  const { isFullScreen, setIsFullScreen } = usePlayerContext();
+export default function Player() {
+  const { streamStatus } = useStream();
+  const [isFullScreen, setIsFullScreen] = useState(false);
   function toggleFullscreen() {
-
     if (!isFullScreen) {
       setIsFullScreen(true);
       Orientation.lockAsync(Orientation.OrientationLock.LANDSCAPE_RIGHT);
@@ -47,10 +48,21 @@ export default function Player({ isLive }: { isLive: boolean }) {
   return (
     <Animated.View style={[styles.videoContainer]}>
       <VideoPlayer
-        repeat
-        title="title"
-        isLive={isLive}
-        source={{ uri: "http://192.168.1.5:8080/live/livestream.flv" }}
+        isLive={streamStatus.status === "published"}
+        source={{
+          uri: videoSource,
+          metadata: {
+            imageUri: "https://picsum.photos/300/200/",
+            title: streamStatus.title,
+            subtitle: streamStatus.description,
+            artist: "artist",
+            description: "description",
+          }
+        }}
+        poster={{
+          source: { uri: "https://picsum.photos/300/200/" },
+          resizeMode: "cover",
+        }}
         toggleFullscreen={toggleFullscreen}
         isFullScreen={isFullScreen}
       />

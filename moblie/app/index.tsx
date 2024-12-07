@@ -39,7 +39,6 @@ export default function HomeScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <StatusBar backgroundColor="transparent" barStyle="light-content" />
       <FlatList
         data={[""]}
         renderItem={() =>

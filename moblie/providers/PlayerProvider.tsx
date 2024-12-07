@@ -1,5 +1,3 @@
-import { VideoPlayerContainer } from "@/components/models/VideoPlayerContainer";
-import TabBar from "@/components/ui/TabBar";
 import { navigationHeight, videoMinHeight } from "@/constants";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";

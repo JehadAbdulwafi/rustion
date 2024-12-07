@@ -9,7 +9,7 @@ type StreamStatus = {
   stream_id: string
   title: string
   description: string
-  status: string
+  status: "published" | "unpublished";
   viewers: number
   thumbnail: string
 }

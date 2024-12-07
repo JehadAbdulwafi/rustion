@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import Video, { VideoRef } from "react-native-video";
+import Video, { ReactVideoPoster, ReactVideoSource, VideoRef } from "react-native-video";
 import {
   TouchableWithoutFeedback,
   StyleSheet,
@@ -20,28 +20,12 @@ export interface ConfigTypes {
 }
 
 type PlayerProps = {
-  toggleResizeModeOnFullscreen?: boolean;
-  controlAnimationTiming?: number;
-  doubleTapTime?: number;
-  playInBackground?: boolean;
-  playWhenInactive?: boolean;
-  resizeMode?: "contain" | "cover" | "none" | "stretch";
   isFullScreen?: boolean;
-  showOnStart?: boolean;
   isLive: boolean;
   paused?: boolean;
-  onBack?: () => void;
-  onEnd?: () => void;
-  onEnterFullscreen?: () => void;
-  onExitFullscreen?: () => void;
-  onShowControls?: () => void;
-  onHideControls?: () => void;
-  onPause?: () => void;
-  onPlay?: () => void;
   toggleFullscreen?: () => void;
-  source: any;
-  title: string;
-  repeat: boolean;
+  source: ReactVideoSource;
+  poster?: string | ReactVideoPoster
 };
 
 export type PlayerState = {
@@ -77,13 +61,13 @@ export const VideoPlayer = (props: PlayerProps) => {
   const playerRef = useRef<VideoRef | null>(null); // Ensure the ref type matches VideoRef
   const [playerState, setPlayerState] = useState<PlayerState>({
     // Video
-    resizeMode: props.resizeMode || "contain",
-    paused: props.paused || true,
-    isLive: props.source.isLive || false,
+    resizeMode: "contain",
+    paused: props.paused || false,
+    isLive: props.isLive || true,
 
     // Controls
     isFullScreen: props.isFullScreen || false,
-    showControls: props.showOnStart || true,
+    showControls: true,
     loading: false,
     error: false,
   });
@@ -98,18 +82,17 @@ export const VideoPlayer = (props: PlayerProps) => {
 
   const events = {
     onError: onError,
-    onBack: props.onBack,
-    onEnd: props.onEnd,
+    onEnd: onEnd,
     onScreenTouch: onScreenTouch,
-    onEnterFullscreen: props.onEnterFullscreen,
-    onExitFullscreen: props.onExitFullscreen,
-    onShowControls: props.onShowControls,
-    onHideControls: props.onHideControls,
+    onEnterFullscreen: onEnterFullscreen,
+    onExitFullscreen: onExitFullscreen,
+    onShowControls: onShowControls,
+    onHideControls: onHideControls,
     onLoadStart: onLoadStart,
     onBuffer: onBuffer,
     onLoad: onLoad,
-    onPause: props.onPause,
-    onPlay: props.onPlay,
+    onPause: onPause,
+    onPlay: onPlay,
   };
 
   const initialValue = 1;
@@ -175,6 +158,32 @@ export const VideoPlayer = (props: PlayerProps) => {
     setPlayerState((prev) => ({ ...prev, loading: true }));
   }
 
+  function onEnd() {
+
+  }
+
+  function onEnterFullscreen() {
+
+  }
+
+  function onExitFullscreen() {
+
+  }
+
+  function onShowControls() {
+
+  }
+
+  function onHideControls() {
+
+  }
+  function onPause() {
+
+  }
+  function onPlay() {
+
+  }
+
   function onLoad() {
     setPlayerState((prev) => ({ ...prev, loading: false }));
     if (playerState.showControls) {
@@ -183,7 +192,7 @@ export const VideoPlayer = (props: PlayerProps) => {
   }
 
   function onBuffer(e: { isBuffering: boolean }) {
-    if (!playerState.isLive) return setPlayerState((prev) => ({ ...prev, loading: false }));
+    // if (!playerState.isLive) return setPlayerState((prev) => ({ ...prev, loading: false }));
     if (e.isBuffering) {
       setPlayerState((prev) => ({ ...prev, loading: true }));
     } else {
@@ -390,9 +399,12 @@ export const VideoPlayer = (props: PlayerProps) => {
           ref={playerRef}
           resizeMode={"contain"}
           volume={1}
-          paused={playerState.paused || true}
+          paused={playerState.paused || false}
           muted={false}
           rate={1}
+          playInBackground={true}
+          showNotificationControls={true}
+          poster={props.poster}
           onBuffer={events.onBuffer}
           onLoadStart={events.onLoadStart}
           onError={events.onError}
@@ -408,7 +420,6 @@ export const VideoPlayer = (props: PlayerProps) => {
           playerState={playerState}
           animations={animations.current}
         />
-
       </View>
     </TouchableWithoutFeedback>
   );

@@ -6,17 +6,19 @@ import { BackHandler, StatusBar } from "react-native";
 import * as Orientation from "expo-screen-orientation";
 import { streamConfig } from "@/constants/config";
 import useStream from "@/hooks/streamStatus";
+import { osBuildFingerprint } from "expo-device";
 
 export default function PlayerScreen() {
   const router = useRouter();
-  const { streamStatus, setStreamStatus, setIsConnected } = useStream();
+  const { setStreamStatus, setIsConnected } = useStream();
   const wsRef = useRef<WebSocket | null>(null);
 
   const connect = () => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) return;
 
+    const fingerprint = osBuildFingerprint!.replaceAll("/", "-");
     const ws = new WebSocket(
-      `ws://192.168.1.5:9973/api/v1/streams/${streamConfig.stream.id}/ws`
+      `ws://192.168.1.2:9973/api/v1/streams/${streamConfig.stream.id}/ws?viewer_id=${fingerprint}`
     );
     wsRef.current = ws;
 
@@ -76,8 +78,8 @@ export default function PlayerScreen() {
   }, [router]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <Player isLive={streamStatus.status === "published"} />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+      <Player />
     </SafeAreaView>
   );
 }

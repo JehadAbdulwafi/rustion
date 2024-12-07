@@ -1,8 +1,8 @@
 export const streamConfig = {
   stream: {
-    id: '8f866d1a-a9ae-4bf1-8198-0fbd2646a7c4',
+    id: '6c46cdec-4fd3-4d25-8218-3b75df65f8ab',
     name: 'cFwLFDa329',
-    url: 'http://localhost:2022/live/cFwLFDa329',
+    url: 'http://127.0.0.1:9973/',
   },
   channel: {
     name: 'TV Channel',

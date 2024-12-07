@@ -14,7 +14,7 @@ const useStream = create<StreamState>(
       title: "",
       description: "",
       viewers_count: 0,
-      status: "",
+      status: "unpublished",
       viewers: 0,
       thumbnail: "",
     },
@@ -29,4 +29,3 @@ const useStream = create<StreamState>(
 );
 
 export default useStream;
-
