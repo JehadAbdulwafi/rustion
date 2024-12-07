@@ -3,6 +3,7 @@ package util
 import (
 	"crypto/rand"
 	"errors"
+	"regexp"
 	"strings"
 )
 
@@ -91,4 +92,35 @@ func GenerateRandomString(n int, ranges []CharRange, extra string) (string, erro
 // Lowercases a string and trims whitespace from the beginning and end of the string
 func ToUsernameFormat(s string) string {
 	return strings.TrimSpace(strings.ToLower(s))
+}
+
+// ToSlug converts a string to a URL-friendly slug
+func ToSlug(s string) string {
+	// Convert to lowercase
+	s = strings.ToLower(s)
+
+	// Replace spaces with hyphens
+	s = strings.ReplaceAll(s, " ", "-")
+
+	// Remove all non-alphanumeric characters except hyphens
+	reg := regexp.MustCompile("[^a-z0-9-]+")
+	s = reg.ReplaceAllString(s, "")
+
+	// Remove multiple consecutive hyphens
+	reg = regexp.MustCompile("-+")
+	s = reg.ReplaceAllString(s, "-")
+
+	// Remove leading and trailing hyphens
+	s = strings.Trim(s, "-")
+
+	return s
+}
+
+// StringValue safely gets the value of a string pointer
+// If the pointer is nil, returns an empty string
+func StringValue(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
 }
