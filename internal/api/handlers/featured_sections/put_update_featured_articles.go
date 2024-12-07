@@ -105,7 +105,7 @@ func updateFeaturedArticlesHandler(s *api.Server) echo.HandlerFunc {
 			}
 		}
 
-		res := &types.UpdateFeaturedArticlesResponse{
+		res := &types.MessageResponse{
 			Message: "featured articles updated successfully",
 		}
 

@@ -19,6 +19,10 @@ import (
 // swagger:model getUserInfoResponse
 type GetUserInfoResponse struct {
 
+	// ID of app
+	// Example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+	AppID string `json:"app_id,omitempty"`
+
 	// Email address of user, if available
 	// Example: user@example.com
 	// Required: true
@@ -31,8 +35,8 @@ type GetUserInfoResponse struct {
 	// Required: true
 	ID *string `json:"id"`
 
-	// Name of user
-	// Example: John Doe
+	// name of user
+	// Example: john doe
 	// Required: true
 	Name *string `json:"name"`
 }

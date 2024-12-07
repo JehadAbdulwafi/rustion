@@ -65,7 +65,7 @@ func putUpdateTVShowScheduleHandler(s *api.Server) echo.HandlerFunc {
 			}
 		}
 
-		return util.ValidateAndReturn(c, http.StatusOK, &types.UpdateTVShowScheduleResponse{
+		return util.ValidateAndReturn(c, http.StatusOK, &types.MessageResponse{
 			Message: "tv show schedule updated successfully",
 		})
 	}

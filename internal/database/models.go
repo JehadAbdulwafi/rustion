@@ -259,8 +259,8 @@ type PasswordResetToken struct {
 	Token      uuid.UUID
 	ValidUntil time.Time
 	UserID     uuid.UUID
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	CreatedAt  sql.NullTime
+	UpdatedAt  sql.NullTime
 }
 
 type PushToken struct {
@@ -278,6 +278,8 @@ type Stream struct {
 	UserID          uuid.UUID
 	App             string
 	Name            string
+	Endpoint        string
+	Host            string
 	Url             string
 	Password        string
 	Thumbnail       sql.NullString

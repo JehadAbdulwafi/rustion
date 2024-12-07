@@ -9,8 +9,6 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/database"
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
-	"github.com/go-openapi/strfmt"
-	"github.com/go-openapi/swag"
 	"github.com/labstack/echo/v4"
 )
 
@@ -22,11 +20,21 @@ func postStreamHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
 		user := auth.UserFromContext(ctx)
-
 		var body types.CreateStreamPayload
 		err := util.BindAndValidateBody(c, &body)
 		if err != nil {
 			return err
+		}
+
+		// TODO: check if user is already has a stream
+		// for now we will allow user to have only one stream
+		streams, err := s.Queries.GetStreamsByUserId(ctx, user.ID)
+		if err != nil {
+			return err
+		}
+
+		if len(streams) > 0 {
+			return echo.ErrForbidden
 		}
 
 		randomPassword, err := util.GenerateRandomString(
@@ -39,36 +47,28 @@ func postStreamHandler(s *api.Server) echo.HandlerFunc {
 			return err
 		}
 
-		url := fmt.Sprintf("http://localhost:2022/live/%s", body.Name)
+		// TODO: move to configuration
+		Host := c.Request().Host
+		Endpoint := util.ToSlug(*body.Name)
+		scheme := c.Request().URL.Scheme
+		App := "live"
 
-		stream, err := s.Queries.CreateStream(ctx, database.CreateStreamParams{
+		url := fmt.Sprintf("%s://%s/%s/%s", scheme, Host, App, Endpoint)
+
+		err = s.Queries.CreateStream(ctx, database.CreateStreamParams{
 			UserID:   user.ID,
-			App:      "live",
-			Name:     *body.Name,
+			App:      App,
+			Name:     Endpoint,
 			Url:      url,
 			Password: randomPassword,
+			Host:     Host,
+			Endpoint: Endpoint,
 		})
 
 		if err != nil {
 			return err
 		}
 
-		response := types.Stream{
-			ID:              (*strfmt.UUID4)(swag.String(stream.ID.String())),
-			UserID:          (*strfmt.UUID4)(swag.String(stream.UserID.String())),
-			App:             &stream.App,
-			Name:            &stream.Name,
-			URL:             &stream.Url,
-			Thumbnail:       &stream.Thumbnail.String,
-			Status:          swag.String(string(stream.Status)),
-			Viewers:         swag.String(string(stream.Viewers.Int32)),
-			LastPublishedAt: swag.String(stream.LastPublishedAt.Time.String()),
-			LiveTitle:       &stream.LiveTitle.String,
-			LiveDescription: &stream.LiveDescription.String,
-			CreatedAt:       stream.CreatedAt.Time.String(),
-			UpdatedAt:       stream.UpdatedAt.Time.String(),
-		}
-
-		return util.ValidateAndReturn(c, http.StatusOK, &response)
+		return c.JSON(http.StatusOK, "stream created successfully")
 	}
 }

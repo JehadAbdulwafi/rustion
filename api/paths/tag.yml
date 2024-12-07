@@ -19,7 +19,7 @@ paths:
         "200":
           description: CreateTagResponse
           schema:
-            $ref: "../definitions/tag.yml#/definitions/CreateTagResponse"
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"
     get:
       description: Retrieves all tags with their associated articles
       tags:
@@ -71,7 +71,7 @@ paths:
         "200":
           description: UpdateTagResponse
           schema:
-            $ref: "../definitions/tag.yml#/definitions/UpdateTagResponse"
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"
     delete:
       description: Deletes a tag by ID
       tags:
@@ -89,13 +89,13 @@ paths:
         "200":
           description: DeleteTagResponse
           schema:
-            $ref: "../definitions/tag.yml#/definitions/DeleteTagResponse"
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"
   /api/v1/tags/{id}/articles:
     get:
       description: Retrieves a tag with its associated articles
       tags:
         - tags
-      summary: Gets a tag with articles 
+      summary: Gets a tag with articles
       operationId: GetTagWithArticles
       parameters:
         - name: id
@@ -114,7 +114,7 @@ paths:
       description: Retrieves a tag with its associated articles
       tags:
         - tags
-      summary: Gets a tag with articles 
+      summary: Gets a tag with articles
       operationId: GetTagWithArticles
       responses:
         "200":

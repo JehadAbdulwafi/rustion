@@ -7,6 +7,7 @@ package database
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -51,6 +52,48 @@ SELECT token, valid_until, user_id, created_at, updated_at FROM password_reset_t
 
 func (q *Queries) GetResetPasswordToken(ctx context.Context, token uuid.UUID) (PasswordResetToken, error) {
 	row := q.db.QueryRowContext(ctx, getResetPasswordToken, token)
+	var i PasswordResetToken
+	err := row.Scan(
+		&i.Token,
+		&i.ValidUntil,
+		&i.UserID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getResetPasswordTokenByUser = `-- name: GetResetPasswordTokenByUser :one
+SELECT token, valid_until, user_id, created_at, updated_at FROM password_reset_tokens WHERE user_id = $1
+`
+
+func (q *Queries) GetResetPasswordTokenByUser(ctx context.Context, userID uuid.UUID) (PasswordResetToken, error) {
+	row := q.db.QueryRowContext(ctx, getResetPasswordTokenByUser, userID)
+	var i PasswordResetToken
+	err := row.Scan(
+		&i.Token,
+		&i.ValidUntil,
+		&i.UserID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getUserResetPasswordToken = `-- name: GetUserResetPasswordToken :one
+SELECT token, valid_until, user_id, created_at, updated_at FROM password_reset_tokens
+WHERE created_at > $2
+AND valid_until > NOW()
+AND user_id = $1
+`
+
+type GetUserResetPasswordTokenParams struct {
+	UserID    uuid.UUID
+	CreatedAt sql.NullTime
+}
+
+func (q *Queries) GetUserResetPasswordToken(ctx context.Context, arg GetUserResetPasswordTokenParams) (PasswordResetToken, error) {
+	row := q.db.QueryRowContext(ctx, getUserResetPasswordToken, arg.UserID, arg.CreatedAt)
 	var i PasswordResetToken
 	err := row.Scan(
 		&i.Token,

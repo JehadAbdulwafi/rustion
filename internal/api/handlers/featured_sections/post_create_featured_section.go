@@ -38,7 +38,7 @@ func createFeaturedSectionHandler(s *api.Server) echo.HandlerFunc {
 			return err
 		}
 
-		res := &types.CreateFeaturedSectionResponse{
+		res := &types.MessageResponse{
 			Message: "featured section created successfully",
 		}
 

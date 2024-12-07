@@ -19,7 +19,7 @@ paths:
         "200":
           description: CreateTVShowResponse
           schema:
-            $ref: "../definitions/tv_shows.yml#/definitions/CreateTVShowResponse"
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"
     get:
       description: Retrieves all TV shows
       tags:
@@ -71,7 +71,7 @@ paths:
         "200":
           description: UpdateTVShowResponse
           schema:
-            $ref: "../definitions/tv_shows.yml#/definitions/UpdateTVShowResponse"
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"
     delete:
       description: Deletes a TV show by ID
       tags:
@@ -89,7 +89,7 @@ paths:
         "200":
           description: DeleteTVShowResponse
           schema:
-            $ref: "../definitions/tv_shows.yml#/definitions/DeleteTVShowResponse"
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"
 
   /api/v1/tv-shows/schedules:
     get:
@@ -144,4 +144,4 @@ paths:
         "200":
           description: UpdateTVShowScheduleResponse
           schema:
-            $ref: "../definitions/tv_shows.yml#/definitions/UpdateTVShowScheduleResponse"
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"

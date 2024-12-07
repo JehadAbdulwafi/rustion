@@ -13,11 +13,10 @@ SELECT EXISTS (SELECT 1 FROM users WHERE email = $1);
 -- name: GetUserByEmail :one
 SELECT * FROM users WHERE email = $1;
 
--- name: UpdateUser :one
+-- name: UpdateUserInfo :exec
 UPDATE users
-SET name = $2, email = $3, password = $4
-WHERE id = $1
-RETURNING *;
+SET name = $2, email = $3
+WHERE id = $1;
 
 -- name: UpdateUserPassword :one
 UPDATE users

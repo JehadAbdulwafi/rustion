@@ -38,7 +38,7 @@ func createTagHandler(s *api.Server) echo.HandlerFunc {
 			return err
 		}
 
-		res := &types.CreateTagResponse{
+		res := &types.MessageResponse{
 			Message: "tag created successfully",
 		}
 

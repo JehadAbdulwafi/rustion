@@ -184,3 +184,19 @@ func (q *Queries) UpdateApp(ctx context.Context, arg UpdateAppParams) (App, erro
 	)
 	return i, err
 }
+
+const updateAppConfig = `-- name: UpdateAppConfig :exec
+UPDATE apps
+SET config = $2, updated_at = CURRENT_TIMESTAMP
+WHERE id = $1
+`
+
+type UpdateAppConfigParams struct {
+	ID     uuid.UUID
+	Config pqtype.NullRawMessage
+}
+
+func (q *Queries) UpdateAppConfig(ctx context.Context, arg UpdateAppConfigParams) error {
+	_, err := q.db.ExecContext(ctx, updateAppConfig, arg.ID, arg.Config)
+	return err
+}

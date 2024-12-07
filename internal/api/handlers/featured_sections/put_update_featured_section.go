@@ -64,7 +64,7 @@ func updateFeaturedSectionHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, "failed to update featured section")
 		}
 
-		res := &types.UpdateFeaturedSectionResponse{
+		res := &types.MessageResponse{
 			Message: "featured section updated successfully",
 		}
 

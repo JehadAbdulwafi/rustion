@@ -44,7 +44,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "../definitions/feedback.yml#/definitions/Feedback"
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"
 
   /api/v1/feedbacks/{id}:
     get:
@@ -81,7 +81,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "../definitions/feedback.yml#/definitions/Feedback"
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"
 
     delete:
       security:

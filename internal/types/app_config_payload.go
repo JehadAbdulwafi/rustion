@@ -14,29 +14,21 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// AppPayload app payload
+// AppConfigPayload app config payload
 //
-// swagger:model appPayload
-type AppPayload struct {
+// swagger:model appConfigPayload
+type AppConfigPayload struct {
 
 	// config
 	// Required: true
 	Config *string `json:"config"`
-
-	// name
-	// Required: true
-	Name *string `json:"name"`
 }
 
-// Validate validates this app payload
-func (m *AppPayload) Validate(formats strfmt.Registry) error {
+// Validate validates this app config payload
+func (m *AppConfigPayload) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateConfig(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateName(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -46,7 +38,7 @@ func (m *AppPayload) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *AppPayload) validateConfig(formats strfmt.Registry) error {
+func (m *AppConfigPayload) validateConfig(formats strfmt.Registry) error {
 
 	if err := validate.Required("config", "body", m.Config); err != nil {
 		return err
@@ -55,22 +47,13 @@ func (m *AppPayload) validateConfig(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *AppPayload) validateName(formats strfmt.Registry) error {
-
-	if err := validate.Required("name", "body", m.Name); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// ContextValidate validates this app payload based on context it is used
-func (m *AppPayload) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this app config payload based on context it is used
+func (m *AppConfigPayload) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *AppPayload) MarshalBinary() ([]byte, error) {
+func (m *AppConfigPayload) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -78,8 +61,8 @@ func (m *AppPayload) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *AppPayload) UnmarshalBinary(b []byte) error {
-	var res AppPayload
+func (m *AppConfigPayload) UnmarshalBinary(b []byte) error {
+	var res AppConfigPayload
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

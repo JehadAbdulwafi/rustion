@@ -12,28 +12,28 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// UpdateTagResponse update tag response
+// MessageResponse message response
 //
-// swagger:model updateTagResponse
-type UpdateTagResponse struct {
+// swagger:model messageResponse
+type MessageResponse struct {
 
 	// message
-	// Example: Tag updated successfully.
+	// Example: created successfully.
 	Message string `json:"message,omitempty"`
 }
 
-// Validate validates this update tag response
-func (m *UpdateTagResponse) Validate(formats strfmt.Registry) error {
+// Validate validates this message response
+func (m *MessageResponse) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this update tag response based on context it is used
-func (m *UpdateTagResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this message response based on context it is used
+func (m *MessageResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *UpdateTagResponse) MarshalBinary() ([]byte, error) {
+func (m *MessageResponse) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -41,8 +41,8 @@ func (m *UpdateTagResponse) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *UpdateTagResponse) UnmarshalBinary(b []byte) error {
-	var res UpdateTagResponse
+func (m *MessageResponse) UnmarshalBinary(b []byte) error {
+	var res MessageResponse
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -32,9 +32,8 @@ type FeedbackPayload struct {
 	Type *string `json:"type"`
 
 	// user ID
-	// Required: true
 	// Format: uuid4
-	UserID *strfmt.UUID4 `json:"userID"`
+	UserID strfmt.UUID4 `json:"userID,omitempty"`
 }
 
 // Validate validates this feedback payload
@@ -91,9 +90,8 @@ func (m *FeedbackPayload) validateType(formats strfmt.Registry) error {
 }
 
 func (m *FeedbackPayload) validateUserID(formats strfmt.Registry) error {
-
-	if err := validate.Required("userID", "body", m.UserID); err != nil {
-		return err
+	if swag.IsZero(m.UserID) { // not required
+		return nil
 	}
 
 	if err := validate.FormatOf("userID", "body", "uuid4", m.UserID.String(), formats); err != nil {

@@ -19,7 +19,7 @@ paths:
         "200":
           description: CreateFeaturedSectionResponse
           schema:
-            $ref: "../definitions/featured_section.yml#/definitions/CreateFeaturedSectionResponse"
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"
     get:
       description: Retrieves all featured sections with their associated articles
       tags:
@@ -71,7 +71,7 @@ paths:
         "200":
           description: UpdateFeaturedSectionResponse
           schema:
-            $ref: "../definitions/featured_section.yml#/definitions/UpdateFeaturedSectionResponse"
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"
     delete:
       description: Deletes a featured section by ID
       tags:
@@ -89,7 +89,7 @@ paths:
         "200":
           description: DeleteFeaturedSectionResponse
           schema:
-            $ref: "../definitions/featured_section.yml#/definitions/DeleteFeaturedSectionResponse"
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"
   /api/v1/featured-sections/{id}/articles:
     get:
       description: Retrieves a featured section with its associated articles
@@ -130,7 +130,7 @@ paths:
         "200":
           description: UpdateFeaturedSectionResponse
           schema:
-            $ref: "../definitions/featured_section.yml#/definitions/UpdateFeaturedArticlesResponse"
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"
   /api/v1/featured-sections/articles:
     get:
       description: Retrieves a featured sections with its associated articles

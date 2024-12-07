@@ -65,7 +65,7 @@ func putUpdateTvShowHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, "failed to update tv show")
 		}
 
-		return util.ValidateAndReturn(c, http.StatusOK, &types.UpdateTVShowResponse{
+		return util.ValidateAndReturn(c, http.StatusOK, &types.MessageResponse{
 			Message: "TV Show updated successfully.",
 		})
 	}

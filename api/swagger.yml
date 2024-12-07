@@ -93,12 +93,12 @@ paths:
                 - in: body
                   name: Payload
                   schema:
-                    $ref: '#/definitions/appPayload'
+                    $ref: '#/definitions/appConfigPayload'
             responses:
                 "200":
                     description: Success
                     schema:
-                        $ref: '#/definitions/app'
+                        $ref: '#/definitions/messageResponse'
             security:
                 - Bearer: []
             summary: Update the given App
@@ -128,7 +128,7 @@ paths:
                 "200":
                     description: CreateArticleResponse
                     schema:
-                        $ref: '#/definitions/createArticleResponse'
+                        $ref: '#/definitions/messageResponse'
             summary: Creates a article
             tags:
                 - articles
@@ -147,7 +147,7 @@ paths:
                 "200":
                     description: DeleteArticleResponse
                     schema:
-                        $ref: '#/definitions/deleteArticleResponse'
+                        $ref: '#/definitions/messageResponse'
             summary: Deletes a article
             tags:
                 - articles
@@ -187,10 +187,101 @@ paths:
                 "200":
                     description: UpdateArticleResponse
                     schema:
-                        $ref: '#/definitions/updateArticleResponse'
+                        $ref: '#/definitions/messageResponse'
             summary: Updates a article
             tags:
                 - articles
+    /api/v1/auth/change-password:
+        post:
+            description: |-
+                After successful password change, all current access and refresh tokens are
+                invalidated and a new set of auth tokens is returned
+            operationId: PostChangePasswordRoute
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/postChangePasswordPayload'
+            responses:
+                "200":
+                    description: PostLoginResponse
+                    schema:
+                        $ref: '#/definitions/postLoginResponse'
+                "400":
+                    description: PublicHTTPValidationError, type `INVALID_PASSWORD`
+                    schema:
+                        $ref: '#/definitions/publicHttpValidationError'
+                "401":
+                    description: PublicHTTPError
+                    schema:
+                        $ref: '#/definitions/publicHttpError'
+                "403":
+                    description: PublicHTTPError, type `USER_DEACTIVATED`/`NOT_LOCAL_USER`
+                    schema:
+                        $ref: '#/definitions/publicHttpError'
+            security:
+                - Bearer: []
+            summary: Change local user's password
+            tags:
+                - auth
+    /api/v1/auth/forgot-password:
+        post:
+            description: |-
+                Initiates a password reset for a local user, sending an email with a password
+                reset link to the provided email address if a user account exists. Will always
+                succeed, even if no user was found in order to prevent user enumeration
+            operationId: PostForgotPasswordRoute
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/postForgotPasswordPayload'
+            responses:
+                "204":
+                    description: Success
+                "400":
+                    description: PublicHTTPValidationError
+                    schema:
+                        $ref: '#/definitions/publicHttpValidationError'
+            summary: Initiate password reset for local user
+            tags:
+                - auth
+    /api/v1/auth/forgot-password/complete:
+        post:
+            description: |-
+                Completes a password reset for a local user, using the password reset token sent via email
+                to confirm user access, setting the new password if successful. All current access and refresh
+                tokens are invalidated and a new set of auth tokens is returned
+            operationId: PostForgotPasswordCompleteRoute
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/postForgotPasswordCompletePayload'
+            responses:
+                "200":
+                    description: PostLoginResponse
+                    schema:
+                        $ref: '#/definitions/postLoginResponse'
+                "400":
+                    description: PublicHTTPValidationError, type `INVALID_PASSWORD`
+                    schema:
+                        $ref: '#/definitions/publicHttpValidationError'
+                "403":
+                    description: PublicHTTPError, type `USER_DEACTIVATED`/`NOT_LOCAL_USER`
+                    schema:
+                        $ref: '#/definitions/publicHttpError'
+                "404":
+                    description: PublicHTTPError, type `TOKEN_NOT_FOUND`
+                    schema:
+                        $ref: '#/definitions/publicHttpError'
+                "409":
+                    description: PublicHTTPError, type `TOKEN_EXPIRED`
+                    schema:
+                        $ref: '#/definitions/publicHttpError'
+            summary: Completes password reset for local user
+            tags:
+                - auth
     /api/v1/auth/login:
         post:
             description: Returns an access and refresh token on successful authentication
@@ -284,6 +375,28 @@ paths:
             summary: Get user info
             tags:
                 - auth
+        put:
+            description: |-
+                Updates user information compatible with the OpenID Connect Core 1.0 specification.
+                Information returned depends on the requesting user as some data is only available if an app user profile exists.
+            operationId: PutUserInfoRoute
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/putUserInfoPayload'
+            responses:
+                "204":
+                    description: Success
+                "400":
+                    description: PublicHTTPValidationError
+                    schema:
+                        $ref: '#/definitions/publicHttpValidationError'
+            security:
+                - Bearer: []
+            summary: Update user info
+            tags:
+                - auth
     /api/v1/faqs:
         get:
             description: Return a list of Faq
@@ -330,6 +443,8 @@ paths:
             responses:
                 "204":
                     description: Success
+                    schema:
+                        $ref: '#/definitions/messageResponse'
             security:
                 - Bearer: []
             summary: Delete Faq with ID
@@ -373,7 +488,7 @@ paths:
                 "200":
                     description: Success
                     schema:
-                        $ref: '#/definitions/faq'
+                        $ref: '#/definitions/messageResponse'
             security:
                 - Bearer: []
             summary: Update the given Faq
@@ -403,7 +518,7 @@ paths:
                 "200":
                     description: CreateFeaturedSectionResponse
                     schema:
-                        $ref: '#/definitions/createFeaturedSectionResponse'
+                        $ref: '#/definitions/messageResponse'
             summary: Creates a featured section
             tags:
                 - featured_sections
@@ -434,7 +549,7 @@ paths:
                 "200":
                     description: DeleteFeaturedSectionResponse
                     schema:
-                        $ref: '#/definitions/deleteFeaturedSectionResponse'
+                        $ref: '#/definitions/messageResponse'
             summary: Deletes a featured section
             tags:
                 - featured_sections
@@ -474,7 +589,7 @@ paths:
                 "200":
                     description: UpdateFeaturedSectionResponse
                     schema:
-                        $ref: '#/definitions/updateFeaturedSectionResponse'
+                        $ref: '#/definitions/messageResponse'
             summary: Updates a featured section
             tags:
                 - featured_sections
@@ -515,7 +630,7 @@ paths:
                 "200":
                     description: UpdateFeaturedSectionResponse
                     schema:
-                        $ref: '#/definitions/updateFeaturedArticlesResponse'
+                        $ref: '#/definitions/messageResponse'
             summary: Updates a featured articles
             tags:
                 - featured_sections
@@ -545,7 +660,7 @@ paths:
                 "200":
                     description: Success
                     schema:
-                        $ref: '#/definitions/feedback'
+                        $ref: '#/definitions/messageResponse'
             security:
                 - Bearer: []
             summary: Update the given Feedback
@@ -608,7 +723,7 @@ paths:
                 "200":
                     description: Success
                     schema:
-                        $ref: '#/definitions/feedback'
+                        $ref: '#/definitions/messageResponse'
             security:
                 - Bearer: []
             summary: Update the given Feedback
@@ -847,7 +962,7 @@ paths:
                 "200":
                     description: CreateTagResponse
                     schema:
-                        $ref: '#/definitions/createTagResponse'
+                        $ref: '#/definitions/messageResponse'
             summary: Creates a tag
             tags:
                 - tags
@@ -878,7 +993,7 @@ paths:
                 "200":
                     description: DeleteTagResponse
                     schema:
-                        $ref: '#/definitions/deleteTagResponse'
+                        $ref: '#/definitions/messageResponse'
             summary: Deletes a tag
             tags:
                 - tags
@@ -918,7 +1033,7 @@ paths:
                 "200":
                     description: UpdateTagResponse
                     schema:
-                        $ref: '#/definitions/updateTagResponse'
+                        $ref: '#/definitions/messageResponse'
             summary: Updates a tag
             tags:
                 - tags
@@ -965,7 +1080,7 @@ paths:
                 "200":
                     description: CreateTVShowResponse
                     schema:
-                        $ref: '#/definitions/createTVShowResponse'
+                        $ref: '#/definitions/messageResponse'
             summary: Creates a TV show
             tags:
                 - tv-shows
@@ -996,7 +1111,7 @@ paths:
                 "200":
                     description: DeleteTVShowResponse
                     schema:
-                        $ref: '#/definitions/deleteTVShowResponse'
+                        $ref: '#/definitions/messageResponse'
             summary: Deletes a TV show
             tags:
                 - tv-shows
@@ -1036,7 +1151,7 @@ paths:
                 "200":
                     description: UpdateTVShowResponse
                     schema:
-                        $ref: '#/definitions/updateTVShowResponse'
+                        $ref: '#/definitions/messageResponse'
             summary: Updates a TV show
             tags:
                 - tv-shows
@@ -1077,7 +1192,7 @@ paths:
                 "200":
                     description: UpdateTVShowScheduleResponse
                     schema:
-                        $ref: '#/definitions/updateTVShowScheduleResponse'
+                        $ref: '#/definitions/messageResponse'
             summary: Updates a TV show schedule
             tags:
                 - tv_show_schedules
@@ -1152,6 +1267,13 @@ definitions:
             - name
             - config
         type: object
+    appConfigPayload:
+        properties:
+            config:
+                type: string
+        required:
+            - config
+        type: object
     appList:
         items:
             $ref: '#/definitions/app'
@@ -1162,13 +1284,9 @@ definitions:
                 type: string
             name:
                 type: string
-            userID:
-                format: uuid4
-                type: string
         required:
-            - userID
-            - name
             - config
+            - name
         type: object
     article:
         properties:
@@ -1248,12 +1366,6 @@ definitions:
             - content
             - image
         type: object
-    createArticleResponse:
-        properties:
-            message:
-                example: Article created successfully.
-                type: string
-        type: object
     createFeaturedSectionRequest:
         properties:
             title:
@@ -1261,12 +1373,6 @@ definitions:
                 type: string
         required:
             - title
-        type: object
-    createFeaturedSectionResponse:
-        properties:
-            message:
-                example: Featured section created successfully.
-                type: string
         type: object
     createStreamPayload:
         properties:
@@ -1297,12 +1403,6 @@ definitions:
         required:
             - title
         type: object
-    createTVShowResponse:
-        properties:
-            message:
-                example: TV Show created successfully.
-                type: string
-        type: object
     createTagRequest:
         properties:
             title:
@@ -1311,36 +1411,6 @@ definitions:
                 type: string
         required:
             - title
-        type: object
-    createTagResponse:
-        properties:
-            message:
-                example: Tag created successfully.
-                type: string
-        type: object
-    deleteArticleResponse:
-        properties:
-            message:
-                example: Article deleted successfully.
-                type: string
-        type: object
-    deleteFeaturedSectionResponse:
-        properties:
-            message:
-                example: Section deleted successfully.
-                type: string
-        type: object
-    deleteTVShowResponse:
-        properties:
-            message:
-                example: TV Show deleted successfully.
-                type: string
-        type: object
-    deleteTagResponse:
-        properties:
-            message:
-                example: Tag deleted successfully.
-                type: string
         type: object
     faq:
         properties:
@@ -1448,7 +1518,6 @@ definitions:
             - subject
             - type
             - message
-            - userID
         type: object
     getAllTVShowsWithSchedulesResponse:
         items:
@@ -1623,6 +1692,10 @@ definitions:
         type: array
     getUserInfoResponse:
         properties:
+            app_id:
+                description: ID of app
+                example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+                type: string
             email:
                 description: Email address of user, if available
                 example: user@example.com
@@ -1634,8 +1707,8 @@ definitions:
                 example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
                 type: string
             name:
-                description: Name of user
-                example: John Doe
+                description: name of user
+                example: john doe
                 type: string
         required:
             - id
@@ -1672,11 +1745,63 @@ definitions:
             - url
             - filename
         type: object
+    messageResponse:
+        properties:
+            message:
+                example: created successfully.
+                type: string
+        type: object
     orderDir:
         enum:
             - asc
             - desc
         type: string
+    postChangePasswordPayload:
+        properties:
+            currentPassword:
+                description: Current password of user
+                example: correct horse battery staple
+                maxLength: !!float 500
+                minLength: !!float 1
+                type: string
+            newPassword:
+                description: New password to set for user
+                example: correct horse battery staple
+                maxLength: !!float 500
+                minLength: !!float 1
+                type: string
+        required:
+            - currentPassword
+            - newPassword
+        type: object
+    postForgotPasswordCompletePayload:
+        properties:
+            password:
+                description: New password to set for user
+                example: correct horse battery staple
+                maxLength: !!float 500
+                minLength: !!float 1
+                type: string
+            token:
+                description: Password reset token sent via email
+                example: ec16f032-3c44-4148-bbcc-45557466fa74
+                format: uuid4
+                type: string
+        required:
+            - token
+            - password
+        type: object
+    postForgotPasswordPayload:
+        properties:
+            email:
+                description: Email address of user, if available
+                example: user@example.com
+                format: email
+                maxLength: !!float 255
+                type: string
+        required:
+            - email
+        type: object
     postLoginPayload:
         properties:
             email:
@@ -1818,6 +1943,22 @@ definitions:
         required:
             - validationErrors
         type: object
+    putUserInfoPayload:
+        properties:
+            email:
+                description: Email of user to authenticate as
+                example: user@example.com
+                format: email
+                maxLength: !!float 255
+                minLength: !!float 1
+                type: string
+            name:
+                description: Name of user
+                type: string
+        required:
+            - email
+            - name
+        type: object
     sendPushNotificationPayload:
         properties:
             body:
@@ -1842,6 +1983,10 @@ definitions:
             app:
                 type: string
             createdAt:
+                type: string
+            endpoint:
+                type: string
+            host:
                 type: string
             id:
                 format: uuid4
@@ -1872,15 +2017,11 @@ definitions:
         required:
             - id
             - userID
-            - app
             - name
             - url
             - thumbnail
             - status
             - viewers
-            - lastPublishedAt
-            - liveTitle
-            - liveDescription
         type: object
     streamEvent:
         properties:
@@ -2069,12 +2210,6 @@ definitions:
             - content
             - image
         type: object
-    updateArticleResponse:
-        properties:
-            message:
-                example: Article updated successfully.
-                type: string
-        type: object
     updateFeaturedArticlesRequest:
         items:
             description: ID of article
@@ -2082,12 +2217,6 @@ definitions:
             format: uuid4
             type: string
         type: array
-    updateFeaturedArticlesResponse:
-        properties:
-            message:
-                example: Featured Section articles updated successfully.
-                type: string
-        type: object
     updateFeaturedSectionRequest:
         properties:
             title:
@@ -2095,12 +2224,6 @@ definitions:
                 type: string
         required:
             - title
-        type: object
-    updateFeaturedSectionResponse:
-        properties:
-            message:
-                example: Featured Section updated successfully.
-                type: string
         type: object
     updateStreamNamePayload:
         properties:
@@ -2140,12 +2263,6 @@ definitions:
         required:
             - title
         type: object
-    updateTVShowResponse:
-        properties:
-            message:
-                example: TV Show updated successfully.
-                type: string
-        type: object
     updateTVShowScheduleRequest:
         items:
             properties:
@@ -2168,12 +2285,6 @@ definitions:
                 - day
             type: object
         type: array
-    updateTVShowScheduleResponse:
-        properties:
-            message:
-                example: TV Show schedule updated successfully.
-                type: string
-        type: object
     updateTagRequest:
         properties:
             title:
@@ -2182,12 +2293,6 @@ definitions:
                 type: string
         required:
             - title
-        type: object
-    updateTagResponse:
-        properties:
-            message:
-                example: Tag updated successfully.
-                type: string
         type: object
 parameters:
     AppIdParam:

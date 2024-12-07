@@ -89,9 +89,9 @@ func ApplyTestFixtures(ctx context.Context, t *testing.T, db *sql.DB) (countFixt
 				}
 			case *database.Stream:
 				if _, err := db.Exec(`INSERT INTO streams
-				(id, user_id, app, name, url, password, status, live_title, live_description, thumbnail, last_published_at, viewers)
-				VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-				`, v.ID, v.UserID, v.App, v.Name, v.Url, v.Password, v.Status, v.LiveTitle.String, v.LiveDescription.String, v.Thumbnail.String, v.LastPublishedAt.Time, v.Viewers.Int32); err != nil {
+				(id, user_id, app, name, url, password, endpoint, host, status, live_title, live_description, thumbnail, last_published_at, viewers)
+				VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+				`, v.ID, v.UserID, v.App, v.Name, v.Url, v.Password, v.Endpoint, v.Host, v.Status, v.LiveTitle.String, v.LiveDescription.String, v.Thumbnail.String, v.LastPublishedAt.Time, v.Viewers.Int32); err != nil {
 					return fmt.Errorf("failed to insert stream fixture: %w", err)
 				}
 			case *database.TvShow:

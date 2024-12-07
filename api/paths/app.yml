@@ -76,12 +76,12 @@ paths:
         - name: Payload
           in: body
           schema:
-            $ref: "../definitions/app.yml#/definitions/AppPayload"
+            $ref: "../definitions/app.yml#/definitions/AppConfigPayload"
       responses:
         "200":
           description: Success
           schema:
-            $ref: "../definitions/app.yml#/definitions/App"
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"
 
     delete:
       security:

@@ -30,19 +30,23 @@ definitions:
   AppPayload:
     type: object
     required:
-      - userID
-      - name
       - config
+      - name
     properties:
-      userID:
-        type: string
-        format: uuid4
       name:
         type: string
       config:
         type: string
 
+  AppConfigPayload:
+    type: object
+    required:
+      - config
+    properties:
+      config:
+        type: string
+
   AppList:
     type: array
-    items: 
+    items:
       $ref: "#/definitions/App"

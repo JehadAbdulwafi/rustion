@@ -48,7 +48,7 @@ func deleteTvShowHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, "failed to delete tv show")
 		}
 
-		return util.ValidateAndReturn(c, http.StatusOK, &types.DeleteTVShowResponse{
+		return util.ValidateAndReturn(c, http.StatusOK, &types.MessageResponse{
 			Message: "TV Show deleted successfully.",
 		})
 	}

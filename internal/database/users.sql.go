@@ -103,40 +103,21 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 	return i, err
 }
 
-const updateUser = `-- name: UpdateUser :one
+const updateUserInfo = `-- name: UpdateUserInfo :exec
 UPDATE users
-SET name = $2, email = $3, password = $4
+SET name = $2, email = $3
 WHERE id = $1
-RETURNING id, name, email, password, is_verified, is_active, last_login_at, created_at, updated_at
 `
 
-type UpdateUserParams struct {
-	ID       uuid.UUID
-	Name     string
-	Email    string
-	Password string
+type UpdateUserInfoParams struct {
+	ID    uuid.UUID
+	Name  string
+	Email string
 }
 
-func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUser,
-		arg.ID,
-		arg.Name,
-		arg.Email,
-		arg.Password,
-	)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.Email,
-		&i.Password,
-		&i.IsVerified,
-		&i.IsActive,
-		&i.LastLoginAt,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
+func (q *Queries) UpdateUserInfo(ctx context.Context, arg UpdateUserInfoParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserInfo, arg.ID, arg.Name, arg.Email)
+	return err
 }
 
 const updateUserPassword = `-- name: UpdateUserPassword :one

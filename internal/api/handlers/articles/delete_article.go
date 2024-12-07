@@ -45,7 +45,7 @@ func deleteArticleHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, err)
 		}
 
-		return util.ValidateAndReturn(c, http.StatusOK, &types.DeleteArticleResponse{
+		return util.ValidateAndReturn(c, http.StatusOK, &types.MessageResponse{
 			Message: "Article deleted successfully",
 		})
 	}

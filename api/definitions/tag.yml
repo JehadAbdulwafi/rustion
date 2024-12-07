@@ -103,12 +103,6 @@ definitions:
         type: string
         description: Name of the tag
         example: "Politics"
-  CreateTagResponse:
-    type: object
-    properties:
-      message:
-        type: string
-        example: "Tag created successfully."
   GetTagResponse:
     type: object
     properties:
@@ -118,18 +112,6 @@ definitions:
     type: array
     items:
       $ref: "#/definitions/Tag"
-  UpdateTagResponse:
-    type: object
-    properties:
-      message:
-        type: string
-        example: "Tag updated successfully."
-  DeleteTagResponse:
-    type: object
-    properties:
-      message:
-        type: string
-        example: "Tag deleted successfully."
   GetTagWithArticlesResponse:
     type: object
     properties:

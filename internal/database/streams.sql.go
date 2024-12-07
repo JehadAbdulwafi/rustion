@@ -12,10 +12,9 @@ import (
 	"github.com/google/uuid"
 )
 
-const createStream = `-- name: CreateStream :one
-INSERT INTO streams (user_id, app, name, url, password)
-VALUES ($1, $2, $3, $4, $5)
-RETURNING id, user_id, app, name, url, password, thumbnail, status, viewers, last_published_at, live_title, live_description, created_at, updated_at
+const createStream = `-- name: CreateStream :exec
+INSERT INTO streams (user_id, app, name, url, password, host, endpoint)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
 `
 
 type CreateStreamParams struct {
@@ -24,34 +23,21 @@ type CreateStreamParams struct {
 	Name     string
 	Url      string
 	Password string
+	Host     string
+	Endpoint string
 }
 
-func (q *Queries) CreateStream(ctx context.Context, arg CreateStreamParams) (Stream, error) {
-	row := q.db.QueryRowContext(ctx, createStream,
+func (q *Queries) CreateStream(ctx context.Context, arg CreateStreamParams) error {
+	_, err := q.db.ExecContext(ctx, createStream,
 		arg.UserID,
 		arg.App,
 		arg.Name,
 		arg.Url,
 		arg.Password,
+		arg.Host,
+		arg.Endpoint,
 	)
-	var i Stream
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.App,
-		&i.Name,
-		&i.Url,
-		&i.Password,
-		&i.Thumbnail,
-		&i.Status,
-		&i.Viewers,
-		&i.LastPublishedAt,
-		&i.LiveTitle,
-		&i.LiveDescription,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
+	return err
 }
 
 const decrementStreamViewers = `-- name: DecrementStreamViewers :exec
@@ -111,8 +97,36 @@ func (q *Queries) GetStream(ctx context.Context, id uuid.UUID) (GetStreamRow, er
 	return i, err
 }
 
+const getStreamByEndpoint = `-- name: GetStreamByEndpoint :one
+SELECT id, user_id, app, name, endpoint, host, url, password, thumbnail, status, viewers, last_published_at, live_title, live_description, created_at, updated_at FROM streams WHERE endpoint = $1
+`
+
+func (q *Queries) GetStreamByEndpoint(ctx context.Context, endpoint string) (Stream, error) {
+	row := q.db.QueryRowContext(ctx, getStreamByEndpoint, endpoint)
+	var i Stream
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.App,
+		&i.Name,
+		&i.Endpoint,
+		&i.Host,
+		&i.Url,
+		&i.Password,
+		&i.Thumbnail,
+		&i.Status,
+		&i.Viewers,
+		&i.LastPublishedAt,
+		&i.LiveTitle,
+		&i.LiveDescription,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const getStreamById = `-- name: GetStreamById :one
-SELECT id, user_id, app, name, url, password, thumbnail, status, viewers, last_published_at, live_title, live_description, created_at, updated_at FROM streams WHERE id = $1
+SELECT id, user_id, app, name, endpoint, host, url, password, thumbnail, status, viewers, last_published_at, live_title, live_description, created_at, updated_at FROM streams WHERE id = $1
 `
 
 func (q *Queries) GetStreamById(ctx context.Context, id uuid.UUID) (Stream, error) {
@@ -123,6 +137,8 @@ func (q *Queries) GetStreamById(ctx context.Context, id uuid.UUID) (Stream, erro
 		&i.UserID,
 		&i.App,
 		&i.Name,
+		&i.Endpoint,
+		&i.Host,
 		&i.Url,
 		&i.Password,
 		&i.Thumbnail,
@@ -138,7 +154,7 @@ func (q *Queries) GetStreamById(ctx context.Context, id uuid.UUID) (Stream, erro
 }
 
 const getStreamByStreamName = `-- name: GetStreamByStreamName :one
-SELECT id, user_id, app, name, url, password, thumbnail, status, viewers, last_published_at, live_title, live_description, created_at, updated_at FROM streams WHERE name = $1
+SELECT id, user_id, app, name, endpoint, host, url, password, thumbnail, status, viewers, last_published_at, live_title, live_description, created_at, updated_at FROM streams WHERE name = $1
 `
 
 func (q *Queries) GetStreamByStreamName(ctx context.Context, name string) (Stream, error) {
@@ -149,6 +165,8 @@ func (q *Queries) GetStreamByStreamName(ctx context.Context, name string) (Strea
 		&i.UserID,
 		&i.App,
 		&i.Name,
+		&i.Endpoint,
+		&i.Host,
 		&i.Url,
 		&i.Password,
 		&i.Thumbnail,
@@ -164,7 +182,7 @@ func (q *Queries) GetStreamByStreamName(ctx context.Context, name string) (Strea
 }
 
 const getStreams = `-- name: GetStreams :many
-SELECT id, user_id, app, name, url, status, viewers, thumbnail, live_title, live_description, last_published_at FROM streams
+SELECT id, user_id, app, name, url, status, viewers, thumbnail, last_published_at FROM streams
 `
 
 type GetStreamsRow struct {
@@ -176,8 +194,6 @@ type GetStreamsRow struct {
 	Status          StreamStatusEnum
 	Viewers         sql.NullInt32
 	Thumbnail       sql.NullString
-	LiveTitle       sql.NullString
-	LiveDescription sql.NullString
 	LastPublishedAt sql.NullTime
 }
 
@@ -199,51 +215,7 @@ func (q *Queries) GetStreams(ctx context.Context) ([]GetStreamsRow, error) {
 			&i.Status,
 			&i.Viewers,
 			&i.Thumbnail,
-			&i.LiveTitle,
-			&i.LiveDescription,
 			&i.LastPublishedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getStreamsByApp = `-- name: GetStreamsByApp :many
-SELECT id, user_id, app, name, url, password, thumbnail, status, viewers, last_published_at, live_title, live_description, created_at, updated_at FROM streams WHERE app = $1
-`
-
-func (q *Queries) GetStreamsByApp(ctx context.Context, app string) ([]Stream, error) {
-	rows, err := q.db.QueryContext(ctx, getStreamsByApp, app)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Stream
-	for rows.Next() {
-		var i Stream
-		if err := rows.Scan(
-			&i.ID,
-			&i.UserID,
-			&i.App,
-			&i.Name,
-			&i.Url,
-			&i.Password,
-			&i.Thumbnail,
-			&i.Status,
-			&i.Viewers,
-			&i.LastPublishedAt,
-			&i.LiveTitle,
-			&i.LiveDescription,
-			&i.CreatedAt,
-			&i.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -259,33 +231,40 @@ func (q *Queries) GetStreamsByApp(ctx context.Context, app string) ([]Stream, er
 }
 
 const getStreamsByUserId = `-- name: GetStreamsByUserId :many
-SELECT id, user_id, app, name, url, password, thumbnail, status, viewers, last_published_at, live_title, live_description, created_at, updated_at FROM streams WHERE user_id = $1
+SELECT id, user_id, app, name, url, status, viewers, thumbnail, last_published_at FROM streams WHERE user_id = $1
 `
 
-func (q *Queries) GetStreamsByUserId(ctx context.Context, userID uuid.UUID) ([]Stream, error) {
+type GetStreamsByUserIdRow struct {
+	ID              uuid.UUID
+	UserID          uuid.UUID
+	App             string
+	Name            string
+	Url             string
+	Status          StreamStatusEnum
+	Viewers         sql.NullInt32
+	Thumbnail       sql.NullString
+	LastPublishedAt sql.NullTime
+}
+
+func (q *Queries) GetStreamsByUserId(ctx context.Context, userID uuid.UUID) ([]GetStreamsByUserIdRow, error) {
 	rows, err := q.db.QueryContext(ctx, getStreamsByUserId, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Stream
+	var items []GetStreamsByUserIdRow
 	for rows.Next() {
-		var i Stream
+		var i GetStreamsByUserIdRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.UserID,
 			&i.App,
 			&i.Name,
 			&i.Url,
-			&i.Password,
-			&i.Thumbnail,
 			&i.Status,
 			&i.Viewers,
+			&i.Thumbnail,
 			&i.LastPublishedAt,
-			&i.LiveTitle,
-			&i.LiveDescription,
-			&i.CreatedAt,
-			&i.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -335,15 +314,18 @@ func (q *Queries) UnpublishStream(ctx context.Context, id uuid.UUID) error {
 
 const updateStream = `-- name: UpdateStream :exec
 UPDATE streams
-SET app = $2, name = $3, url = $4, updated_at = CURRENT_TIMESTAMP
+SET app = $2, name = $3, url = $4, password = $5, host = $6, endpoint = $7, updated_at = CURRENT_TIMESTAMP
 WHERE id = $1
 `
 
 type UpdateStreamParams struct {
-	ID   uuid.UUID
-	App  string
-	Name string
-	Url  string
+	ID       uuid.UUID
+	App      string
+	Name     string
+	Url      string
+	Password string
+	Host     string
+	Endpoint string
 }
 
 func (q *Queries) UpdateStream(ctx context.Context, arg UpdateStreamParams) error {
@@ -352,6 +334,9 @@ func (q *Queries) UpdateStream(ctx context.Context, arg UpdateStreamParams) erro
 		arg.App,
 		arg.Name,
 		arg.Url,
+		arg.Password,
+		arg.Host,
+		arg.Endpoint,
 	)
 	return err
 }
@@ -360,7 +345,7 @@ const updateStreamInfo = `-- name: UpdateStreamInfo :one
 UPDATE streams
 SET live_title = $2, live_description = $3, thumbnail = $4, updated_at = CURRENT_TIMESTAMP
 WHERE id = $1
-RETURNING id, user_id, app, name, url, password, thumbnail, status, viewers, last_published_at, live_title, live_description, created_at, updated_at
+RETURNING id, user_id, app, name, endpoint, host, url, password, thumbnail, status, viewers, last_published_at, live_title, live_description, created_at, updated_at
 `
 
 type UpdateStreamInfoParams struct {
@@ -383,6 +368,8 @@ func (q *Queries) UpdateStreamInfo(ctx context.Context, arg UpdateStreamInfoPara
 		&i.UserID,
 		&i.App,
 		&i.Name,
+		&i.Endpoint,
+		&i.Host,
 		&i.Url,
 		&i.Password,
 		&i.Thumbnail,

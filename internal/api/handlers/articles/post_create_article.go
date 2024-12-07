@@ -49,7 +49,7 @@ func postCreateArticleHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, "failed to create articles")
 		}
 
-		res := types.CreateArticleResponse{
+		res := types.MessageResponse{
 			Message: "article created successfully",
 		}
 

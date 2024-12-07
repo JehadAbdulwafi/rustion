@@ -66,7 +66,7 @@ func updateArticleHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, "failed to update article")
 		}
 
-		return util.ValidateAndReturn(c, http.StatusOK, &types.UpdateArticleResponse{
+		return util.ValidateAndReturn(c, http.StatusOK, &types.MessageResponse{
 			Message: "Article updated successfully",
 		})
 	}

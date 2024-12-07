@@ -93,12 +93,6 @@ definitions:
       title:
         type: string
         description: Title of the featured section
-  CreateFeaturedSectionResponse:
-    type: object
-    properties:
-      message:
-        type: string
-        example: "Featured section created successfully."
   GetFeaturedSectionResponse:
     type: object
     properties:
@@ -116,12 +110,6 @@ definitions:
       title:
         type: string
         description: Title of the featured section
-  UpdateFeaturedSectionResponse:
-    type: object
-    properties:
-      message:
-        type: string
-        example: "Featured Section updated successfully."
   UpdateFeaturedArticlesRequest:
     type: array
     items:
@@ -129,18 +117,6 @@ definitions:
       format: uuid4
       description: ID of article
       example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
-  UpdateFeaturedArticlesResponse:
-    type: object
-    properties:
-      message:
-        type: string
-        example: "Featured Section articles updated successfully."
-  DeleteFeaturedSectionResponse:
-    type: object
-    properties:
-      message:
-        type: string
-        example: "Section deleted successfully."
   GetFeaturedSectionWithArticlesResponse:
     type: object
     properties:

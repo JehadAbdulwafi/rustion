@@ -7,7 +7,6 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/database"
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
-	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
 
@@ -26,7 +25,6 @@ func postFeedbackHandler(s *api.Server) echo.HandlerFunc {
 		}
 
 		_, err = s.Queries.CreateFeedback(ctx, database.CreateFeedbackParams{
-			UserID:  uuid.NullUUID{UUID: uuid.MustParse(body.UserID.String()), Valid: true},
 			Subject: *body.Subject,
 			Type:    database.FeedbackTypeEnum(*body.Type),
 			Message: *body.Message,
@@ -35,7 +33,7 @@ func postFeedbackHandler(s *api.Server) echo.HandlerFunc {
 			return err
 		}
 
-		response := types.CreateArticleResponse{
+		response := types.MessageResponse{
 			Message: "Feedback created successfully",
 		}
 

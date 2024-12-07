@@ -30,9 +30,7 @@ func getTvShowHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, "failed to get tv show")
 		}
 
-		res := &types.GetTVShowResponse{
-			TvShow: convertDBTVShowToTVShow(tvShow),
-		}
+		res := convertDBTVShowToTVShow(tvShow)
 
 		return util.ValidateAndReturn(c, http.StatusOK, res)
 	}

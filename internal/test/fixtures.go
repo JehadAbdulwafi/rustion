@@ -159,10 +159,12 @@ func Fixtures() FixtureMap {
 	f.Stream1 = &database.Stream{
 		ID:       uuid.MustParse("6c46cdec-4fd3-4d25-8218-3b75df65f8ab"),
 		App:      "live",
-		Name:     "cFwLFDa329",
-		Url:      "http://localhost:2022/live/cFwLFDa329",
+		Name:     "livestream1",
+		Url:      "http://localhost/live/cFwLFDa329",
 		Status:   "published",
 		Password: "password",
+		Endpoint: "cFwLFDa329",
+		Host:     "localhost",
 		LiveTitle: sql.NullString{
 			String: "Stream1 title",
 			Valid:  true,

@@ -54,9 +54,9 @@ func putStreamHandler(s *api.Server) echo.HandlerFunc {
 
 		_, err = s.Queries.UpdateStreamInfo(ctx, database.UpdateStreamInfoParams{
 			ID:              stream.ID,
-			Thumbnail:       sql.NullString{String: body.Thumbnail, Valid: body.Thumbnail != ""},
-			LiveTitle:       sql.NullString{String: body.LiveTitle, Valid: body.LiveTitle != ""},
-			LiveDescription: sql.NullString{String: body.LiveDescription, Valid: body.LiveDescription != ""},
+			Thumbnail:       sql.NullString{String: body.Thumbnail, Valid: true},
+			LiveTitle:       sql.NullString{String: body.LiveTitle, Valid: true},
+			LiveDescription: sql.NullString{String: body.LiveDescription, Valid: true},
 		})
 
 		if err != nil {
@@ -66,15 +66,15 @@ func putStreamHandler(s *api.Server) echo.HandlerFunc {
 		response := types.Stream{
 			ID:              (*strfmt.UUID4)(swag.String(stream.ID.String())),
 			UserID:          (*strfmt.UUID4)(swag.String(stream.UserID.String())),
-			App:             &stream.App,
+			App:             stream.App,
 			Name:            &stream.Name,
 			URL:             &stream.Url,
 			Thumbnail:       &stream.Thumbnail.String,
 			Status:          swag.String(string(stream.Status)),
 			Viewers:         swag.String(string(stream.Viewers.Int32)),
-			LastPublishedAt: swag.String(stream.LastPublishedAt.Time.String()),
-			LiveTitle:       &stream.LiveTitle.String,
-			LiveDescription: &stream.LiveDescription.String,
+			LastPublishedAt: *swag.String(stream.LastPublishedAt.Time.String()),
+			LiveTitle:       stream.LiveTitle.String,
+			LiveDescription: stream.LiveDescription.String,
 			CreatedAt:       stream.CreatedAt.Time.String(),
 			UpdatedAt:       stream.UpdatedAt.Time.String(),
 		}

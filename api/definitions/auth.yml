@@ -25,10 +25,14 @@ definitions:
         type: string
         description: ID of user
         example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
+      app_id:
+        type: string
+        description: ID of app
+        example: 82ebdfad-c586-4407-a873-4cc1c33d56fc
       name:
         type: string
-        description: Name of user
-        example: John Doe
+        description: name of user
+        example: john doe
       email:
         type: string
         format: email
@@ -47,6 +51,22 @@ definitions:
         maxLength: 255
         minLength: 1
         example: correct horse battery staple
+      email:
+        description: Email of user to authenticate as
+        type: string
+        format: email
+        maxLength: 255
+        minLength: 1
+        example: user@example.com
+  PutUserInfoPayload:
+    type: object
+    required:
+      - email
+      - name
+    properties:
+      name:
+        type: string
+        description: Name of user
       email:
         description: Email of user to authenticate as
         type: string
@@ -103,3 +123,49 @@ definitions:
         description: Refresh token for refreshing the access token once it expires
         type: string
         example: "eyJhdWQiOiJjdXN0b2..."
+  PostChangePasswordPayload:
+    type: object
+    required:
+      - currentPassword
+      - newPassword
+    properties:
+      currentPassword:
+        description: Current password of user
+        type: string
+        maxLength: 500
+        minLength: 1
+        example: correct horse battery staple
+      newPassword:
+        description: New password to set for user
+        type: string
+        maxLength: 500
+        minLength: 1
+        example: correct horse battery staple
+  PostForgotPasswordCompletePayload:
+    type: object
+    required:
+      - token
+      - password
+    properties:
+      password:
+        description: New password to set for user
+        type: string
+        maxLength: 500
+        minLength: 1
+        example: correct horse battery staple
+      token:
+        description: Password reset token sent via email
+        type: string
+        format: uuid4
+        example: ec16f032-3c44-4148-bbcc-45557466fa74
+  PostForgotPasswordPayload:
+    type: object
+    required:
+      - email
+    properties:
+      email:
+        type: string
+        format: email
+        description: Email address of user, if available
+        maxLength: 255
+        example: user@example.com

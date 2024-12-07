@@ -36,7 +36,7 @@ type PutAppRouteParams struct {
 	/*
 	  In: body
 	*/
-	Payload *types.AppPayload
+	Payload *types.AppConfigPayload
 	/*ID of App
 	  Required: true
 	  In: path
@@ -55,7 +55,7 @@ func (o *PutAppRouteParams) BindRequest(r *http.Request, route *middleware.Match
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body types.AppPayload
+		var body types.AppConfigPayload
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			res = append(res, errors.NewParseError("payload", "body", "", err))
 		} else {

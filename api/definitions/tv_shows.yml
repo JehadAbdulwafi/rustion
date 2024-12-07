@@ -72,13 +72,6 @@ definitions:
         description: Description of the TV show
         example: "This is the description of the TV show."
 
-  CreateTVShowResponse:
-    type: object
-    properties:
-      message:
-        type: string
-        example: "TV Show created successfully."
-
   GetTVShowResponse:
     type: object
     properties:
@@ -112,20 +105,6 @@ definitions:
         type: string
         description: Description of the TV show
         example: "This is the description of the TV show."
-
-  UpdateTVShowResponse:
-    type: object
-    properties:
-      message:
-        type: string
-        example: "TV Show updated successfully."
-
-  DeleteTVShowResponse:
-    type: object
-    properties:
-      message:
-        type: string
-        example: "TV Show deleted successfully."
 
   TVShowSchedule:
     type: object
@@ -187,13 +166,6 @@ definitions:
           type: string
           description: Day of the week for the schedule
           example: "Monday"
-
-  UpdateTVShowScheduleResponse:
-    type: object
-    properties:
-      message:
-        type: string
-        example: "TV Show schedule updated successfully."
 
   GetTVShowWithSchedulesResponse:
     type: object

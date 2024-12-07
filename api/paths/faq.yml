@@ -81,7 +81,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "../definitions/faq.yml#/definitions/Faq"
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"
 
     delete:
       security:
@@ -96,3 +96,5 @@ paths:
       responses:
         "204":
           description: Success
+          schema:
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"

@@ -59,7 +59,7 @@ func updateTagHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, "failed to update tag")
 		}
 
-		res := &types.UpdateTagResponse{
+		res := &types.MessageResponse{
 			Message: "tag updated successfully",
 		}
 

@@ -1,7 +1,6 @@
--- name: CreateStream :one
-INSERT INTO streams (user_id, app, name, url, password)
-VALUES ($1, $2, $3, $4, $5)
-RETURNING *;
+-- name: CreateStream :exec
+INSERT INTO streams (user_id, app, name, url, password, host, endpoint)
+VALUES ($1, $2, $3, $4, $5, $6, $7);
 
 -- name: GetStreamById :one
 SELECT * FROM streams WHERE id = $1;
@@ -10,20 +9,20 @@ SELECT * FROM streams WHERE id = $1;
 SELECT id, user_id, app, name, url, status, viewers, thumbnail, live_title, live_description, last_published_at FROM streams where id = $1;
 
 -- name: GetStreams :many
-SELECT id, user_id, app, name, url, status, viewers, thumbnail, live_title, live_description, last_published_at FROM streams;
+SELECT id, user_id, app, name, url, status, viewers, thumbnail, last_published_at FROM streams;
 
 -- name: GetStreamsByUserId :many
-SELECT * FROM streams WHERE user_id = $1;
-
--- name: GetStreamsByApp :many
-SELECT * FROM streams WHERE app = $1;
+SELECT id, user_id, app, name, url, status, viewers, thumbnail, last_published_at FROM streams WHERE user_id = $1;
 
 -- name: GetStreamByStreamName :one
 SELECT * FROM streams WHERE name = $1;
 
+-- name: GetStreamByEndpoint :one
+SELECT * FROM streams WHERE endpoint = $1;
+
 -- name: UpdateStream :exec
 UPDATE streams
-SET app = $2, name = $3, url = $4, updated_at = CURRENT_TIMESTAMP
+SET app = $2, name = $3, url = $4, password = $5, host = $6, endpoint = $7, updated_at = CURRENT_TIMESTAMP
 WHERE id = $1;
 
 -- name: UpdateStreamName :exec

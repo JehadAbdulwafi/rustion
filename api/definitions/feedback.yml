@@ -35,7 +35,6 @@ definitions:
       - subject
       - type
       - message
-      - userID
     properties:
       userID:
         type: string

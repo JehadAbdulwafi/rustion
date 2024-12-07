@@ -20,11 +20,16 @@ import (
 type Stream struct {
 
 	// app
-	// Required: true
-	App *string `json:"app"`
+	App string `json:"app,omitempty"`
 
 	// created at
 	CreatedAt string `json:"createdAt,omitempty"`
+
+	// endpoint
+	Endpoint string `json:"endpoint,omitempty"`
+
+	// host
+	Host string `json:"host,omitempty"`
 
 	// id
 	// Required: true
@@ -32,16 +37,13 @@ type Stream struct {
 	ID *strfmt.UUID4 `json:"id"`
 
 	// last published at
-	// Required: true
-	LastPublishedAt *string `json:"lastPublishedAt"`
+	LastPublishedAt string `json:"lastPublishedAt,omitempty"`
 
 	// live description
-	// Required: true
-	LiveDescription *string `json:"liveDescription"`
+	LiveDescription string `json:"liveDescription,omitempty"`
 
 	// live title
-	// Required: true
-	LiveTitle *string `json:"liveTitle"`
+	LiveTitle string `json:"liveTitle,omitempty"`
 
 	// name
 	// Required: true
@@ -79,23 +81,7 @@ type Stream struct {
 func (m *Stream) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateApp(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.validateID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateLastPublishedAt(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateLiveDescription(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateLiveTitle(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -129,15 +115,6 @@ func (m *Stream) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Stream) validateApp(formats strfmt.Registry) error {
-
-	if err := validate.Required("app", "body", m.App); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (m *Stream) validateID(formats strfmt.Registry) error {
 
 	if err := validate.Required("id", "body", m.ID); err != nil {
@@ -145,33 +122,6 @@ func (m *Stream) validateID(formats strfmt.Registry) error {
 	}
 
 	if err := validate.FormatOf("id", "body", "uuid4", m.ID.String(), formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *Stream) validateLastPublishedAt(formats strfmt.Registry) error {
-
-	if err := validate.Required("lastPublishedAt", "body", m.LastPublishedAt); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *Stream) validateLiveDescription(formats strfmt.Registry) error {
-
-	if err := validate.Required("liveDescription", "body", m.LiveDescription); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *Stream) validateLiveTitle(formats strfmt.Registry) error {
-
-	if err := validate.Required("liveTitle", "body", m.LiveTitle); err != nil {
 		return err
 	}
 

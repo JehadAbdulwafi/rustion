@@ -51,7 +51,7 @@ func postCreateTvShowHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, "failed to create tv show")
 		}
 
-		return util.ValidateAndReturn(c, http.StatusOK, &types.CreateTVShowResponse{
+		return util.ValidateAndReturn(c, http.StatusOK, &types.MessageResponse{
 			Message: "TV Show created successfully.",
 		})
 	}

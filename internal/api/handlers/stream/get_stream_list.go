@@ -2,6 +2,7 @@ package stream
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
 	"github.com/JehadAbdulwafi/rustion/internal/api/auth"
@@ -34,21 +35,19 @@ func getStreamListHandler(s *api.Server) echo.HandlerFunc {
 	}
 }
 
-func convertDBStreamsToStreams(streams []database.Stream) types.StreamList {
+func convertDBStreamsToStreams(streams []database.GetStreamsByUserIdRow) types.StreamList {
 	var result types.StreamList
 	for _, stream := range streams {
 		result = append(result, &types.Stream{
 			ID:              (*strfmt.UUID4)(swag.String(stream.ID.String())),
 			UserID:          (*strfmt.UUID4)(swag.String(stream.UserID.String())),
-			App:             &stream.App,
+			App:             stream.App,
 			Name:            &stream.Name,
 			URL:             &stream.Url,
 			Thumbnail:       &stream.Thumbnail.String,
 			Status:          swag.String(string(stream.Status)),
-			Viewers:         swag.String(string(stream.Viewers.Int32)),
-			LastPublishedAt: swag.String(stream.LastPublishedAt.Time.String()),
-			LiveTitle:       &stream.LiveTitle.String,
-			LiveDescription: &stream.LiveDescription.String,
+			LastPublishedAt: *swag.String(stream.LastPublishedAt.Time.String()),
+			Viewers:         swag.String(strconv.Itoa(int(stream.Viewers.Int32))),
 		})
 	}
 	return result

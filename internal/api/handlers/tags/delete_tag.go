@@ -53,6 +53,6 @@ func deleteTagHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, "failed to update tag")
 		}
 
-		return util.ValidateAndReturn(c, http.StatusOK, &types.DeleteTagResponse{Message: "tag deleted successfully"})
+		return util.ValidateAndReturn(c, http.StatusOK, &types.MessageResponse{Message: "tag deleted successfully"})
 	}
 }

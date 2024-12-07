@@ -9,8 +9,6 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/types/app"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
-	"github.com/go-openapi/strfmt"
-	"github.com/go-openapi/swag"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/sqlc-dev/pqtype"
@@ -31,7 +29,7 @@ func putAppHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, "invalid id")
 		}
 
-		var body types.AppPayload
+		var body types.AppConfigPayload
 		err = util.BindAndValidateBody(c, &body)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, "invalid body")
@@ -53,20 +51,16 @@ func putAppHandler(s *api.Server) echo.HandlerFunc {
 			return c.JSON(http.StatusUnauthorized, "unauthorized")
 		}
 
-		updatedApp, err := s.Queries.UpdateApp(ctx, database.UpdateAppParams{
-			ID:   app.ID,
-			Name: *body.Name,
+		err = s.Queries.UpdateAppConfig(ctx, database.UpdateAppConfigParams{
+			ID: app.ID,
 			Config: pqtype.NullRawMessage{
 				RawMessage: []byte(*body.Config),
 				Valid:      body.Config != nil,
 			},
 		})
 
-		response := types.App{
-			ID:     (*strfmt.UUID4)(swag.String(updatedApp.ID.String())),
-			UserID: (*strfmt.UUID4)(swag.String(updatedApp.UserID.String())),
-			Name:   body.Name,
-			Config: body.Config,
+		response := types.MessageResponse{
+			Message: "App config updated successfully",
 		}
 
 		return util.ValidateAndReturn(c, http.StatusOK, &response)

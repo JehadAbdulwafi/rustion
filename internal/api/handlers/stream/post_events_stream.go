@@ -21,6 +21,8 @@ func postStreamEventsHandler(s *api.Server) echo.HandlerFunc {
 			return err
 		}
 
+		// TODO: check password
+
 		log.Debug().Interface("body", body).Msg("request body")
 
 		// check if stream exists

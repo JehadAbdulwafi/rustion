@@ -19,7 +19,7 @@ paths:
         "200":
           description: CreateArticleResponse
           schema:
-            $ref: "../definitions/article.yml#/definitions/CreateArticleResponse"
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"
     get:
       description: Retrieves all articles
       tags:
@@ -71,7 +71,7 @@ paths:
         "200":
           description: UpdateArticleResponse
           schema:
-            $ref: "../definitions/article.yml#/definitions/UpdateArticleResponse"
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"
     delete:
       description: Deletes a article by ID
       tags:
@@ -89,4 +89,4 @@ paths:
         "200":
           description: DeleteArticleResponse
           schema:
-            $ref: "../definitions/article.yml#/definitions/DeleteArticleResponse"
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"

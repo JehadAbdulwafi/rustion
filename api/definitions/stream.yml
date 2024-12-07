@@ -9,15 +9,11 @@ definitions:
     required:
       - id
       - userID
-      - app
       - name
       - url
       - thumbnail
       - status
       - viewers
-      - lastPublishedAt
-      - liveTitle
-      - liveDescription
     properties:
       id:
         type: string
@@ -32,6 +28,10 @@ definitions:
       url:
         type: string
       password:
+        type: string
+      host:
+        type: string
+      endpoint:
         type: string
       thumbnail:
         type: string
@@ -54,15 +54,11 @@ definitions:
     type: object
     required:
       - userID
-      - app
       - name
       - url
       - thumbnail
       - status
       - viewers
-      - lastPublishedAt
-      - liveTitle
-      - liveDescription
     properties:
       userID:
         type: string
