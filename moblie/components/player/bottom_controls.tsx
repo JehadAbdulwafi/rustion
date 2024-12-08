@@ -12,8 +12,6 @@ import { FullScreenEnterIcon, FullScreenExitIcon } from "@/assets/icons";
 import useStream from "@/hooks/streamStatus";
 
 type Props = {
-  paused: boolean;
-  togglePlayPause: () => void;
   isFullScreen: boolean;
   toggleFullscreen: () => void;
   animations: animationsTypes;

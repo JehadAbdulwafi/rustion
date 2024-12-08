@@ -17,15 +17,10 @@ export default function Controls({ playerState, methods, animations }: Props) {
         <PlayPause
           togglePlayPause={methods.togglePlayPause}
           paused={playerState.paused}
-          showControls={playerState.showControls}
           animations={animations}
         />
-
       )}
-
       <BottomControls
-        paused={playerState.paused}
-        togglePlayPause={methods.togglePlayPause}
         isFullScreen={playerState.isFullScreen}
         toggleFullscreen={methods.toggleFullscreen}
         animations={animations}

@@ -19,7 +19,7 @@ export default function TopControls({ animations }: Props) {
   const router = useRouter();
   const { streamStatus } = useStream();
   const onGoBack = () => {
-    router.navigate("/");
+    router.replace("/");
   };
 
   return (

@@ -7,6 +7,7 @@ import * as Orientation from "expo-screen-orientation";
 import { streamConfig } from "@/constants/config";
 import useStream from "@/hooks/streamStatus";
 import { osBuildFingerprint } from "expo-device";
+import config from "@/api/config";
 
 export default function PlayerScreen() {
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function PlayerScreen() {
 
     const fingerprint = osBuildFingerprint!.replaceAll("/", "-");
     const ws = new WebSocket(
-      `ws://192.168.1.2:9973/api/v1/streams/${streamConfig.stream.id}/ws?viewer_id=${fingerprint}`
+      `ws://${config.api.host}/api/v1/streams/${streamConfig.stream.id}/ws?viewer_id=${fingerprint}`
     );
     wsRef.current = ws;
 
@@ -55,27 +56,23 @@ export default function PlayerScreen() {
 
   useEffect(() => {
     connect();
-
-    return () => {
-      closeConnection();
+    const backAction = () => {
+      router.replace("/");
+      return true;
     };
-  }, []);
 
-  useEffect(() => {
     const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      () => {
-        router.replace("/");
-        return true;
-      }
+      'hardwareBackPress',
+      backAction,
     );
 
     return () => {
+      closeConnection();
       backHandler.remove();
       StatusBar.setHidden(false, "slide");
-      Orientation.lockAsync(Orientation.OrientationLock.PORTRAIT); // Ensure portrait mode
+      Orientation.lockAsync(Orientation.OrientationLock.PORTRAIT);
     };
-  }, [router]);
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
@@ -83,4 +80,3 @@ export default function PlayerScreen() {
     </SafeAreaView>
   );
 }
-

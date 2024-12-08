@@ -9,7 +9,6 @@ import { animationsTypes } from "./player";
 type Props = {
   togglePlayPause: () => void;
   paused: boolean;
-  showControls: boolean;
   animations: animationsTypes;
 };
 

@@ -6,10 +6,14 @@ import {
   Animated,
   View,
   Easing,
+  StatusBar,
 } from "react-native";
 import PlayerLoader from "./loader";
 import PlayerError from "./error";
 import Controls from "./controls";
+
+import * as Orientation from "expo-screen-orientation";
+import { Accelerometer } from "expo-sensors";
 
 export interface ConfigTypes {
   controlTimeoutDelay: number;
@@ -20,10 +24,8 @@ export interface ConfigTypes {
 }
 
 type PlayerProps = {
-  isFullScreen?: boolean;
   isLive: boolean;
   paused?: boolean;
-  toggleFullscreen?: () => void;
   source: ReactVideoSource;
   poster?: string | ReactVideoPoster
 };
@@ -32,7 +34,6 @@ export type PlayerState = {
   resizeMode: "contain" | "cover" | "none" | "stretch";
   paused: boolean;
   isLive: boolean;
-
   isFullScreen: boolean;
   showControls: boolean;
   loading: boolean;
@@ -66,7 +67,7 @@ export const VideoPlayer = (props: PlayerProps) => {
     isLive: props.isLive || true,
 
     // Controls
-    isFullScreen: props.isFullScreen || false,
+    isFullScreen: false,
     showControls: true,
     loading: false,
     error: false,
@@ -79,21 +80,6 @@ export const VideoPlayer = (props: PlayerProps) => {
     iconOffset: 0,
     tapAnywhereToPause: false,
   });
-
-  const events = {
-    onError: onError,
-    onEnd: onEnd,
-    onScreenTouch: onScreenTouch,
-    onEnterFullscreen: onEnterFullscreen,
-    onExitFullscreen: onExitFullscreen,
-    onShowControls: onShowControls,
-    onHideControls: onHideControls,
-    onLoadStart: onLoadStart,
-    onBuffer: onBuffer,
-    onLoad: onLoad,
-    onPause: onPause,
-    onPlay: onPlay,
-  };
 
   const initialValue = 1;
 
@@ -118,26 +104,36 @@ export const VideoPlayer = (props: PlayerProps) => {
     },
   });
 
+  const accelerometerSubscription = useRef<{ remove: () => void } | null>(null);
+
+  useEffect(() => {
+    // Set update interval
+    Accelerometer.setUpdateInterval(500); // Update every 500ms
+
+    return () => {
+      if (accelerometerSubscription.current) {
+        accelerometerSubscription.current.remove();
+      }
+    };
+  }, []);
+
   /**
    * Functions used throughout the application
    */
   const methods = {
-    toggleFullscreen: props.toggleFullscreen,
+    toggleFullscreen: toggleFullscreen,
     togglePlayPause: togglePlayPause,
     toggleControls: toggleControls,
     hideControls: hideControls,
   };
 
   useEffect(() => {
-    setPlayerState((prev) => ({
-      ...prev,
-      isFullScreen: props.isFullScreen || false,
-    }));
+    if (!props.source && playerRef.current) {
+      setPlayerState(prev => ({ ...prev, paused: true }));
+      playerRef.current.seek(0);
+    }
+  }, [props.source]);
 
-    () => {
-      clearControlTimeout();
-    };
-  }, [props.isFullScreen]);
 
   /**
     | -------------------------------------------------------
@@ -156,32 +152,6 @@ export const VideoPlayer = (props: PlayerProps) => {
    */
   function onLoadStart() {
     setPlayerState((prev) => ({ ...prev, loading: true }));
-  }
-
-  function onEnd() {
-
-  }
-
-  function onEnterFullscreen() {
-
-  }
-
-  function onExitFullscreen() {
-
-  }
-
-  function onShowControls() {
-
-  }
-
-  function onHideControls() {
-
-  }
-  function onPause() {
-
-  }
-  function onPlay() {
-
   }
 
   function onLoad() {
@@ -222,14 +192,16 @@ export const VideoPlayer = (props: PlayerProps) => {
       }
     } else {
       config.tapActionTimeout = setTimeout(() => {
-        if (config.tapAnywhereToPause && playerState.showControls) {
-          methods.togglePlayPause();
-          if (!playerState.paused) {
-            resetControlTimeout();
-          } else {
-            methods.toggleControls();
-          }
-        } else {
+        // If controls are hidden, show them
+        if (!playerState.showControls) {
+          methods.toggleControls();
+        } 
+        // If controls are visible and video is playing, hide them
+        else if (!playerState.paused) {
+          hideControls();
+        }
+        // Otherwise just toggle controls
+        else {
           methods.toggleControls();
         }
         config.tapActionTimeout = null;
@@ -264,10 +236,13 @@ export const VideoPlayer = (props: PlayerProps) => {
   /**
    * Clear the hide controls timeout.
    */
-  function clearControlTimeout() {
+  const clearControlTimeout = () => {
     const config = configRef.current;
-    clearTimeout(config.controlTimeout!);
-  }
+    if (config.controlTimeout) {
+      clearTimeout(config.controlTimeout);
+      config.controlTimeout = null;
+    }
+  };
 
   /**
    * Reset the timer completely
@@ -354,6 +329,9 @@ export const VideoPlayer = (props: PlayerProps) => {
    * state then calls the animation.
    */
   function hideControls() {
+    // Don't hide controls if video is paused
+    if (playerState.paused) return;
+    
     setPlayerState((prev) => ({ ...prev, showControls: false }));
     hideControlAnimation();
   }
@@ -364,54 +342,131 @@ export const VideoPlayer = (props: PlayerProps) => {
    */
 
   function toggleControls() {
+    // If video is paused, always show controls
+    if (playerState.paused) {
+      setPlayerState((prev) => ({ ...prev, showControls: true }));
+      showControlAnimation();
+      return;
+    }
+
     setPlayerState((prev) => ({ ...prev, showControls: !prev.showControls }));
     if (!playerState.showControls) {
       showControlAnimation();
-      if (playerState.paused) {
-        clearControlTimeout();
-      } else {
-        setControlTimeout();
-      }
+      setControlTimeout();
     } else {
-      if (!playerState.paused) {
-        return clearControlTimeout();
-      }
       hideControlAnimation();
     }
   }
 
   function togglePlayPause() {
-    setPlayerState((prev) => ({
-      ...prev,
-      paused: !prev.paused,
-      showControls: !prev.paused ? prev.showControls : true, // Keep controls shown if paused
-    }));
+    // Only toggle play/pause if controls are visible
+    if (playerState.showControls) {
+      setPlayerState((prev) => ({
+        ...prev,
+        paused: !prev.paused,
+      }));
+    } else {
+      // If controls are hidden, show them
+      setPlayerState((prev) => ({
+        ...prev,
+        showControls: true,
+      }));
+      showControlAnimation();
+    }
+  }
+
+  async function toggleFullscreen() {
+    try {
+      if (!playerState.isFullScreen) {
+        setPlayerState((prev) => ({
+          ...prev,
+          isFullScreen: true,
+        }));
+        
+        // Initial orientation
+        await Orientation.lockAsync(Orientation.OrientationLock.LANDSCAPE_RIGHT);
+        StatusBar.setHidden(true, "slide");
+
+        // Set up accelerometer subscription
+        const { status } = await Accelerometer.requestPermissionsAsync();
+        if (status === 'granted') {
+          if (!accelerometerSubscription.current) {
+            accelerometerSubscription.current = Accelerometer.addListener(
+              (accelerometerData) => {
+                const { x } = accelerometerData;
+                // Use a threshold to prevent over-sensitive rotation
+                if (Math.abs(x) > 0.5) {
+                  if (x > 0) {
+                    Orientation.lockAsync(Orientation.OrientationLock.LANDSCAPE_RIGHT);
+                  } else {
+                    Orientation.lockAsync(Orientation.OrientationLock.LANDSCAPE_LEFT);
+                  }
+                }
+              }
+            );
+          }
+        }
+      } else {
+        // Clean up subscription when exiting fullscreen
+        if (accelerometerSubscription.current) {
+          accelerometerSubscription.current.remove();
+          accelerometerSubscription.current = null;
+        }
+
+        setPlayerState((prev) => ({
+          ...prev,
+          isFullScreen: false,
+        }));
+        
+        await Orientation.lockAsync(Orientation.OrientationLock.PORTRAIT);
+        StatusBar.setHidden(false, "slide");
+      }
+    } catch (error) {
+      console.error('Error toggling fullscreen:', error);
+      // Fallback to basic fullscreen without accelerometer
+      setPlayerState((prev) => ({
+        ...prev,
+        isFullScreen: !prev.isFullScreen,
+      }));
+      
+      if (!playerState.isFullScreen) {
+        await Orientation.lockAsync(Orientation.OrientationLock.LANDSCAPE_RIGHT);
+        StatusBar.setHidden(true, "slide");
+      } else {
+        await Orientation.lockAsync(Orientation.OrientationLock.PORTRAIT);
+        StatusBar.setHidden(false, "slide");
+      }
+    }
   }
 
   return (
     <TouchableWithoutFeedback
-      onPress={events.onScreenTouch}
+      onPress={onScreenTouch}
       style={styles.container}
     >
       <View style={[styles.wrapper]}>
         <Video
-          {...props}
           ref={playerRef}
+          source={props.source}
+          style={[styles.video]}
+          playInBackground={true}
+          playWhenInactive={true}
+          ignoreSilentSwitch="ignore"
+          progressUpdateInterval={1000}
+          onAudioBecomingNoisy={() => {
+            setPlayerState((prev) => ({ ...prev, paused: true }));
+          }}
           resizeMode={"contain"}
           volume={1}
           paused={playerState.paused || false}
           muted={false}
           rate={1}
-          playInBackground={true}
           showNotificationControls={true}
           poster={props.poster}
-          onBuffer={events.onBuffer}
-          onLoadStart={events.onLoadStart}
-          onError={events.onError}
-          onLoad={events.onLoad}
-          onEnd={events.onEnd}
-          style={[styles.video]}
-          source={props.source}
+          onBuffer={onBuffer}
+          onLoadStart={onLoadStart}
+          onError={onError}
+          onLoad={onLoad}
         />
         <PlayerLoader loading={playerState.loading} />
         <PlayerError error={playerState.error} isLive={props.isLive} />

@@ -1,49 +1,13 @@
-import { StatusBar, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { VideoPlayer } from "./player";
 import Animated from "react-native-reanimated";
-import * as Orientation from "expo-screen-orientation";
-import { Accelerometer } from "expo-sensors";
 import useStream from "@/hooks/streamStatus";
-import { useState } from "react";
 
 const videoSource =
-  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
 
 export default function Player() {
   const { streamStatus } = useStream();
-  const [isFullScreen, setIsFullScreen] = useState(false);
-  function toggleFullscreen() {
-    if (!isFullScreen) {
-      setIsFullScreen(true);
-      Orientation.lockAsync(Orientation.OrientationLock.LANDSCAPE_RIGHT);
-      //
-      // new
-      StatusBar.setHidden(true, "slide");
-      const subscription = Accelerometer.addListener(
-        (accelerometerData) => {
-          const { x, y } = accelerometerData;
-          if (Math.abs(x) > Math.abs(y)) {
-            if (x > 0) {
-              Orientation.lockAsync(Orientation.OrientationLock.LANDSCAPE_RIGHT);
-              setIsFullScreen(true);
-              StatusBar.setHidden(true, "slide");
-            } else {
-              Orientation.lockAsync(Orientation.OrientationLock.LANDSCAPE_LEFT);
-              setIsFullScreen(true);
-              StatusBar.setHidden(true, "slide");
-            }
-          }
-        }
-      )
-
-      subscription.remove();
-
-    } else {
-      setIsFullScreen(false);
-      Orientation.lockAsync(Orientation.OrientationLock.PORTRAIT);
-      StatusBar.setHidden(false, "slide");
-    }
-  }
 
   return (
     <Animated.View style={[styles.videoContainer]}>
@@ -63,8 +27,6 @@ export default function Player() {
           source: { uri: "https://picsum.photos/300/200/" },
           resizeMode: "cover",
         }}
-        toggleFullscreen={toggleFullscreen}
-        isFullScreen={isFullScreen}
       />
     </Animated.View>
   );
