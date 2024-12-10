@@ -24,6 +24,7 @@ const ListItem = ({
   return (
     <FlatList
       keyExtractor={(item) => item}
+      showsVerticalScrollIndicator={false}
       data={listData}
       renderItem={({ item }) => (
         <TouchableOpacity

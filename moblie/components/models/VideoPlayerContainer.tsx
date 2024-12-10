@@ -36,6 +36,7 @@ const ListItem = ({ onSelect }: { onSelect: (item: string) => void }) => (
   <FlatList
     keyExtractor={(item) => item}
     data={listData}
+    showsVerticalScrollIndicator={false}
     renderItem={({ item }) => (
       <TouchableOpacity
         key={item}

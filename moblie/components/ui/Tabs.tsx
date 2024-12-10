@@ -39,7 +39,7 @@ const Tabs = ({
             layout={LinearTransition.springify().damping(80).stiffness(100)}
             style={{
               backgroundColor: isSelected
-                ? theme.color4.val
+                ? theme.color3.val
                 : undefined,
 
               overflow: "hidden",
@@ -62,7 +62,7 @@ const Tabs = ({
                     entering={FadeInLeft.springify().damping(80).stiffness(100)}
                     exiting={FadeOutLeft.springify().damping(80).stiffness(100)}
                     style={{
-                      color: theme.color11.val,
+                      color: theme.color12.val,
                       fontSize: 12,
                     }}
                   >

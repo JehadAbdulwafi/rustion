@@ -38,6 +38,8 @@ export default function ArticlesPage() {
     <SafeAreaView style={{ flex: 1 }}>
       <FlatList
         data={featuredSectionWithArticles.articles}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => <Text>{item.title}</Text>}
         contentContainerStyle={{

@@ -76,6 +76,7 @@ export default function PlayerScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+      <StatusBar barStyle="light-content" />
       <Player />
     </SafeAreaView>
   );

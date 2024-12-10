@@ -53,7 +53,7 @@ export default function ArticlesPage() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
         <View p={16} style={{ flex: 1 }}>
           <Text type="title">{article.title}</Text>
           <Text type="default" style={{ fontSize: 12, opacity: 0.7 }}>{new Date(article.created_at).toLocaleString()}</Text>

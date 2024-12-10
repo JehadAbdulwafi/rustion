@@ -4,8 +4,9 @@ import Carousel from "@/components/carousel";
 import FeaturedRows from "@/components/featuredRows";
 import { View } from "@/components/ui/View";
 import { navigationHeight } from "@/constants";
+import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, StatusBar } from "react-native";
+import { ActivityIndicator, FlatList } from "react-native";
 import { useTheme } from "tamagui";
 
 export default function HomeScreen() {
@@ -39,12 +40,13 @@ export default function HomeScreen() {
 
   return (
     <View style={{ flex: 1 }}>
+      <StatusBar backgroundColor="transparent" translucent style="light" />
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={[""]}
         renderItem={() =>
           <>
             <Carousel data={tvShows} />
-            {/* <Categories data={categories} /> */}
             <FeaturedRows data={featuredSections} />
           </>
         }

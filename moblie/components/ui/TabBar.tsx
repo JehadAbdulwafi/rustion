@@ -55,7 +55,7 @@ const TabBar = () => {
   });
 
   return (
-    <AView style={[styles.tabBar, rStyle]} backgroundColor={"$color2"} btc={"$6"} btw={"$0.5"}>
+    <AView style={[styles.tabBar, rStyle]} backgroundColor={"$background"} btc={"$6"} btw={"$0.5"}>
       <Tabs
         tabs={[
           { name: "Home", icon: "House", route: "/" },

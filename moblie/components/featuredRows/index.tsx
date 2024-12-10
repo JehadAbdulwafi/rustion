@@ -11,6 +11,7 @@ export default function FeaturedRows({ data }: FeaturedRowsProps) {
     <View>
       <FlatList
         data={data}
+        showsVerticalScrollIndicator={false}
         keyExtractor={(item) => String(item.featured_section.id)}
         renderItem={({ item }) => <Row data={item} />}
       />

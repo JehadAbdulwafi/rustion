@@ -16,6 +16,7 @@ export default function SearchHeader({ handleSearch }: SearchHeaderProps) {
         alignItems: "center",
         paddingHorizontal: 16,
         gap: 12,
+        backgroundColor: "white"
       }}
     >
       <Icon name="ArrowLeft" size={24} />
@@ -23,7 +24,7 @@ export default function SearchHeader({ handleSearch }: SearchHeaderProps) {
       <View style={{ flex: 1, backgroundColor: "transparent" }}>
         <Input
           // styles
-          backgroundColor={"$color1"}
+          backgroundColor={"$color2"}
           color={"white"}
           borderWidth={0}
           borderRadius={12}

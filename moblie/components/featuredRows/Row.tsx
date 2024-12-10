@@ -14,6 +14,7 @@ export default function Row({ data }: RowProps) {
       </View>
       <FlatList
         horizontal
+        showsHorizontalScrollIndicator={false}
         data={data.articles}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => <RowItem item={item} />}

@@ -1,9 +1,10 @@
 import { Colors } from '@/constants/Colors';
-import useTheme from '@/hooks/useTheme';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
 import { Text } from 'tamagui';
+
+import { useTheme } from "tamagui";
 
 type TagsBarProps = {
   tags: Tag[];
@@ -13,7 +14,7 @@ type TagsBarProps = {
 export default function TagsBar({ tags: _tags, handleSort }: TagsBarProps) {
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const [tags, setTags] = useState(_tags);
-  const { theme } = useTheme();
+  const theme = useTheme();
 
   const handleTagPress = (tag: Tag) => {
     let res;
@@ -38,7 +39,7 @@ export default function TagsBar({ tags: _tags, handleSort }: TagsBarProps) {
       <Animated.FlatList
         data={tags}
         horizontal
-        contentContainerStyle={{ padding: 16, gap: 6 }}
+        contentContainerStyle={{ paddingTop: 16, gap: 6 }}
         itemLayoutAnimation={LinearTransition.springify().damping(80).stiffness(200)}
         skipEnteringExitingAnimations
         layout={FadeIn}
@@ -51,13 +52,13 @@ export default function TagsBar({ tags: _tags, handleSort }: TagsBarProps) {
             <Animated.View
               style={{
                 padding: 8,
-                backgroundColor: selectedTags.includes(item) ? "skyblue" : theme === "dark" ? Colors.dark.card : "white",
+                backgroundColor: selectedTags.includes(item) ? theme.blue7.val : theme.color3.val,
                 borderRadius: 8
               }}
             >
               <Text
                 style={{
-                  color: selectedTags.includes(item) ? "white" : theme === "dark" ? Colors.dark.text : Colors.light.text
+                  color: selectedTags.includes(item) ? "white" : theme.color.val
                 }}
               >
                 {item.title}
