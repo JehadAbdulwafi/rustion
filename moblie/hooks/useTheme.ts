@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { Appearance } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Colors } from "@/constants/Colors";
+import { store } from "./storage";
 
 type ThemeColorProps = {
   props: { light?: string; dark?: string },
@@ -20,7 +20,7 @@ const DefaultTheme = "dark";
 
 const initializeTheme = async () => {
   try {
-    const storedTheme = await AsyncStorage.getItem(THEME_STORAGE_KEY);
+    const storedTheme = store.getString(THEME_STORAGE_KEY);
     return storedTheme ? JSON.parse(storedTheme) : DefaultTheme;
   } catch (error) {
     console.warn("Error loading theme:", error);
@@ -28,12 +28,8 @@ const initializeTheme = async () => {
   }
 };
 
-const persistTheme = async (theme: "light" | "dark") => {
-  try {
-    await AsyncStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(theme));
-  } catch (error) {
-    console.warn("Error saving theme:", error);
-  }
+const persistTheme = (theme: "light" | "dark") => {
+   store.set(THEME_STORAGE_KEY, JSON.stringify(theme));
 };
 
 const useTheme = create<LocateState>((set, get) => ({
@@ -49,10 +45,10 @@ const useTheme = create<LocateState>((set, get) => ({
     set({ theme: newTheme });
     persistTheme(newTheme);
   },
-  getThemeColor: ({ props, colorName }) => {
+  getThemeColor: (props: ThemeColorProps) => {
     const theme = get().theme;
-    const colorFromProps = props[theme];
-    return colorFromProps || Colors[theme][colorName];
+    const colorFromProps = props.props[theme];
+    return colorFromProps || Colors[theme][props.colorName];
   }
 }));
 
