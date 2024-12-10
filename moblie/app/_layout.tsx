@@ -5,8 +5,10 @@ import "react-native-reanimated";
 import { Stack } from "expo-router";
 import { Provider } from "@/providers";
 import TabBar from "@/components/ui/TabBar";
+import { initializeI18n } from "@/i18n/config";
 
 SplashScreen.preventAutoHideAsync();
+initializeI18n();
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -30,8 +32,6 @@ export default function RootLayout() {
       <Stack screenOptions={{
         headerShown: false,
         animation: "slide_from_right",
-        statusBarStyle: "light",
-        statusBarBackgroundColor: "#000"
       }}
       >
         <Stack.Screen name="index" />

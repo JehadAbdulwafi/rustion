@@ -8,7 +8,7 @@ type IconProps = {
 
 const Icon = ({ name, ...rest }: IconProps) => {
   const IconComponent = icons[name];
-  const color = useTheme().getThemeColor({ props: { light: undefined, dark: undefined }, colorName: "icon" });
+  const color = useTheme().getThemeColor({ props: { light: undefined, dark: undefined }, colorName: "tabIconDefault" });
   return <IconComponent size={20} {...rest} color={color} />;
 };
 

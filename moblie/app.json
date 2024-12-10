@@ -13,7 +13,14 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "ExpoLocalization_supportsRTL": true
+      }
+    },
+    "locales": {
+      "ar": "./languages/ar.json",
+      "en": "./languages/en.json"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +28,13 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.jehadabdulwafi.rustion",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "permissions": [
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -34,12 +47,6 @@
       "expo-font",
       "expo-screen-orientation",
       [
-        "expo-video",
-        {
-          "supportsPictureInPicture": true
-        }
-      ],
-      [
         "react-native-video",
         {
           "enableNotificationControls": true,
@@ -51,12 +58,15 @@
             "useExoplayerDash": true
           }
         }
-      ]
+      ],
+      "expo-sqlite",
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true
     },
     "extra": {
+      "supportsRTL": true,
       "router": {
         "origin": false
       },
@@ -64,6 +74,12 @@
         "projectId": "fd2d880c-0b30-45c8-9636-0c8f5de837f8"
       }
     },
-    "owner": "jehadabdulwafi"
+    "owner": "jehadabdulwafi",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/fd2d880c-0b30-45c8-9636-0c8f5de837f8"
+    }
   }
 }

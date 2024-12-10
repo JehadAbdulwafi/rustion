@@ -1,0 +1,1 @@
+/*eslint-disable*/module.exports={messages:JSON.parse("{\"featured.section.title\":[[\"0\"]]}")};
