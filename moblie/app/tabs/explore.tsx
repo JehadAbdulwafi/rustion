@@ -4,15 +4,17 @@ import ArticleCard from '@/components/featuredRows/articleCard';
 import SearchHeader from '@/components/ui/SearchHeader';
 import TagsBar from '@/components/ui/TagsBar';
 import { navigationHeight } from '@/constants';
-import { DarkTheme } from '@react-navigation/native';
 import { View } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, StatusBar } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
+import { StatusBar } from "expo-status-bar"
+import { useTheme } from "tamagui";
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function TabTwoScreen() {
+  const theme = useTheme();
   const [articles, setArticles] = useState<Article[]>();
   const [filteredArticles, setFilteredArticles] = useState<Article[]>();
   const [tags, setTags] = useState<Tag[]>([]);
@@ -73,9 +75,9 @@ export default function TabTwoScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar backgroundColor={DarkTheme.colors.card} />
+      <StatusBar />
       <SearchHeader handleSearch={handleSearch} />
-      <TagsBar tags={tags} handleSort={handleSort} />
+
       <Animated.FlatList
         data={filteredArticles}
         itemLayoutAnimation={LinearTransition.springify().damping(80).stiffness(200)}
@@ -87,8 +89,12 @@ export default function TabTwoScreen() {
         contentContainerStyle={{
           paddingHorizontal: 16,
           paddingBottom: navigationHeight + 16,
-          gap: 16
+          gap: 16,
+          backgroundColor: theme.background.val
         }}
+        ListHeaderComponent={
+          <TagsBar tags={tags} handleSort={handleSort} />
+        }
       />
     </SafeAreaView>
   );
