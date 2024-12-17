@@ -1,0 +1,159 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2024-12-10 09:52+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: en\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#. js-lingui-explicit-id
+#: app/tabs/account.tsx:64
+msgid "Theme"
+msgstr "Theme"
+
+#. js-lingui-explicit-id
+#: app/tabs/account.tsx:74
+msgid "Language"
+msgstr "Language"
+
+#. js-lingui-explicit-id
+#: app/tabs/account.tsx:40
+#~ msgid "Dark"
+#~ msgstr "Dark"
+
+#. js-lingui-explicit-id
+#: app/tabs/account.tsx:50
+#: constants/Colors.ts:31
+#~ msgid "Light"
+#~ msgstr "Light"
+
+#. js-lingui-explicit-id
+#: components/featuredRows/Row.tsx:14
+#~ msgid "featured.section.title"
+#~ msgstr "{0}"
+
+#. js-lingui-explicit-id
+#: components/featuredRows/Row.tsx:14
+#~ msgid "hello"
+#~ msgstr "Hello"
+
+#: constants/settings.ts:56
+msgid "About"
+msgstr "About"
+
+#: components/ui/TabBar.tsx:66
+#: app/tabs/_layout.tsx:24
+msgid "Account"
+msgstr "Account"
+
+#: i18n/config.tsx:12
+msgid "Arabic"
+msgstr "Arabic"
+
+#: constants/settings.ts:33
+#~ msgid "Choose the app's theme"
+#~ msgstr "Choose the app's theme"
+
+#: constants/settings.ts:46
+msgid "Contact us"
+msgstr "Contact us"
+
+#: constants/Colors.ts:30
+msgid "Dark"
+msgstr "Dark"
+
+#: app/tabs/account.tsx:59
+msgid "Display"
+msgstr "Display"
+
+#: i18n/config.tsx:13
+msgid "English"
+msgstr "English"
+
+#: components/ui/TabBar.tsx:64
+msgid "Explore"
+msgstr "Explore"
+
+#: constants/settings.ts:30
+msgid "FAQ"
+msgstr "FAQ"
+
+#: constants/settings.ts:38
+msgid "Forum"
+msgstr "Forum"
+
+#: constants/settings.ts:26
+msgid "Help"
+msgstr "Help"
+
+#: components/ui/TabBar.tsx:63
+msgid "Home"
+msgstr "Home"
+
+#: constants/Colors.ts:31
+msgid "Light"
+msgstr "Light"
+
+#: components/ui/TabBar.tsx:65
+#: components/player/top_controls.tsx:86
+msgid "Live"
+msgstr "Live"
+
+#: app/_layout.tsx:66
+msgid "Notifications"
+msgstr "Notifications"
+
+#: components/player/top_controls.tsx:86
+msgid "Offline"
+msgstr "Offline"
+
+#: constants/settings.ts:73
+msgid "Privacy Policy"
+msgstr "Privacy Policy"
+
+#: constants/settings.ts:66
+msgid "Rate the app on the store"
+msgstr "Rate the app on the store"
+
+#: constants/settings.ts:65
+msgid "Rate us"
+msgstr "Rate us"
+
+#: components/ui/SearchHeader.tsx:33
+msgid "Search"
+msgstr "Search"
+
+#: app/tabs/account.tsx:106
+msgid "Select Language"
+msgstr "Select Language"
+
+#: app/tabs/account.tsx:119
+msgid "Select Theme"
+msgstr "Select Theme"
+
+#: constants/settings.ts:26
+#~ msgid "Setup"
+#~ msgstr "Setup"
+
+#: constants/settings.ts:59
+msgid "Share app"
+msgstr "Share app"
+
+#: constants/settings.ts:60
+msgid "Spread the word!"
+msgstr "Spread the word!"
+
+#: constants/settings.ts:81
+msgid "Terms of Service"
+msgstr "Terms of Service"
+
+#: constants/settings.ts:89
+msgid "Version"
+msgstr "Version"

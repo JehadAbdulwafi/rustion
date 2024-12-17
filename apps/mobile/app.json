@@ -1,0 +1,129 @@
+{
+  "expo": {
+    "name": "rustion",
+    "slug": "rustion",
+    "version": "1.0.1",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "rustion",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "ExpoLocalization_supportsRTL": false
+      }
+    },
+    "locales": {
+      "ar": "./languages/ar.json",
+      "en": "./languages/en.json"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#000000"
+      },
+      "package": "com.rustion.streamapp",
+      "versionCode": 2,
+      "googleServicesFile": "./google-services.json",
+      "permissions": [
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "jsEngine": "hermes",
+    "plugins": [
+      "expo-router",
+      "expo-localization",
+      "expo-font",
+      "expo-screen-orientation",
+      [
+        "react-native-video",
+        {
+          "enableNotificationControls": true,
+          "enableBackgroundAudio": true,
+          "androidExtensions": {
+            "useExoplayerRtsp": true,
+            "useExoplayerSmoothStreaming": true,
+            "useExoplayerHls": true,
+            "useExoplayerDash": true
+          }
+        }
+      ],
+      [
+        "expo-quick-actions",
+        {
+          "androidIcons": {
+            "shortcut_search": {
+              "foregroundImage": "./assets/adaptive/search_icon.png",
+              "backgroundColor": "#121212"
+            },
+            "shortcut_compose": {
+              "foregroundImage": "./assets/adaptive/compose_icon.png",
+              "backgroundColor": "#121212"
+            },
+            "shortcut_settings": {
+              "foregroundImage": "./assets/adaptive/settings_icon.png",
+              "backgroundColor": "#121212"
+            }
+          },
+          "iosActions": [
+            {
+              "id": "search",
+              "title": "Search",
+              "icon": "search",
+              "params": {
+                "href": "/tabs/explore"
+              }
+            },
+            {
+              "id": "live",
+              "title": "Live",
+              "icon": "compose",
+              "params": {
+                "href": "/tabs/live"
+              }
+            },
+            {
+              "id": "settings",
+              "title": "Settings",
+              "icon": "symbol:gearshape",
+              "params": {
+                "href": "/tabs/account"
+              }
+            }
+          ]
+        }
+      ],
+      "expo-asset"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "supportsRTL": false,
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "fd2d880c-0b30-45c8-9636-0c8f5de837f8"
+      }
+    },
+    "owner": "jehadabdulwafi",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/fd2d880c-0b30-45c8-9636-0c8f5de837f8"
+    }
+  }
+}
