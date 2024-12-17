@@ -1,6 +1,6 @@
 -- name: CreatePushToken :one
-INSERT INTO push_tokens (token, fingerprint, provider, app_id)
-VALUES ($1, $2, $3, $4)
+INSERT INTO push_tokens (token, fingerprint, provider, app_id, created_at, updated_at)
+VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 RETURNING *;
 
 -- name: GetPushToken :one
