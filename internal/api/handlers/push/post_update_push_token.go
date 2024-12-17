@@ -10,12 +10,13 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/database"
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/lib/pq"
 )
 
 func PostUpdatePushTokenRoute(s *api.Server) *echo.Route {
-	return s.Router.APIV1Push.PUT("/token", postUpdatePushTokenHandler(s))
+	return s.Router.APIV1Push.POST("/token", postUpdatePushTokenHandler(s))
 }
 
 func postUpdatePushTokenHandler(s *api.Server) echo.HandlerFunc {
@@ -28,11 +29,21 @@ func postUpdatePushTokenHandler(s *api.Server) echo.HandlerFunc {
 			return err
 		}
 
+		appID := body.AppID.String()
+		AppID, err := uuid.Parse(appID)
+
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, "invalid id")
+		}
 		// insert new token
 		if _, err := s.Queries.CreatePushToken(ctx, database.CreatePushTokenParams{
 			Provider:    database.ProviderTypeFcm,
 			Token:       *body.NewToken,
 			Fingerprint: *body.Fingerprint,
+			AppID: uuid.NullUUID{
+				UUID:  AppID,
+				Valid: true,
+			},
 		}); err != nil {
 			log.Debug().Str("fingerprint", *body.Fingerprint).Err(err).Msg("Failed to insert push token.")
 
@@ -40,6 +51,7 @@ func postUpdatePushTokenHandler(s *api.Server) echo.HandlerFunc {
 			var pqErr *pq.Error
 			if errors.As(err, &pqErr) {
 				if pqErr.Code == "23505" && pqErr.Constraint == "push_tokens_token_key" {
+					log.Debug().Str("fingerprint", *body.Fingerprint).Msg("Push token already exists.")
 					return httperrors.ErrConflictPushToken
 				}
 			}
@@ -53,6 +65,7 @@ func postUpdatePushTokenHandler(s *api.Server) echo.HandlerFunc {
 			if err != nil {
 				log.Debug().Str("fingerprint", *body.Fingerprint).Err(err).Msg("Old token to delete not found or not assigned to body.")
 				if errors.Is(err, sql.ErrNoRows) {
+					log.Debug().Str("fingerprint", *body.Fingerprint).Msg("Old token to delete not found or not assigned to body.")
 					return httperrors.ErrNotFoundOldPushToken
 				}
 

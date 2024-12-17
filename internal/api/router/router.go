@@ -255,7 +255,21 @@ func Init(s *api.Server) {
 			},
 		})),
 
-		APIV1Push: s.Echo.Group("/api/v1/push", middleware.Auth(s)),
+		APIV1Push: s.Echo.Group("/api/v1/push", middleware.AuthWithConfig(middleware.AuthConfig{
+			S:    s,
+			Mode: middleware.AuthModeRequired,
+			Skipper: func(c echo.Context) bool {
+				switch c.Path() {
+				case "/api/v1/push/token":
+					return true
+				case "/api/v1/push/test":
+					return true
+				case "/api/v1/push/send":
+					return false
+				}
+				return false
+			},
+		})),
 	}
 
 	handlers.AttachAllRoutes(s)

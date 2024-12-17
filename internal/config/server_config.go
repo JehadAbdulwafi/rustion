@@ -1,6 +1,7 @@
 package config
 
 import (
+	"os"
 	"path/filepath"
 	"runtime"
 	"time"
@@ -84,6 +85,8 @@ type Server struct {
 }
 
 func DefaultServiceConfigFromEnv() Server {
+	DotEnvLoad(filepath.Join(util.GetProjectRootDir(), "../.env"), os.Setenv)
+
 	return Server{
 		Database: Database{
 			Host:     util.GetEnv("PGHOST", "localhost"),
@@ -100,7 +103,7 @@ func DefaultServiceConfigFromEnv() Server {
 		},
 		Echo: EchoServer{
 			Debug:                          util.GetEnvAsBool("SERVER_ECHO_DEBUG", false),
-			ListenAddress:                  util.GetEnv("SERVER_ECHO_LISTEN_ADDRESS", "192.168.1.2:9973"),
+			ListenAddress:                  util.GetEnv("SERVER_ECHO_LISTEN_ADDRESS", "192.168.1.8:9973"),
 			HideInternalServerErrorDetails: util.GetEnvAsBool("SERVER_ECHO_HIDE_INTERNAL_SERVER_ERROR_DETAILS", true),
 			BaseURL:                        util.GetEnv("SERVER_ECHO_BASE_URL", "http://localhost:8080"),
 			EnableCORSMiddleware:           util.GetEnvAsBool("SERVER_ECHO_ENABLE_CORS_MIDDLEWARE", true),
@@ -145,12 +148,12 @@ func DefaultServiceConfigFromEnv() Server {
 			PrettyPrintConsole: util.GetEnvAsBool("SERVER_LOGGER_PRETTY_PRINT_CONSOLE", false),
 		},
 		Push: PushService{
-			UseFCMProvider: util.GetEnvAsBool("SERVER_PUSH_USE_FCM", false),
+			UseFCMProvider: util.GetEnvAsBool("SERVER_PUSH_USE_FCM", true),
 		},
 		FCMConfig: push.FCMConfig{
-			GoogleApplicationCredentials: util.GetEnv("GOOGLE_APPLICATION_CREDENTIALS", ""),
-			ProjectID:                    util.GetEnv("SERVER_FCM_PROJECT_ID", "no-fcm-project-id-set"),
-			ValidateOnly:                 util.GetEnvAsBool("SERVER_FCM_VALIDATE_ONLY", true),
+			GoogleApplicationCredentials: util.GetEnv("GOOGLE_APPLICATION_CREDENTIALS", `C:\Users\admin\Desktop\projects\go\rustion\web-appai-test-login-firebase-adminsdk-7qapi-45042bec12.json`),
+			ProjectID:                    util.GetEnv("SERVER_FCM_PROJECT_ID", "web-appai-test-login"),
+			ValidateOnly:                 util.GetEnvAsBool("SERVER_FCM_VALIDATE_ONLY", false),
 		},
 		Frontend: FrontendServer{
 			BaseURL:               util.GetEnv("SERVER_FRONTEND_BASE_URL", "http://localhost:3000"),

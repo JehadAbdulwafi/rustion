@@ -11,9 +11,10 @@ import (
 )
 
 func PostPushNotificationsRoute(s *api.Server) *echo.Route {
-	return s.Router.APIV1Push.POST("/notifications", postPushNotificationsHandler(s))
+	return s.Router.APIV1Push.POST("/send", postPushNotificationsHandler(s))
 }
 
+// send notification for all users in user app
 func postPushNotificationsHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
@@ -32,11 +33,11 @@ func postPushNotificationsHandler(s *api.Server) echo.HandlerFunc {
 
 		err = s.Push.SendToUsers(ctx, userApp.ID, *body.Subject, *body.Body, body.Image)
 		if err != nil {
-			log.Debug().Err(err).Str("fingerprint", userApp.ID.String()).Msg("Error while sending push to users.")
+			log.Debug().Err(err).Str("app_id", userApp.ID.String()).Msg("Error while sending push to users.")
 			return err
 		}
 
-		log.Debug().Str("fingerprint", userApp.ID.String()).Msg("Successfully sent push message.")
+		log.Debug().Str("app_id", userApp.ID.String()).Msg("Successfully sent push message.")
 
 		return c.String(http.StatusOK, "Success")
 	}

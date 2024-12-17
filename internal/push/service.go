@@ -76,6 +76,9 @@ func (s *Service) SendToUsers(ctx context.Context, appID uuid.UUID, title string
 			tokens = append(tokens, token.Token)
 		}
 
+		log.Debug().Str("provider", string(p.GetProviderType())).Msgf("Sending push to %d tokens", len(tokens))
+		log.Debug().Interface("tokens", tokens).Msgf("Sending push to %d tokens", len(tokens))
+
 		responseSlice := p.SendMulticast(tokens, title, message, image)
 		tokenToDelete := make([]string, 0)
 		for _, res := range responseSlice {
