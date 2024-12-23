@@ -11,6 +11,10 @@ import { getNavigationDTO } from "@/lib/dto"
 import { catchErrorTyped } from "@/api/ApiError"
 import { redirect } from "next/navigation"
 
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+export const revalidate = 0;
+
 // Cache the getUser function to ensure consistent data
 const getCachedUser = cache(async () => {
   try {

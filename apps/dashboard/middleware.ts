@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtDecode } from "jwt-decode";
-import { cookies } from 'next/headers'
 
 const protectedRoutes = /dashboard/;
 
 export default async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
   const isProtectedRoute = protectedRoutes.test(path);
-  const cookie = await cookies()
-  const access_token = cookie.get('access_token')?.value
-  const refresh_token = cookie.get('refresh_token')?.value
+  const access_token = req.cookies.get('access_token')?.value;
+  const refresh_token = req.cookies.get('refresh_token')?.value;
 
   if (isProtectedRoute) {
     if (access_token) {
@@ -49,20 +47,20 @@ export default async function middleware(req: NextRequest) {
               return NextResponse.redirect(new URL("/auth", req.url));
             }
 
-            cookie.set('access_token', payload.access_token, { httpOnly: true, expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), secure: true, sameSite: 'lax', path: '/' })
-            cookie.set('refresh_token', payload.refresh_token, { httpOnly: true, expires: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000), secure: true, sameSite: 'lax', path: '/' })
+            req.cookies.set('access_token', payload.access_token, { httpOnly: true, expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), secure: true, sameSite: 'lax', path: '/' })
+            req.cookies.set('refresh_token', payload.refresh_token, { httpOnly: true, expires: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000), secure: true, sameSite: 'lax', path: '/' })
 
             return NextResponse.redirect(new URL("/dashboard", req.url));
           } catch (error) {
             console.log("failed to refresh token", error)
-            await deleteCookies();
+            await deleteCookies(req);
             return NextResponse.redirect(new URL("/auth", req.nextUrl));
           }
         }
       }
     } else {
       console.log("access token not found")
-      await deleteCookies();
+      await deleteCookies(req);
       return NextResponse.redirect(new URL("/auth", req.nextUrl));
     }
   }
@@ -74,11 +72,12 @@ export const config = {
   matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
 }
 
-async function deleteCookies() {
+export const dynamic = 'force-dynamic';
+
+async function deleteCookies(req: NextRequest) {
   try {
-    const cookie = await cookies()
-    cookie.delete("access_token")
-    cookie.delete("refresh_token")
+    req.cookies.delete("access_token")
+    req.cookies.delete("refresh_token")
   } catch (error) {
     console.log("ERR DELETE COOKIES", error)
   }

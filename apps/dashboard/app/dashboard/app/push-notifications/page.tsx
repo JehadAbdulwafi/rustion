@@ -1,5 +1,7 @@
 "use client"
 
+export const dynamic = 'force-dynamic';
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { withHydration } from "@/components/hoc/with-hydration"
@@ -28,6 +30,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import Image from "next/image"
 
 const formSchema = z.object({
   title: z
@@ -64,7 +67,7 @@ function PushNotificationCard({
               <h3 className="font-semibold">{notification.title}</h3>
               <p className="text-sm text-muted-foreground mt-1">{notification.body}</p>
               {notification.image && (
-                <img
+                <Image
                   src={notification.image}
                   alt={notification.title}
                   className="mt-2 h-32 w-auto rounded-md object-cover"
