@@ -69,12 +69,6 @@ COPY --from=builder /app/sql/schema ./migrations/
 # COPY --from=builder /app/firebase-adminsdk.json .
 COPY --from=builder /app/web ./web/
 
-# Environment variable for Firebase credentials path in Coolify's persistent storage
-ENV FIREBASE_CREDENTIALS_PATH=/data/credentials/firebase-adminsdk.json
-
-# Create directory for credentials in persistent storage
-RUN mkdir -p /data/credentials
-
 EXPOSE 9973
 
 ENTRYPOINT ["/app/app"]
