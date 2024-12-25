@@ -1,6 +1,6 @@
 module github.com/JehadAbdulwafi/rustion
 
-go 1.23.1
+go 1.23.4
 
 require (
 	github.com/gabriel-vasile/mimetype v1.4.5
@@ -18,6 +18,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/sqlc-dev/pqtype v0.3.0
 	github.com/stretchr/testify v1.9.0
+	github.com/subosito/gotenv v1.6.0
 	golang.org/x/crypto v0.29.0
 	golang.org/x/mod v0.21.0
 	golang.org/x/net v0.31.0

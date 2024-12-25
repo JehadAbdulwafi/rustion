@@ -5,7 +5,6 @@
 build:
 	@$(MAKE) build-pre
 	@$(MAKE) build-app
-	@$(MAKE) build-rsdev
 
 all: init
 	@$(MAKE) build
@@ -100,11 +99,9 @@ swagger-server: swagger-generate swagger-validate
 
 swagger-generate:
 	@echo "make swagger-generate"
-	@rm -rf tmp/testdata/types
-	@mkdir -p tmp/testdata/types
-	@swagger generate server --allow-template-override  --template-dir=api/templates  --spec=api/swagger.yml  --server-package=tmp/testdata/types  --model-package=tmp/testdata/types  --exclude-main  --skip-validation --config-file=api/config/go-swagger-config.yml -q
+	@rm -rf internal/types
 	@mkdir -p internal/types
-	@cp -r tmp/testdata/types/* internal/types/
+	@swagger generate server --allow-template-override  --template-dir=api/templates  --spec=api/swagger.yml  --server-package=internal/types  --model-package=internal/types  --exclude-main  --skip-validation --config-file=api/config/go-swagger-config.yml -q
 
 swagger-serve:
 	@echo "Serving Swagger API documentation..."

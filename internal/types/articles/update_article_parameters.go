@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/validate"
 
-	"github.com/JehadAbdulwafi/rustion/tmp/testdata/types"
+	"github.com/JehadAbdulwafi/rustion/internal/types"
 )
 
 // NewUpdateArticleParams creates a new UpdateArticleParams object

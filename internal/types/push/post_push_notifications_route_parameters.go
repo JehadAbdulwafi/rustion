@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/JehadAbdulwafi/rustion/tmp/testdata/types"
+	"github.com/JehadAbdulwafi/rustion/internal/types"
 )
 
 // NewPostPushNotificationsRouteParams creates a new PostPushNotificationsRouteParams object
