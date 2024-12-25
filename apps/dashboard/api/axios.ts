@@ -1,7 +1,8 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 import { getSession } from "../lib/session";
 
-const BASE_URL = "http://192.168.1.2:9973/api/v1";
+// const BASE_URL = "http://192.168.1.2:9973/api/v1";
+const BASE_URL = "https://server.jehad.ly/api/v1";
 
 export const API = axios.create({
   baseURL: BASE_URL,
