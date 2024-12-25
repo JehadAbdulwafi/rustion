@@ -16,7 +16,7 @@ export default function PlayerScreen() {
 
   const wsUrl = useMemo(() => {
     const fingerprint = osBuildFingerprint!.replaceAll("/", "-");
-    return `ws://${config.api.host}/api/v1/streams/${streamConfig.stream.id}/ws?viewer_id=${fingerprint}`;
+    return `wss://${config.api.host}/api/v1/streams/${streamConfig.stream.id}/ws?viewer_id=${fingerprint}`;
   }, []);
 
   const connect = () => {

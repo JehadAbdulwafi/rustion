@@ -28,7 +28,7 @@ export default function LiveScene({ stream, userID }: { stream: Stream, userID: 
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) return;
 
     const ws = new WebSocket(
-      `ws://server.jehad.ly/api/v1/streams/${stream.id}/ws?viewer_id=${userID}`
+      `wss://server.jehad.ly/api/v1/streams/${stream.id}/ws?viewer_id=${userID}`
     );
     wsRef.current = ws;
 
