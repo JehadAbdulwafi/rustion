@@ -1,0 +1,41 @@
+# Development and IDE files
+.devcontainer
+.vscode
+.pkg
+.tools-versions
+.git
+.gitignore
+.aider*
+.env*
+Dockerfile*
+docker-compose.*
+docker-helper.sh
+compose.yaml
+LICENSE
+notes
+*.md
+
+# Binary directories
+bin/
+tmp/
+test/
+vendor/
+
+# Ignore apps folder
+apps/
+apps/*
+
+# Ignore assets/images
+assets/images/*
+!assets/images/.gitkeep
+
+# Development files
+scripts/
+scripts/*
+*.test
+tests/
+
+
+# Temporary and cache directories
+.aider.tags.cache.v3/
+tmp/
