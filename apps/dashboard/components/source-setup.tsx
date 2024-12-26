@@ -14,11 +14,11 @@ const generateRtmpUrl = (stream: Stream) => {
 };
 
 const generateRtmpPassword = (stream: Stream) => {
-  return `/${stream.endpoint}?secret=null&password=${stream.password}`;
+  return `/${stream.name}?secret=null&password=${stream.password}`;
 };
 
 const generateSrtUrl = (stream: Stream) => {
-  return `srt://${stream.host || 'localhost:10800'}?streamid=#!::r=${stream.app}/${stream.endpoint}?secret=null&password=${stream.password},m=publish`;
+  return `srt://${stream.host || 'localhost:10800'}?streamid=#!::r=${stream.app}/${stream.name}?secret=null&password=${stream.password},m=publish`;
 };
 
 export default function SourceSetup({ stream }: { stream: Stream }) {
