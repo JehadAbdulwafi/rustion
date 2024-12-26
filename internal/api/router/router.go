@@ -76,6 +76,8 @@ func Init(s *api.Server) {
 				switch c.Path() {
 				case "/api/v1/streams/:id/ws":
 					return true
+				case "/api/v1/streams/events":
+					return true
 				}
 				return false
 			},
