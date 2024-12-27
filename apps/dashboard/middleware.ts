@@ -14,17 +14,10 @@ export default async function middleware(req: NextRequest) {
       const JwtPayloadExp = jwtDecode(access_token)?.exp;
       if (JwtPayloadExp) {
         const exp = new Date(JwtPayloadExp * 1000);
-        console.log("exp", exp)
-        console.log("new Date()", new Date())
         if (exp < new Date()) {
-          console.log("access token expired", access_token)
           if (!refresh_token) {
-            console.log("refresh token not found")
             return NextResponse.redirect(new URL("/auth", req.url));
           }
-
-          console.log("refresh token found", refresh_token)
-
           try {
             const res = await fetch("https://server.jehad.ly/api/v1/auth/refresh", {
               method: "POST",
@@ -52,14 +45,12 @@ export default async function middleware(req: NextRequest) {
 
             return NextResponse.redirect(new URL("/dashboard", req.url));
           } catch (error) {
-            console.log("failed to refresh token", error)
             await deleteCookies(req);
             return NextResponse.redirect(new URL("/auth", req.nextUrl));
           }
         }
       }
     } else {
-      console.log("access token not found")
       await deleteCookies(req);
       return NextResponse.redirect(new URL("/auth", req.nextUrl));
     }

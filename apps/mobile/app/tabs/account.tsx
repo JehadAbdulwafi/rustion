@@ -79,7 +79,7 @@ export default function Account() {
           </YStack>
 
           {/* @ts-ignore */}
-          {getSettingsData(appConfig).map((section, index) => section && (
+          {getSettingsData(appConfig).map((section, index) => (section && section.items.filter((item) => item !== null).length > 0) && (
             <YStack key={index} p="$4" gap="$4" br={"$4"} bg={"$color1"} $theme-dark={{ bg: "$color2" }}>
               <Text fontSize={"$7"} fontWeight={"700"}>{_(section.title)}</Text>
               {section.items.map((item, idx) => item && (

@@ -102,7 +102,6 @@ function SettingsPage() {
     const loadSettings = async () => {
       try {
         const app = await getAppSettings()
-        console.log("Settings:", app)
         const appConfig = JSON.parse(app.config)
 
         form.reset(appConfig)

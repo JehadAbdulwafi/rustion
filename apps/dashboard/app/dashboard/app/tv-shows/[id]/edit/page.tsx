@@ -54,7 +54,6 @@ function EditTvShowPage() {
     const loadData = async () => {
       try {
         const data = await getTvShow(params.id as string)
-        console.log("TV Show Data:", data)
         form.reset({
           title: data.title,
           description: data.description,

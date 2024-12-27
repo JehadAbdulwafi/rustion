@@ -46,7 +46,6 @@ type ChangePasswordValidateError = {
 }
 
 export async function changePassword(state: ChangePasswordFormState, formData: FormData) {
-  console.log("start change password")
   let redirectPath: string | null = null
   const validatedFields = ChangePasswordFormSchema.safeParse({
     currentPassword: formData.get('currentPassword'),

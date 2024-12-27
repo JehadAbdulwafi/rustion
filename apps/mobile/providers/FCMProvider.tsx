@@ -1,5 +1,5 @@
 import { PermissionsAndroid } from 'react-native'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 export {
   ErrorBoundary,
 } from 'expo-router'
@@ -15,15 +15,12 @@ async function onMessageReceived(
   message: FirebaseMessagingTypes.RemoteMessage,
   isBackground = false
 ) {
-  console.log("new messages", message);
   try {
-    // Don't show notification if it's a background message (Firebase will handle it)
     if (isBackground) return;
 
     // @ts-ignore
     const { title, body, android } = message?.notification;
-    
-    // Save notification to storage
+
     saveNotification({
       title,
       body,

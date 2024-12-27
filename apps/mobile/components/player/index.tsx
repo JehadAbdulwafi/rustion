@@ -11,7 +11,8 @@ const Player = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const videoSource = useMemo(() => ({
-    uri: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    // uri: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    uri: "https://stream.jehad.ly/live/livestream1.flv",
     metadata: {
       imageUri: streamStatus.thumbnail || "https://picsum.photos/300/200/",
       title: streamStatus.title,

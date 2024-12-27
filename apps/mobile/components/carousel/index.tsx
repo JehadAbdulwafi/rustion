@@ -43,7 +43,7 @@ const Carousel = ({ data }: CarouselProps) => {
           overflow: "hidden",
         }}
       >
-        {data.map((item, idx) => {
+        {data?.map((item, idx) => {
           return (
             <BackdropImage key={idx} item={item} idx={idx} scrollX={scrollX} />
           );

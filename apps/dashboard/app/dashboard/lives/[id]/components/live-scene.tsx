@@ -39,11 +39,9 @@ export default function LiveScene({ stream, userID }: { stream: Stream, userID: 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       setStreamStatus(data.payload);
-      console.log("New message:", data);
     };
 
     ws.onclose = () => {
-      console.log("WebSocket closed");
       setIsConnected(false);
       wsRef.current = null;
     };
