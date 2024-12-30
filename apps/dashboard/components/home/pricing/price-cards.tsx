@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { PriceTitle } from '@/components/home/pricing/price-title';
 import { Separator } from '@/components/ui/separator';
-import { FeaturedCardGradient } from '@/components/gradients/featured-card-gradient';
+
 import Link from 'next/link';
 
 interface Props {
@@ -45,7 +45,7 @@ export function PriceCards({ loading = defaultProps.loading, frequency = default
           </div>
           <div className={'px-8 mt-8'}>
             <Button className={'w-full'} variant={'secondary'} asChild={true}>
-              <Link href={`/checkout/${tier.priceId[frequency.value]}`}>Get started</Link>
+              <Link href={`/contact`}>Get started</Link>
             </Button>
           </div>
           <FeaturesList tier={tier} />

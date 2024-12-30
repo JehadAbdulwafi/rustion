@@ -19,7 +19,7 @@ export function StartCodingSection() {
         </p>
         <div className="flex gap-4 justify-center">
           <Link
-            href="/signup"
+            href="/auth/register"
             className="px-6 py-3 bg-white text-blue-600 rounded-full font-medium hover:bg-opacity-90 transition-all"
           >
             Signup Now →
