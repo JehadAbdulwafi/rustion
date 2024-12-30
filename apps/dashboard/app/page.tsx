@@ -8,13 +8,16 @@ import { FAQ } from "@/components/home/faq";
 import { StartCodingSection } from "@/components/home/start-coding-section";
 import { Footer } from '@/components/home/footer';
 import { SiteHeader } from '@/components/home/header/site-header';
+import { catchErrorTyped } from '@/api/ApiError';
+import { getUser } from '@/lib/dal';
 
-export default function Home() {
+export default async function Home() {
+  const [uerr, user] = await catchErrorTyped(getUser());
+
   return (
-
     <div className="relative flex min-h-svh flex-col">
       <div data-wrapper="" className="border-grid flex flex-1 flex-col">
-        <SiteHeader />
+        <SiteHeader user={user} />
         <main className="flex flex-1 flex-col">
           <div className="relative">
             <HomePageBackground />
@@ -33,8 +36,6 @@ export default function Home() {
             </div>
             <Footer />
           </div>
-
-
         </main>
       </div>
     </div>

@@ -6,7 +6,6 @@ import { withHydration } from "@/components/hoc/with-hydration"
 import RecentUpdates from "@/components/recent-updates"
 
 function Page() {
-
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <Banner />

@@ -53,13 +53,13 @@ const footerLinks = {
 }
 
 export function Footer() {
+  // <footer className="bg-black text-gray-300 pt-16 pb-8">
   return (
-    <footer className="bg-black text-gray-300 pt-16 pb-8">
+    <footer className="bg-black text-gray-300 pb-8">
       <div className="container mx-auto px-4">
 
         {/* Links Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-12">
-          {/* Custom Support Section */}
+        {/* <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-12">
           <div className="mb-12">
             <h4 className="text-white font-semibold mb-4">Need a custom plan? Talk to us.</h4>
             <p className="mb-4">Let our experts help you out.</p>
@@ -87,18 +87,17 @@ export function Footer() {
               </ul>
             </div>
           ))}
-        </div>
+        </div> */}
 
 
         {/* Bottom Links */}
-        <div className="border-t border-gray-800 pt-8">
+        <div className=" pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm mb-4 md:mb-0">© 2024 rustion Live Streaming, Inc. All rights reserved</p>
             <div className="flex gap-6 text-sm">
-              <Link href="/blog" className="hover:text-white">Blog</Link>
+              <Link href="/contact" className="hover:text-white">Contact</Link>
               <Link href="/terms" className="hover:text-white">Terms</Link>
               <Link href="/privacy" className="hover:text-white">Privacy Policy</Link>
-              <Link href="/gdpr" className="hover:text-white">GDPR</Link>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 export const siteConfig = {
-  name: "rustion",
+  name: "RUSTATION",
   url: "https://panel.rustoin.com",
   ogImage: "https://api.rustion.com/og.jpg",
   description:
