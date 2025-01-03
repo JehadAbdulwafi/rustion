@@ -40,7 +40,7 @@ func getForwardSecretsHandler(s *api.Server) echo.HandlerFunc {
 		}
 
 		// Forward the request using the token
-		responseData, err := forwardRequest(token, stream.Host)
+		responseData, err := forwardRequest(token, stream.Host, "terraform/v1/ffmpeg/forward/secret")
 		if err != nil {
 			return handleError(c, "Failed to forward request", err)
 		}
@@ -81,8 +81,7 @@ func getAuthToken(secret string, host string) (string, error) {
 }
 
 // forwardRequest forwards the request with the provided token
-func forwardRequest(token string, host string) (map[string]interface{}, error) {
-	endpoint := "terraform/v1/ffmpeg/forward/secret"
+func forwardRequest(token string, host string, endpoint string) (map[string]interface{}, error) {
 	forwardURL := fmt.Sprintf("https://%s/%s", host, endpoint)
 
 	headers := http.Header{}
@@ -112,4 +111,3 @@ func handleError(c echo.Context, message string, err error) error {
 	fmt.Printf("%s: %v\n", message, err)
 	return c.JSON(http.StatusInternalServerError, map[string]string{"error": message})
 }
-
