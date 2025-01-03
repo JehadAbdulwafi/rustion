@@ -12,12 +12,13 @@ export function getNavigationDTO(user: User, livestreams: Stream[] = []): AppSid
       {
         title: "Livestreams",
         url: "/dashboard/lives",
-        iconName: "Bot",
+        iconName: "Cast",
         items: livestreams?.map((livestream) => ({
           title: livestream.name,
           url: `/dashboard/lives/${livestream.id}`
         })) || []
       },
+      { title: "Forward", url: "/dashboard/lives/forward", iconName: "Send" },
       ...(canSeeMobileApp(user) ? [{
         title: "Mobile App",
         url: "/dashboard/app",

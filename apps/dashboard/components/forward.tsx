@@ -56,6 +56,7 @@ function ScenarioForwardImpl({ defaultSecrets }: { defaultSecrets?: ForwardConfi
     const confs = [{
       platform: 'wx', enabled: false, index: String(index++), allowCustom: true,
       ...defaultSecrets?.wx,
+      label: 'YouTube',
       locale: {
         label: null, link: 'https://studio.youtube.com/channel/UC/livestreaming', link2: 'Go live',
         generate: (e) => {
@@ -65,6 +66,7 @@ function ScenarioForwardImpl({ defaultSecrets }: { defaultSecrets?: ForwardConfi
     }, {
       platform: 'bilibili', enabled: false, index: String(index++), allowCustom: true,
       ...defaultSecrets?.bilibili,
+      label: 'Twitch',
       locale: {
         label: null, link: 'https://www.twitch.tv/dashboard/settings', link2: 'Dashboard',
         generate: (e) => {
@@ -74,6 +76,7 @@ function ScenarioForwardImpl({ defaultSecrets }: { defaultSecrets?: ForwardConfi
     }, {
       platform: 'kuaishou', enabled: false, index: String(index++), allowCustom: true, custom: false,
       ...defaultSecrets?.kuaishou,
+      label: 'Facebook',
       locale: {
         label: null, link: 'https://www.facebook.com/live/producer?ref=OBS', link2: 'Live Producer',
         generate: (e) => {
@@ -224,9 +227,18 @@ function ScenarioForwardImpl({ defaultSecrets }: { defaultSecrets?: ForwardConfi
                   {
                     forwards?.map(file => {
                       return <TableRow key={file.platform}>
-
                         <TableCell>{file.i}</TableCell>
-                        <TableCell className="font-medium">{file.custom ? (file.label || 'Custom') : file.name} {file.label}</TableCell>
+                        <TableCell className="font-medium">
+                          <div className="flex items-center gap-2">
+                            <Image
+                              src={`/assets/icons/social/${file.platform}.svg`}
+                              alt={file.platform}
+                              width={20}
+                              height={20}
+                            />
+                            {file.label}
+                          </div>
+                        </TableCell>
                         <TableCell>
                           <Badge variant={file.enabled ? (file.frame ? 'success' : 'default') : 'secondary'}>
                             {file.enabled ? (file.frame ? 'Streaming' : 'Waiting') : 'Inactive'}
@@ -299,11 +311,6 @@ function ScenarioForwardImpl({ defaultSecrets }: { defaultSecrets?: ForwardConfi
             </CardHeader>
             <CardContent>
               <form className="gap-4 flex flex-col">
-                <div className="flex flex-col gap-3">
-                  <Label>Label</Label>
-                  <Input defaultValue={conf.label} onChange={(e) => updateConfigObject({ ...conf, label: e.target.value })} />
-                </div>
-
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center">
                     <Label className="mr-2">Server</Label>
