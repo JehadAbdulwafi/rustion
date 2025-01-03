@@ -10,6 +10,7 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/push"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 type EchoServer struct {
@@ -49,6 +50,7 @@ type AuthServer struct {
 	PasswordResetTokenReuseDuration    time.Duration
 	DefaultUserScopes                  []string
 	LastAuthenticatedAtThreshold       time.Duration
+	StreamApiSecret                    string
 }
 
 type PushService struct {
@@ -85,7 +87,10 @@ type Server struct {
 }
 
 func DefaultServiceConfigFromEnv() Server {
-	DotEnvLoad(filepath.Join(util.GetProjectRootDir(), "../.env"), os.Setenv)
+	DotEnvLoad(filepath.Join("C:/Users/admin/Desktop/projects/go/rustion", "./.env"), os.Setenv)
+
+	log.Debug().Str("PGPASSWORD", os.Getenv("PGPASSWORD")).Msg("PGPASSWORD")
+	log.Debug().Str("ENV FILE PATH", filepath.Join("C:/Users/admin/Desktop/projects/go/rustion", "./.env")).Msg("ENV FILE PATH")
 
 	return Server{
 		Database: Database{
@@ -135,6 +140,7 @@ func DefaultServiceConfigFromEnv() Server {
 			PasswordResetTokenReuseDuration:    time.Second * time.Duration(util.GetEnvAsInt("SERVER_AUTH_PASSWORD_RESET_TOKEN_REUSE_DURATION_SECONDS", 0)),
 			DefaultUserScopes:                  util.GetEnvAsStringArr("SERVER_AUTH_DEFAULT_USER_SCOPES", []string{"app"}),
 			LastAuthenticatedAtThreshold:       time.Second * time.Duration(util.GetEnvAsInt("SERVER_AUTH_LAST_AUTHENTICATED_AT_THRESHOLD", 900)),
+			StreamApiSecret:                    util.GetEnv("SERVER_AUTH_STREAM_API_SECRET", ""),
 		},
 		Logger: LoggerServer{
 			Level:              util.LogLevelFromString(util.GetEnv("SERVER_LOGGER_LEVEL", zerolog.DebugLevel.String())),
@@ -162,7 +168,7 @@ func DefaultServiceConfigFromEnv() Server {
 		Mailer: Mailer{
 			DefaultSender:               util.GetEnv("SERVER_MAILER_DEFAULT_SENDER", "support@rustion.com"),
 			Send:                        util.GetEnvAsBool("SERVER_MAILER_SEND", true),
-			WebTemplatesEmailBaseDirAbs: util.GetEnv("SERVER_MAILER_WEB_TEMPLATES_EMAIL_BASE_DIR_ABS", filepath.Join(util.GetProjectRootDir(), "../web/templates/email")), // /app/web/templates/email
+			WebTemplatesEmailBaseDirAbs: util.GetEnv("SERVER_MAILER_WEB_TEMPLATES_EMAIL_BASE_DIR_ABS", filepath.Join(util.GetProjectRootDir(), "/web/templates/email")), // /app/web/templates/email
 			Transporter:                 util.GetEnvEnum("SERVER_MAILER_TRANSPORTER", MailerTransporterSMTP.String(), []string{MailerTransporterSMTP.String(), MailerTransporterMock.String()}),
 		},
 		SMTP: transport.SMTPMailTransportConfig{

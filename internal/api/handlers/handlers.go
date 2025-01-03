@@ -71,6 +71,7 @@ func AttachAllRoutes(s *api.Server) {
 		stream.PostStreamEventsRoute(s),
 		stream.PostStreamRoute(s),
 		stream.PutStreamNameRoute(s),
+		stream.GetForwardSecrets(s),
 		stream.PutStreamRoute(s),
 		tags.DeleteTagRoute(s),
 		tags.GetAllTagsRoute(s),

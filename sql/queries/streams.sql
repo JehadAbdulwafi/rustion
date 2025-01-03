@@ -14,6 +14,9 @@ SELECT id, user_id, app, name, url, status, viewers, thumbnail, last_published_a
 -- name: GetStreamsByUserId :many
 SELECT id, user_id, app, name, url, status, viewers, thumbnail, last_published_at FROM streams WHERE user_id = $1;
 
+-- name: GetStreamByUserId :one
+SELECT * FROM streams WHERE user_id = $1;
+
 -- name: GetStreamByStreamName :one
 SELECT * FROM streams WHERE name = $1;
 

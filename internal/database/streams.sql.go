@@ -181,6 +181,34 @@ func (q *Queries) GetStreamByStreamName(ctx context.Context, name string) (Strea
 	return i, err
 }
 
+const getStreamByUserId = `-- name: GetStreamByUserId :one
+SELECT id, user_id, app, name, endpoint, host, url, password, thumbnail, status, viewers, last_published_at, live_title, live_description, created_at, updated_at FROM streams WHERE user_id = $1
+`
+
+func (q *Queries) GetStreamByUserId(ctx context.Context, userID uuid.UUID) (Stream, error) {
+	row := q.db.QueryRowContext(ctx, getStreamByUserId, userID)
+	var i Stream
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.App,
+		&i.Name,
+		&i.Endpoint,
+		&i.Host,
+		&i.Url,
+		&i.Password,
+		&i.Thumbnail,
+		&i.Status,
+		&i.Viewers,
+		&i.LastPublishedAt,
+		&i.LiveTitle,
+		&i.LiveDescription,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const getStreams = `-- name: GetStreams :many
 SELECT id, user_id, app, name, url, status, viewers, thumbnail, last_published_at FROM streams
 `
