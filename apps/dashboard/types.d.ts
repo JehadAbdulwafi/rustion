@@ -103,3 +103,55 @@ type Feedback = {
   updated_at: string
 }
 
+// #### FORWARD #########
+type ForwardConfigure = {
+  platform: string; // The platform name, e.g., wx
+  server: string;   // The RTMP server URL, e.g., rtmp://localhost/live
+  secret: string;   // The RTMP stream and secret, e.g., livestream
+  enabled: boolean; // Whether enabled
+  custom: boolean;  // Whether custom platform
+  label: string;    // The label for this configuration
+};
+
+interface LocaleConfig {
+  label: string | null;
+  link: string;
+  link2: string;
+  generate: (config: Config) => void;
+}
+
+interface Config {
+  platform: string; // Platform name (e.g., wx, bilibili, kuaishou)
+  enabled: boolean; // Whether the platform is enabled
+  index: string; // Unique index for the configuration
+  allowCustom: boolean; // Whether custom configuration is allowed
+  custom?: boolean; // Optional flag for custom configurations
+  locale: LocaleConfig; // Locale-specific configuration
+  [key: string]: any; // Allow additional properties from `defaultSecrets`
+}
+
+// State type for `configs`
+type ConfigsState = Config[];
+
+type ForwardConfigMap = Record<string, ForwardConfigure>;
+
+interface FrameInfo {
+  log: string; // Log file or message related to the frame
+  update: string; // Timestamp or details of the last update
+}
+
+interface StreamElement {
+  platform: string; // The platform name
+  enabled: boolean; // Whether the platform is enabled
+  custom: boolean; // Whether the platform is custom
+  label: string; // Label for the configuration
+  stream?: string; // The stream URL (if available)
+  start?: string; // The start time of the stream (if available)
+  ready?: string; // Ready status of the stream (if available)
+  frame?: FrameInfo; // Frame information (if available)
+  update?: string; // Timestamp of the last update
+  name?: string; // Name of the platform
+  i?: number;
+}
+
+type StreamResponse = StreamElement[];
