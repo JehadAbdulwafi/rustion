@@ -31,7 +31,7 @@ export default function Forward() {
       const secrets = res.data.data;
       setInit(true);
       setSecrets(secrets || {});
-      console.log(`Forward: Secret query ok ${JSON.stringify(secrets)}`);
+      // console.log(`Forward: Secret query ok ${JSON.stringify(secrets)}`);
     }).catch(console.log);
   }, []);
 
@@ -91,7 +91,7 @@ function ScenarioForwardImpl({ defaultSecrets }: { defaultSecrets?: ForwardConfi
     });
 
     // Generate more forwarding configures.
-    while (confs.length < 3) {
+    while (confs.length < 5) {
       const rindex = index++;
       const rid = Math.random().toString(16).slice(-6);
 
@@ -108,7 +108,7 @@ function ScenarioForwardImpl({ defaultSecrets }: { defaultSecrets?: ForwardConfi
     }
 
     setConfigs(confs);
-    console.log(`Forward: Init configs ${JSON.stringify(confs)}`);
+    // console.log(`Forward: Init configs ${JSON.stringify(confs)}`);
   }, [defaultSecrets, setConfigs]);
 
   // Fetch the forwarding streams from server.
@@ -127,7 +127,7 @@ function ScenarioForwardImpl({ defaultSecrets }: { defaultSecrets?: ForwardConfi
           update: e.frame?.update ? e.frame.update : null,
           i,
         })));
-        console.log(`Forward: Query streams ${JSON.stringify(res.data.data)}`);
+        // console.log(`Forward: Query streams ${JSON.stringify(res.data.data)}`);
       }).catch(console.log);
     };
 
@@ -145,13 +145,13 @@ function ScenarioForwardImpl({ defaultSecrets }: { defaultSecrets?: ForwardConfi
       return e;
     })
     setConfigs(confs);
-    console.log(`Forward: Update config ${JSON.stringify(conf)} to ${JSON.stringify(confs)}`);
+    // console.log(`Forward: Update config ${JSON.stringify(conf)} to ${JSON.stringify(confs)}`);
   }, [configs, setConfigs]);
 
   // Update the forward config to server.
   // @ts-ignore
   const updateSecrets = React.useCallback((e, action, platform, server, secret, enabled, custom, label, onSuccess) => {
-    console.log(`Forward: Update secrets ${JSON.stringify({ action, platform, server, secret, enabled, custom, label })}`);
+    // console.log(`Forward: Update secrets ${JSON.stringify({ action, platform, server, secret, enabled, custom, label })}`);
     e.preventDefault();
 
     if (!server) {
@@ -256,7 +256,7 @@ function ScenarioForwardImpl({ defaultSecrets }: { defaultSecrets?: ForwardConfi
                                 const speed = logParts.find(part => part.startsWith('speed='))?.split('=')[1];
                                 const time = logParts.find(part => part.startsWith('time='))?.split('=')[1];
                                 const size = logParts.find(part => part.startsWith('size='))?.split('=')[1];
-                                
+
                                 return (
                                   <>
                                     {time && (
@@ -294,74 +294,76 @@ function ScenarioForwardImpl({ defaultSecrets }: { defaultSecrets?: ForwardConfi
           {!forwards?.length ? 'No forwarding' : ''}
         </CardContent>
       </Card>
-      {configs.map((conf) => {
-        return (
-          <Card key={conf.platform}>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Image
-                  src={`/assets/icons/social/${conf.platform}.svg`}
-                  alt={conf.platform}
-                  width={36}
-                  height={36}
-                  className="mr-2 inline"
-                />
-                {conf.label}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form className="gap-4 flex flex-col">
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center">
-                    <Label className="mr-2">Server</Label>
-                    {!conf.custom &&
-                      <span className="text-sm text-gray-500">
-                        *{'Visit '}
-                        <Link href={conf?.locale?.link} className="text-blue-500 underline" target='_blank' rel='noreferrer'>{conf?.locale?.link2}</Link>
-                        {' to get your Stream URL'}
-                      </span>
-                    }
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {configs.map((conf) => {
+          return (
+            <Card key={conf.platform}>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Image
+                    src={`/assets/icons/social/${conf.platform}.svg`}
+                    alt={conf.platform}
+                    width={36}
+                    height={36}
+                    className="mr-2 inline"
+                  />
+                  {conf.label}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form className="gap-4 flex flex-col">
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center">
+                      <Label className="mr-2">Server</Label>
+                      {!conf.custom &&
+                        <span className="text-sm text-gray-500">
+                          *{'Visit '}
+                          <Link href={conf?.locale?.link} className="text-blue-500 underline" target='_blank' rel='noreferrer'>{conf?.locale?.link2}</Link>
+                          {' to get your Stream URL'}
+                        </span>
+                      }
+                    </div>
+                    <Input defaultValue={conf.server} onChange={(e) => updateConfigObject({ ...conf, server: e.target.value })} />
+
                   </div>
-                  <Input defaultValue={conf.server} onChange={(e) => updateConfigObject({ ...conf, server: e.target.value })} />
 
-                </div>
-
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center">
-                    <Label className="mr-2">Secret</Label>
-                    {!conf.custom &&
-                      <span className="text-sm text-gray-500">
-                        *{'Visit '}
-                        <Link href={conf?.locale?.link} className="text-blue-500 underline" target='_blank' rel='noreferrer'>{conf?.locale?.link2}</Link>
-                        {' to get your Stream Key'}
-                      </span>
-                    }
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center">
+                      <Label className="mr-2">Secret</Label>
+                      {!conf.custom &&
+                        <span className="text-sm text-gray-500">
+                          *{'Visit '}
+                          <Link href={conf?.locale?.link} className="text-blue-500 underline" target='_blank' rel='noreferrer'>{conf?.locale?.link2}</Link>
+                          {' to get your Stream Key'}
+                        </span>
+                      }
+                    </div>
+                    <Input defaultValue={conf.secret} onChange={(e) => updateConfigObject({ ...conf, secret: e.target.value })} />
                   </div>
-                  <Input defaultValue={conf.secret} onChange={(e) => updateConfigObject({ ...conf, secret: e.target.value })} />
-                </div>
 
-                <div className="">
-                  <Button
-                    type="submit"
-                    disabled={submiting}
-                    className="mr-2 px-4 py-1 text-sm font-medium"
-                    variant={conf.enabled ? 'destructive' : 'default'}
-                    onClick={(e) => {
-                      updateSecrets(e, 'update', conf.platform, conf.server, conf.secret, !conf.enabled, conf.custom, conf.label, () => {
-                        updateConfigObject({ ...conf, enabled: !conf.enabled });
-                      });
-                    }}
-                  >
-                    {conf.enabled ? 'Stop' : 'Start'}
-                  </Button>
-                  <span className="text-sm text-gray-500">*If multiple streams are available, one will be selected at random.</span>
+                  <div className="">
+                    <Button
+                      type="submit"
+                      disabled={submiting}
+                      className="mr-2 px-4 py-1 text-sm font-medium"
+                      variant={conf.enabled ? 'destructive' : 'default'}
+                      onClick={(e) => {
+                        updateSecrets(e, 'update', conf.platform, conf.server, conf.secret, !conf.enabled, conf.custom, conf.label, () => {
+                          updateConfigObject({ ...conf, enabled: !conf.enabled });
+                        });
+                      }}
+                    >
+                      {conf.enabled ? 'Stop' : 'Start'}
+                    </Button>
+                    <span className="text-sm text-gray-500">*If multiple streams are available, one will be selected at random.</span>
 
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        );
-      })}
-    </div >
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+    </div>
   );
 }

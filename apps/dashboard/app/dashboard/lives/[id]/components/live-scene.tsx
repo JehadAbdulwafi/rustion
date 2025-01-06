@@ -3,6 +3,7 @@ import Player from "@/components/player/player";
 import SourceSetup from "@/components/source-setup";
 import StatsCard from "@/components/stats-card";
 import StreamInfo from "@/components/stream-info";
+import StreamAnalytics from "@/components/player/stream-analytics";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Check, Pencil, Trash2, X } from "lucide-react";
 import Link from "next/link";
@@ -14,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/dialogs/confirm-dialog";
 import { formatStreamDuration } from "@/utils/format-time";
 import useStream from "@/hooks/use-stream";
+import Forward from "@/components/forward";
 
 export default function LiveScene({ stream, userID }: { stream: Stream, userID: string }) {
   const router = useRouter();
@@ -23,6 +25,12 @@ export default function LiveScene({ stream, userID }: { stream: Stream, userID: 
   const [newName, setNewName] = useState(stream?.name || "");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { toast } = useToast();
+  const [streamMetrics, setStreamMetrics] = useState({
+    resolution: '',
+    bitrate: 0,
+    frameRate: 0,
+    keyframeInterval: 0
+  });
 
   const connect = () => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) return;
@@ -151,41 +159,35 @@ export default function LiveScene({ stream, userID }: { stream: Stream, userID: 
       </div>
 
       <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
-        <div className="grid gap-4 grid-cols-1 lg:grid-cols-3 col-span-1 lg:col-span-2 auto-rows-min">
+
+        <div className="grid gap-4 grid-cols-1 lg:grid-cols-3 col-span-3 lg:col-span-2 auto-rows-min">
           <div className="w-full aspect-video col-span-1 sm:col-span-3 rounded-xl bg-black">
-            <Player streamStatus={streamStatus} />
+            <Player onMetricsUpdate={setStreamMetrics} stream={stream} />
           </div>
 
-          <div className="w-full col-span-1 md:col-span-3 lg:col-span-1">
-            <StatsCard
-              title="Connection"
-              value={streamStatus?.status === "published" ? "On Air" : "Off Air"}
-            />
-          </div>
-
-          <div className="w-full col-span-1 md:col-span-3 lg:col-span-1">
-            <StatsCard title="Total Viewers" value={streamStatus?.viewers || "-"} />
-          </div>
-
-          <div className="w-full col-span-1 md:col-span-3 lg:col-span-1">
-            <StatsCard
-              title="Stream Time"
-              value={
-                streamStatus?.status === "published"
-                  ? formatStreamDuration(stream?.lastPublishedAt)
-                  : "-"
-              }
-            />
+          <div className="w-full col-span-1 sm:col-span-3">
+            {streamStatus.status === "published" && (
+              <StreamAnalytics
+                metrics={streamMetrics}
+                stream={stream}
+                streamStatus={streamStatus}
+              />
+            )}
           </div>
         </div>
-        <div className="col-span-1 flex flex-col gap-4">
-          <SourceSetup stream={stream} />
+
+
+        <div className="lg:col-span-1 col-span-3 flex flex-col gap-4">
           <StreamInfo
             id={stream?.id}
             title={stream?.liveTitle}
             description={stream?.liveDescription}
             thumbnail={stream?.thumbnail}
           />
+        </div>
+
+        <div className="col-span-3 flex flex-col gap-4">
+          <Forward />
         </div>
       </div>
 
