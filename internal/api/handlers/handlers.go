@@ -78,6 +78,8 @@ func AttachAllRoutes(s *api.Server) {
 		stream.GetVLiveSecrets(s),
 		stream.PostVLiveSecrets(s),
 		stream.GetVLiveStreams(s),
+		stream.PostVLiveSource(s),
+		stream.PostVLiveStreamUrl(s),
 		tags.DeleteTagRoute(s),
 		tags.GetAllTagsRoute(s),
 		tags.GetTagRoute(s),
