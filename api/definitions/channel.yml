@@ -14,6 +14,7 @@ definitions:
       - secret
       - enabled
       - custom
+      - label
     properties:
       id:
         type: string
@@ -21,6 +22,8 @@ definitions:
       userID:
         type: string
         format: uuid4
+      label:
+        type: string
       platform:
         type: string
       server:
@@ -44,10 +47,13 @@ definitions:
       - secret
       - enabled
       - custom
+      - label
     properties:
       platform:
         type: string
       server:
+        type: string
+      label:
         type: string
       secret:
         type: string

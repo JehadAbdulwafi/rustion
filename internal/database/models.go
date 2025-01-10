@@ -229,6 +229,7 @@ type Channel struct {
 	Secret    string
 	Enabled   bool
 	Custom    bool
+	Label     string
 	CreatedAt sql.NullTime
 	UpdatedAt sql.NullTime
 }

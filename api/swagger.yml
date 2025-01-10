@@ -1444,6 +1444,8 @@ definitions:
             id:
                 format: uuid4
                 type: string
+            label:
+                type: string
             platform:
                 type: string
             secret:
@@ -1463,6 +1465,7 @@ definitions:
             - secret
             - enabled
             - custom
+            - label
         type: object
     channelList:
         items:
@@ -1474,6 +1477,8 @@ definitions:
                 type: boolean
             enabled:
                 type: boolean
+            label:
+                type: string
             platform:
                 type: string
             secret:
@@ -1486,6 +1491,7 @@ definitions:
             - secret
             - enabled
             - custom
+            - label
         type: object
     createArticleRequest:
         properties:

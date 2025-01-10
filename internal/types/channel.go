@@ -35,6 +35,10 @@ type Channel struct {
 	// Format: uuid4
 	ID *strfmt.UUID4 `json:"id"`
 
+	// label
+	// Required: true
+	Label *string `json:"label"`
+
 	// platform
 	// Required: true
 	Platform *string `json:"platform"`
@@ -69,6 +73,10 @@ func (m *Channel) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateLabel(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -119,6 +127,15 @@ func (m *Channel) validateID(formats strfmt.Registry) error {
 	}
 
 	if err := validate.FormatOf("id", "body", "uuid4", m.ID.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Channel) validateLabel(formats strfmt.Registry) error {
+
+	if err := validate.Required("label", "body", m.Label); err != nil {
 		return err
 	}
 

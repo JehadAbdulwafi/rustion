@@ -35,6 +35,7 @@ func getChannelListHandler(s *api.Server) echo.HandlerFunc {
 				Server:   swag.String(channel.Server),
 				Secret:   swag.String(channel.Secret),
 				Enabled:  swag.Bool(channel.Enabled),
+				Label:    swag.String(channel.Label),
 				Custom:   swag.Bool(channel.Custom),
 			}
 

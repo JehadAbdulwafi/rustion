@@ -52,6 +52,7 @@ func putChannelHandler(s *api.Server) echo.HandlerFunc {
 			Secret:   *body.Secret,
 			Enabled:  *body.Enabled,
 			Custom:   *body.Custom,
+			Label:    *body.Label,
 		})
 
 		if err != nil {

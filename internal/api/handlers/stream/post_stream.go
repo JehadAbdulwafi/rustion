@@ -48,10 +48,10 @@ func postStreamHandler(s *api.Server) echo.HandlerFunc {
 		}
 
 		// TODO: move to configuration
-		Host := c.Request().Host
-		Endpoint := util.ToSlug(*body.Name)
-		scheme := c.Request().URL.Scheme
-		App := "live"
+		Host := c.Request().Host // fix me
+		Endpoint := util.ToSlug(*body.Name) // fix me
+		scheme := c.Request().URL.Scheme // fix me
+		App := "live" // fix me
 
 		url := fmt.Sprintf("%s://%s/%s/%s", scheme, Host, App, Endpoint)
 

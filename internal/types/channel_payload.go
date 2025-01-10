@@ -27,6 +27,10 @@ type ChannelPayload struct {
 	// Required: true
 	Enabled *bool `json:"enabled"`
 
+	// label
+	// Required: true
+	Label *string `json:"label"`
+
 	// platform
 	// Required: true
 	Platform *string `json:"platform"`
@@ -49,6 +53,10 @@ func (m *ChannelPayload) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateEnabled(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateLabel(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -82,6 +90,15 @@ func (m *ChannelPayload) validateCustom(formats strfmt.Registry) error {
 func (m *ChannelPayload) validateEnabled(formats strfmt.Registry) error {
 
 	if err := validate.Required("enabled", "body", m.Enabled); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *ChannelPayload) validateLabel(formats strfmt.Registry) error {
+
+	if err := validate.Required("label", "body", m.Label); err != nil {
 		return err
 	}
 

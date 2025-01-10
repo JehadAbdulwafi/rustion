@@ -12,8 +12,8 @@ import (
 )
 
 const createChannel = `-- name: CreateChannel :exec
-INSERT INTO channels (user_id, platform, server, secret, enabled, custom)
-VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO channels (user_id, platform, server, secret, label, enabled, custom)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
 `
 
 type CreateChannelParams struct {
@@ -21,6 +21,7 @@ type CreateChannelParams struct {
 	Platform string
 	Server   string
 	Secret   string
+	Label    string
 	Enabled  bool
 	Custom   bool
 }
@@ -31,6 +32,7 @@ func (q *Queries) CreateChannel(ctx context.Context, arg CreateChannelParams) er
 		arg.Platform,
 		arg.Server,
 		arg.Secret,
+		arg.Label,
 		arg.Enabled,
 		arg.Custom,
 	)
@@ -52,7 +54,7 @@ func (q *Queries) DeleteChannel(ctx context.Context, arg DeleteChannelParams) er
 }
 
 const getChannel = `-- name: GetChannel :one
-SELECT id, user_id, platform, server, secret, enabled, custom, created_at, updated_at FROM channels WHERE id = $1 AND user_id = $2
+SELECT id, user_id, platform, server, secret, enabled, custom, label, created_at, updated_at FROM channels WHERE id = $1 AND user_id = $2
 `
 
 type GetChannelParams struct {
@@ -71,6 +73,7 @@ func (q *Queries) GetChannel(ctx context.Context, arg GetChannelParams) (Channel
 		&i.Secret,
 		&i.Enabled,
 		&i.Custom,
+		&i.Label,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -78,7 +81,7 @@ func (q *Queries) GetChannel(ctx context.Context, arg GetChannelParams) (Channel
 }
 
 const getChannels = `-- name: GetChannels :many
-SELECT id, user_id, platform, server, secret, enabled, custom, created_at, updated_at FROM channels WHERE user_id = $1
+SELECT id, user_id, platform, server, secret, enabled, custom, label, created_at, updated_at FROM channels WHERE user_id = $1
 `
 
 func (q *Queries) GetChannels(ctx context.Context, userID uuid.UUID) ([]Channel, error) {
@@ -98,6 +101,7 @@ func (q *Queries) GetChannels(ctx context.Context, userID uuid.UUID) ([]Channel,
 			&i.Secret,
 			&i.Enabled,
 			&i.Custom,
+			&i.Label,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -116,7 +120,7 @@ func (q *Queries) GetChannels(ctx context.Context, userID uuid.UUID) ([]Channel,
 
 const updateChannel = `-- name: UpdateChannel :exec
 UPDATE channels
-SET platform = $3, server = $4, secret = $5, enabled = $6, custom = $7, updated_at = CURRENT_TIMESTAMP
+SET platform = $3, server = $4, secret = $5, enabled = $6, custom = $7, label = $8, updated_at = CURRENT_TIMESTAMP
 WHERE id = $1 AND user_id = $2
 `
 
@@ -128,6 +132,7 @@ type UpdateChannelParams struct {
 	Secret   string
 	Enabled  bool
 	Custom   bool
+	Label    string
 }
 
 func (q *Queries) UpdateChannel(ctx context.Context, arg UpdateChannelParams) error {
@@ -139,6 +144,7 @@ func (q *Queries) UpdateChannel(ctx context.Context, arg UpdateChannelParams) er
 		arg.Secret,
 		arg.Enabled,
 		arg.Custom,
+		arg.Label,
 	)
 	return err
 }
