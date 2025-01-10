@@ -18,7 +18,7 @@ export function getNavigationDTO(user: User, livestreams: Stream[] = []): AppSid
           url: `/dashboard/lives/${livestream.id}`
         })) || []
       },
-      { title: "Forward", url: "/dashboard/lives/forward", iconName: "Send" },
+      { title: "Channels", url: "/dashboard/channels", iconName: "Tv" },
       ...(canSeeMobileApp(user) ? [{
         title: "Mobile App",
         url: "/dashboard/app",

@@ -1,7 +1,5 @@
 "use client";
 import Player from "@/components/player/player";
-import SourceSetup from "@/components/source-setup";
-import StatsCard from "@/components/stats-card";
 import StreamInfo from "@/components/stream-info";
 import StreamAnalytics from "@/components/player/stream-analytics";
 import { Button } from "@/components/ui/button";
@@ -13,9 +11,8 @@ import { Input } from "@/components/ui/input";
 import { deleteStream, updateStreamName } from "@/api/LiveApi";
 import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/dialogs/confirm-dialog";
-import { formatStreamDuration } from "@/utils/format-time";
 import useStream from "@/hooks/use-stream";
-import Forward from "@/components/forward";
+import Channels from "@/components/channels/channels";
 
 export default function LiveScene({ stream, userID }: { stream: Stream, userID: string }) {
   const router = useRouter();
@@ -55,7 +52,6 @@ export default function LiveScene({ stream, userID }: { stream: Stream, userID: 
     };
 
     ws.onerror = (event) => {
-      console.error("WebSocket error:", event);
       wsRef.current = null;
       setTimeout(connect, 1000);
     };
@@ -178,6 +174,7 @@ export default function LiveScene({ stream, userID }: { stream: Stream, userID: 
 
 
         <div className="lg:col-span-1 col-span-3 flex flex-col gap-4">
+          <Channels stream={stream} />
           <StreamInfo
             id={stream?.id}
             title={stream?.liveTitle}
@@ -187,7 +184,6 @@ export default function LiveScene({ stream, userID }: { stream: Stream, userID: 
         </div>
 
         <div className="col-span-3 flex flex-col gap-4">
-          <Forward />
         </div>
       </div>
 

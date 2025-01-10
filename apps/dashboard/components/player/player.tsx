@@ -55,7 +55,7 @@ export default function Player({
 
       hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
         setHasStreamError(false);
-        videoRef.current?.play().catch(console.error);
+        videoRef.current?.play();
         updateMetrics();
       });
 
@@ -100,10 +100,10 @@ export default function Player({
     const hls = hlsRef.current;
     const currentLevel = hls.currentLevel;
     const loadLevel = hls.loadLevel;
-    
+
     // Use the active level (either current or loading)
     const activeLevel = currentLevel !== -1 ? currentLevel : loadLevel;
-    
+
     if (activeLevel === -1 || !hls.levels[activeLevel]) {
       return;
     }
@@ -131,14 +131,6 @@ export default function Player({
       frameRate: level.frameRate || 30, // Use level frame rate or fallback to 30fps
       keyframeInterval: Math.round((levelDetails?.targetduration || 2) * 10) / 10, // Round to 1 decimal place
     };
-
-    // Debug logging
-    console.log('Debug HLS Metrics:', {
-      activeLevel,
-      levelInfo: level,
-      metrics: newMetrics,
-      bandwidthEstimate: hls.bandwidthEstimate
-    });
 
     onMetricsUpdate?.(newMetrics);
   };
