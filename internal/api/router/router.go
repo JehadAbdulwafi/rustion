@@ -272,6 +272,11 @@ func Init(s *api.Server) {
 				return false
 			},
 		})),
+
+		APIV1Channel: s.Echo.Group("/api/v1/channels", middleware.AuthWithConfig(middleware.AuthConfig{
+			S:    s,
+			Mode: middleware.AuthModeRequired,
+		})),
 	}
 
 	handlers.AttachAllRoutes(s)

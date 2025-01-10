@@ -6,6 +6,7 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/app"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/articles"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/auth"
+	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/channel"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/common"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/faq"
 	"github.com/JehadAbdulwafi/rustion/internal/api/handlers/featured_sections"
@@ -95,5 +96,10 @@ func AttachAllRoutes(s *api.Server) {
 		tv_shows.PostCreateTvShowRoute(s),
 		tv_shows.PutUpdateTVShowScheduleRoute(s),
 		tv_shows.PutUpdateTvShowRoute(s),
+		channel.GetChannelRoute(s),
+		channel.PutChannelRoute(s),
+		channel.PostChannelRoute(s),
+		channel.DeleteChannelRoute(s),
+		channel.GetChannelListRoute(s),
 	}
 }

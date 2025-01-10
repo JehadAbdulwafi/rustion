@@ -1,0 +1,98 @@
+swagger: "2.0"
+info:
+  title: ""
+  version: 0.1.0
+parameters:
+  ChannelIdParam:
+    type: string
+    format: uuid4
+    name: id
+    description: ID of Channel
+    in: path
+    required: true
+
+paths:
+  /api/v1/channels:
+    get:
+      security:
+        - Bearer: []
+      description: "Return a list of Channel"
+      tags:
+        - Channel
+      summary: "Return a list of Channel"
+      operationId: GetChannelListRoute
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/channel.yml#/definitions/ChannelList"
+
+    post:
+      security:
+        - Bearer: []
+      description: "Update the given Channel"
+      tags:
+        - Channel
+      summary: "Update the given Channel"
+      operationId: PostChannelRoute
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/channel.yml#/definitions/ChannelPayload"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/channel.yml#/definitions/Channel"
+
+  /api/v1/channels/{id}:
+    get:
+      security:
+        - Bearer: []
+      description: "Return Channel with ID"
+      tags:
+        - Channel
+      summary: "Return Channel with ID"
+      operationId: GetChannelRoute
+      parameters:
+        - $ref: "#/parameters/ChannelIdParam"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/channel.yml#/definitions/Channel"
+
+    put:
+      security:
+        - Bearer: []
+      description: "Update the given Channel"
+      tags:
+        - Channel
+      summary: "Update the given Channel"
+      operationId: PutChannelRoute
+      parameters:
+        - $ref: "#/parameters/ChannelIdParam"
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/channel.yml#/definitions/ChannelPayload"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/channel.yml#/definitions/Channel"
+
+    delete:
+      security:
+        - Bearer: []
+      description: "Delete Channel with ID"
+      tags:
+        - Channel
+      summary: "Delete Channel with ID"
+      operationId: DeleteChannelRoute
+      parameters:
+        - $ref: "#/parameters/ChannelIdParam"
+      responses:
+        "204":
+          description: Success

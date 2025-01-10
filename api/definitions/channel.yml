@@ -1,0 +1,62 @@
+swagger: "2.0"
+info:
+  title: ""
+  version: 0.1.0
+paths: {}
+definitions:
+  Channel:
+    type: object
+    required:
+      - id
+      - userID
+      - platform
+      - server
+      - secret
+      - enabled
+      - custom
+    properties:
+      id:
+        type: string
+        format: uuid4
+      userID:
+        type: string
+        format: uuid4
+      platform:
+        type: string
+      server:
+        type: string
+      secret:
+        type: string
+      enabled:
+        type: boolean
+      custom:
+        type: boolean
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+
+  ChannelPayload:
+    type: object
+    required:
+      - platform
+      - server
+      - secret
+      - enabled
+      - custom
+    properties:
+      platform:
+        type: string
+      server:
+        type: string
+      secret:
+        type: string
+      enabled:
+        type: boolean
+      custom:
+        type: boolean
+
+  ChannelList:
+    type: array
+    items: 
+      $ref: "#/definitions/Channel"

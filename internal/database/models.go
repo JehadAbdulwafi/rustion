@@ -221,6 +221,18 @@ type Article struct {
 	UpdatedAt   sql.NullTime
 }
 
+type Channel struct {
+	ID        uuid.UUID
+	UserID    uuid.UUID
+	Platform  string
+	Server    string
+	Secret    string
+	Enabled   bool
+	Custom    bool
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
+}
+
 type Faq struct {
 	ID        uuid.UUID
 	Question  string

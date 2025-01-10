@@ -31,6 +31,7 @@ type Router struct {
 	APIV1App              *echo.Group
 	APIV1Faq              *echo.Group
 	APIV1Feedback         *echo.Group
+	APIV1Channel          *echo.Group
 }
 
 type Server struct {

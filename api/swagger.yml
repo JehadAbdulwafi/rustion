@@ -397,6 +397,101 @@ paths:
             summary: Update user info
             tags:
                 - auth
+    /api/v1/channels:
+        get:
+            description: Return a list of Channel
+            operationId: GetChannelListRoute
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/channelList'
+            security:
+                - Bearer: []
+            summary: Return a list of Channel
+            tags:
+                - Channel
+        post:
+            description: Update the given Channel
+            operationId: PostChannelRoute
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/channelPayload'
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/channel'
+            security:
+                - Bearer: []
+            summary: Update the given Channel
+            tags:
+                - Channel
+    /api/v1/channels/{id}:
+        delete:
+            description: Delete Channel with ID
+            operationId: DeleteChannelRoute
+            parameters:
+                - description: ID of Channel
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "204":
+                    description: Success
+            security:
+                - Bearer: []
+            summary: Delete Channel with ID
+            tags:
+                - Channel
+        get:
+            description: Return Channel with ID
+            operationId: GetChannelRoute
+            parameters:
+                - description: ID of Channel
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/channel'
+            security:
+                - Bearer: []
+            summary: Return Channel with ID
+            tags:
+                - Channel
+        put:
+            description: Update the given Channel
+            operationId: PutChannelRoute
+            parameters:
+                - description: ID of Channel
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/channelPayload'
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/channel'
+            security:
+                - Bearer: []
+            summary: Update the given Channel
+            tags:
+                - Channel
     /api/v1/faqs:
         get:
             description: Return a list of Faq
@@ -969,7 +1064,7 @@ paths:
     /api/v1/tags/articles:
         get:
             description: Retrieves a tag with its associated articles
-            operationId: GetTagWithArticlesMixin9
+            operationId: GetTagWithArticlesMixin10
             responses:
                 "200":
                     description: GetTagWithArticlesResponse
@@ -1337,6 +1432,60 @@ definitions:
             - content
             - image
             - app_id
+        type: object
+    channel:
+        properties:
+            createdAt:
+                type: string
+            custom:
+                type: boolean
+            enabled:
+                type: boolean
+            id:
+                format: uuid4
+                type: string
+            platform:
+                type: string
+            secret:
+                type: string
+            server:
+                type: string
+            updatedAt:
+                type: string
+            userID:
+                format: uuid4
+                type: string
+        required:
+            - id
+            - userID
+            - platform
+            - server
+            - secret
+            - enabled
+            - custom
+        type: object
+    channelList:
+        items:
+            $ref: '#/definitions/channel'
+        type: array
+    channelPayload:
+        properties:
+            custom:
+                type: boolean
+            enabled:
+                type: boolean
+            platform:
+                type: string
+            secret:
+                type: string
+            server:
+                type: string
+        required:
+            - platform
+            - server
+            - secret
+            - enabled
+            - custom
         type: object
     createArticleRequest:
         properties:
@@ -2297,6 +2446,13 @@ definitions:
 parameters:
     AppIdParam:
         description: ID of App
+        format: uuid4
+        in: path
+        name: id
+        required: true
+        type: string
+    ChannelIdParam:
+        description: ID of Channel
         format: uuid4
         in: path
         name: id

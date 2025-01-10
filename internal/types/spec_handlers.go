@@ -38,6 +38,7 @@ func (o *SwaggerSpec) initHandlerCache() {
 
 	o.Handlers["DELETE"]["/api/v1/apps/{id}"] = true
 	o.Handlers["DELETE"]["/api/v1/articles/{id}"] = true
+	o.Handlers["DELETE"]["/api/v1/channels/{id}"] = true
 	o.Handlers["DELETE"]["/api/v1/faqs/{id}"] = true
 	o.Handlers["DELETE"]["/api/v1/featured-sections/{id}"] = true
 	o.Handlers["DELETE"]["/api/v1/feedbacks/{id}"] = true
@@ -51,6 +52,8 @@ func (o *SwaggerSpec) initHandlerCache() {
 	o.Handlers["GET"]["/api/v1/apps"] = true
 	o.Handlers["GET"]["/api/v1/apps/{id}"] = true
 	o.Handlers["GET"]["/api/v1/articles/{id}"] = true
+	o.Handlers["GET"]["/api/v1/channels"] = true
+	o.Handlers["GET"]["/api/v1/channels/{id}"] = true
 	o.Handlers["GET"]["/api/v1/faqs"] = true
 	o.Handlers["GET"]["/api/v1/faqs/{id}"] = true
 	o.Handlers["GET"]["/api/v1/featured-sections/{id}"] = true
@@ -73,6 +76,7 @@ func (o *SwaggerSpec) initHandlerCache() {
 	o.Handlers["GET"]["/api/v1/version"] = true
 	o.Handlers["POST"]["/api/v1/apps"] = true
 	o.Handlers["POST"]["/api/v1/auth/change-password"] = true
+	o.Handlers["POST"]["/api/v1/channels"] = true
 	o.Handlers["POST"]["/api/v1/articles"] = true
 	o.Handlers["POST"]["/api/v1/featured-sections"] = true
 	o.Handlers["POST"]["/api/v1/tv-shows"] = true
@@ -89,6 +93,7 @@ func (o *SwaggerSpec) initHandlerCache() {
 	o.Handlers["POST"]["/api/v1/streams"] = true
 	o.Handlers["PUT"]["/api/v1/push/token"] = true
 	o.Handlers["PUT"]["/api/v1/apps/{id}"] = true
+	o.Handlers["PUT"]["/api/v1/channels/{id}"] = true
 	o.Handlers["PUT"]["/api/v1/faqs/{id}"] = true
 	o.Handlers["PUT"]["/api/v1/feedbacks/{id}"] = true
 	o.Handlers["PUT"]["/api/v1/streams/{id}/name"] = true
