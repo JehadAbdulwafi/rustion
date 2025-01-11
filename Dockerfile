@@ -55,6 +55,7 @@ COPY go.sum /app/go.sum
 RUN go mod download
 COPY . /app/
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o bin/app main.go
+RUN mkdir -p /app/assets/images && chmod 777 /app/assets/images
 
 FROM gcr.io/distroless/static-debian12:nonroot as app
 
@@ -65,7 +66,6 @@ WORKDIR /app
 COPY --from=builder /app/bin/app .
 COPY --from=builder /app/api/swagger.yml ./api/
 COPY --from=builder /app/assets ./assets/
-RUN mkdir -p /app/assets/images && chmod 777 /app/assets/images
 COPY --from=builder /app/sql/schema ./migrations/
 # COPY --from=builder /app/firebase-adminsdk.json .
 COPY --from=builder /app/web ./web/
