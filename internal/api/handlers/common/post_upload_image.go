@@ -34,8 +34,8 @@ func postUploadImageHandler(s *api.Server) echo.HandlerFunc {
 		// Generate a unique filename
 		filename := uuid.New().String() + filepath.Ext(fileHeader.Filename)
 
-		// Ensure assets directory exists
-		assetsDir := "assets/images"
+		// Use absolute path for assets directory
+		assetsDir := "/app/assets/images"
 		if err := os.MkdirAll(assetsDir, 0755); err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Failed to create assets directory: %v", err))
 		}

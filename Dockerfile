@@ -55,11 +55,15 @@ COPY go.sum /app/go.sum
 RUN go mod download
 COPY . /app/
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o bin/app main.go
-RUN mkdir -p /app/assets/images && chmod 777 /app/assets/images
 
-FROM gcr.io/distroless/static-debian12:nonroot as app
+FROM debian:bullseye-slim as app
 
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create app user
+RUN useradd -r -u 1000 -g root appuser
 
 WORKDIR /app
 
@@ -67,12 +71,19 @@ COPY --from=builder /app/bin/app .
 COPY --from=builder /app/api/swagger.yml ./api/
 COPY --from=builder /app/assets ./assets/
 COPY --from=builder /app/sql/schema ./migrations/
-# COPY --from=builder /app/firebase-adminsdk.json .
 COPY --from=builder /app/web ./web/
+
+# Create directory and set permissions
+RUN mkdir -p /app/assets/images && \
+    chown -R appuser:root /app/assets && \
+    chmod -R 755 /app/assets
+
+# Switch to non-root user
+USER appuser
 
 EXPOSE 9973
 
+VOLUME ["/app/assets"]
+
 ENTRYPOINT ["/app/app"]
 CMD ["server"]
-
-VOLUME ["/app/assets"]
