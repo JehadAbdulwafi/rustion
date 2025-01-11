@@ -37,13 +37,13 @@ func postUploadImageHandler(s *api.Server) echo.HandlerFunc {
 		// Ensure assets directory exists
 		assetsDir := "assets/images"
 		if err := os.MkdirAll(assetsDir, 0755); err != nil {
-			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to create assets directory")
+			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Failed to create assets directory: %v", err))
 		}
 
 		// Create the destination file
 		dst, err := os.Create(filepath.Join(assetsDir, filename))
 		if err != nil {
-			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to create destination file")
+			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Failed to create destination file: %v", err))
 		}
 		defer dst.Close()
 
@@ -68,7 +68,7 @@ func postUploadImageHandler(s *api.Server) echo.HandlerFunc {
 		}
 
 		// Generate the URL for the uploaded image
-		baseURL := "http://" + c.Request().Host
+		baseURL := s.Config.Echo.BaseURL
 		imageURL := fmt.Sprintf("%s/assets/images/%s", baseURL, filename)
 
 		response := types.ImageUploadResponse{

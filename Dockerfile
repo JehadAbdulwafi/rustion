@@ -65,6 +65,7 @@ WORKDIR /app
 COPY --from=builder /app/bin/app .
 COPY --from=builder /app/api/swagger.yml ./api/
 COPY --from=builder /app/assets ./assets/
+RUN mkdir -p /app/assets/images && chmod 777 /app/assets/images
 COPY --from=builder /app/sql/schema ./migrations/
 # COPY --from=builder /app/firebase-adminsdk.json .
 COPY --from=builder /app/web ./web/
@@ -75,4 +76,3 @@ ENTRYPOINT ["/app/app"]
 CMD ["server"]
 
 VOLUME ["/app/assets"]
-
