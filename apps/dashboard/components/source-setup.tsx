@@ -9,16 +9,19 @@ import { resetStreamPassword } from '@/api/LiveApi'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 
+const API_SECRET = process.env.API_SECRET;
+
 const generateRtmpUrl = (stream: Stream) => {
   return `rtmp://${stream.host || 'localhost'}/${stream.app || ''}`;
 };
 
 const generateRtmpPassword = (stream: Stream) => {
-  return `/${stream.name}?secret=null&password=${stream.password}`;
+  return `/${stream.name}?secret=${API_SECRET}&password=${stream.password}`;
 };
 
 const generateSrtUrl = (stream: Stream) => {
-  return `srt://${stream.host || 'localhost:10800'}?streamid=#!::r=${stream.app}/${stream.name}?secret=null&password=${stream.password},m=publish`;
+  const host = stream.host || 'localhost';
+  return `srt://${host + ':10800'}?streamid=#!::r=${stream.app}/${stream.name}?secret=${API_SECRET}&password=${stream.password},m=publish`;
 };
 
 export default function SourceSetup({ stream }: { stream: Stream }) {
