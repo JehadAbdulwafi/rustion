@@ -76,7 +76,7 @@ COPY --from=builder /app/web ./web/
 # Create directory and set permissions
 RUN mkdir -p /app/assets/images && \
     chown -R appuser:root /app/assets && \
-    chmod -R 755 /app/assets
+    chmod -R 777 /app/assets
 
 # Switch to non-root user
 USER appuser

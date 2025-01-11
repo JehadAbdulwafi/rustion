@@ -40,18 +40,26 @@ func postUploadImageHandler(s *api.Server) echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Failed to create assets directory: %v", err))
 		}
 
-		// Check directory permissions
+		// Debug: Print current working directory and directory info
+		cwd, _ := os.Getwd()
+		fmt.Printf("Current working directory: %s\n", cwd)
 		if info, err := os.Stat(assetsDir); err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Failed to stat assets directory: %v", err))
 		} else {
 			perm := info.Mode().Perm()
+			fmt.Printf("Directory permissions: %v\n", perm)
+			fmt.Printf("Directory owner: %v\n", info.Sys())
 			if perm&0200 == 0 { // Check if directory is writable
 				return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Assets directory is not writable. Current permissions: %v", perm))
 			}
 		}
 
-		// Create the destination file
-		dst, err := os.Create(filepath.Join(assetsDir, filename))
+		// Create the destination file with explicit permissions
+		dst, err := os.OpenFile(
+			filepath.Join(assetsDir, filename),
+			os.O_CREATE|os.O_WRONLY,
+			0666,
+		)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Failed to create destination file: %v", err))
 		}
