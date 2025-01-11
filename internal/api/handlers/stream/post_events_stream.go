@@ -2,6 +2,7 @@ package stream
 
 import (
 	"net/http"
+	"net/url"
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
 	"github.com/JehadAbdulwafi/rustion/internal/types"
@@ -21,14 +22,31 @@ func postStreamEventsHandler(s *api.Server) echo.HandlerFunc {
 			return err
 		}
 
-		// TODO: check password
-
 		log.Debug().Interface("body", body).Msg("request body")
 
-		// check if stream exists
-		stream, err := s.Queries.GetStreamByStreamName(c.Request().Context(), *body.Stream)
+		if body.Param == nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "param is required")
+		}
+
+		values, err := url.ParseQuery(*body.Param)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "invalid param format")
+		}
+		password := values.Get("password")
+		
+		log.Debug().Str("password", password).Msg("request password")
+
+		if password == "" {
+			return echo.NewHTTPError(http.StatusBadRequest, "password is required")
+		}
+
+		stream, err := s.Queries.GetStreamByEndpoint(c.Request().Context(), *body.Stream)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusNotFound, "Stream not found")
+		}
+
+		if password != stream.Password {
+			return echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized")
 		}
 
 		switch *body.Action {

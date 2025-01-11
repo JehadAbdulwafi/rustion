@@ -62,6 +62,10 @@ type FrontendServer struct {
 	PasswordResetEndpoint string
 }
 
+type StreamServer struct {
+	Host string
+}
+
 type LoggerServer struct {
 	Level              zerolog.Level
 	RequestLevel       zerolog.Level
@@ -84,6 +88,7 @@ type Server struct {
 	FCMConfig push.FCMConfig
 	Mailer    Mailer
 	SMTP      transport.SMTPMailTransportConfig
+	Stream    StreamServer
 }
 
 func DefaultServiceConfigFromEnv() Server {
@@ -164,6 +169,9 @@ func DefaultServiceConfigFromEnv() Server {
 		Frontend: FrontendServer{
 			BaseURL:               util.GetEnv("SERVER_FRONTEND_BASE_URL", "http://localhost:3000"),
 			PasswordResetEndpoint: util.GetEnv("SERVER_FRONTEND_PASSWORD_RESET_ENDPOINT", "/set-new-password"),
+		},
+		Stream: StreamServer{
+			Host: util.GetEnv("SERVER_STREAM_HOST", "localhost"),
 		},
 		Mailer: Mailer{
 			DefaultSender:               util.GetEnv("SERVER_MAILER_DEFAULT_SENDER", "support@rustion.com"),

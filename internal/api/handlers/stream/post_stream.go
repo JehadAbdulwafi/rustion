@@ -48,12 +48,11 @@ func postStreamHandler(s *api.Server) echo.HandlerFunc {
 		}
 
 		// TODO: move to configuration
-		Host := c.Request().Host // fix me
-		Endpoint := util.ToSlug(*body.Name) // fix me
-		scheme := c.Request().URL.Scheme // fix me
-		App := "live" // fix me
+		Host := s.Config.Stream.Host
+		Endpoint := util.ToSlug(*body.Name)
+		App := "live"
 
-		url := fmt.Sprintf("%s://%s/%s/%s", scheme, Host, App, Endpoint)
+		url := fmt.Sprintf("https://%s/%s/%s", Host, App, Endpoint)
 
 		err = s.Queries.CreateStream(ctx, database.CreateStreamParams{
 			UserID:   user.ID,
