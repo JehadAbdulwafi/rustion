@@ -67,8 +67,8 @@ WORKDIR /app
 # Create app user and directory structure first
 RUN useradd -r -u 1000 -g root appuser && \
     mkdir -p /app/assets/images && \
-    chown -R appuser:root /app && \
-    chmod -R 777 /app/assets
+    chown -R 1000:1000 /app && \
+    chmod -R 777 /app
 
 COPY --from=builder /app/bin/app .
 COPY --from=builder /app/api/swagger.yml ./api/
@@ -76,11 +76,16 @@ COPY --from=builder /app/assets ./assets/
 COPY --from=builder /app/sql/schema ./migrations/
 COPY --from=builder /app/web ./web/
 
+# Ensure permissions are set after copying files
+RUN chown -R 1000:1000 /app && \
+    chmod -R 777 /app/assets
+
 # Switch to non-root user
-USER appuser
+USER 1000:1000
 
 EXPOSE 9973
 
+# Ensure volume has correct ownership
 VOLUME ["/app/assets"]
 
 ENTRYPOINT ["/app/app"]
