@@ -36,32 +36,43 @@ func postUploadImageHandler(s *api.Server) echo.HandlerFunc {
 
 		// Use absolute path for assets directory
 		assetsDir := "/app/assets/images"
-		if err := os.MkdirAll(assetsDir, 0755); err != nil {
+		if err := os.MkdirAll(assetsDir, 0777); err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Failed to create assets directory: %v", err))
 		}
 
 		// Debug: Print current working directory and directory info
 		cwd, _ := os.Getwd()
-		fmt.Printf("Current working directory: %s\n", cwd)
+		fmt.Printf("Debug - Current working directory: %s\n", cwd)
+		fmt.Printf("Debug - Trying to write to directory: %s\n", assetsDir)
+
+		// Test write permissions with a temp file
+		testFile := filepath.Join(assetsDir, "test.txt")
+		if err := os.WriteFile(testFile, []byte("test"), 0666); err != nil {
+			fmt.Printf("Debug - Write test failed: %v\n", err)
+		} else {
+			os.Remove(testFile) // Clean up test file
+			fmt.Printf("Debug - Write test succeeded\n")
+		}
+
 		if info, err := os.Stat(assetsDir); err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Failed to stat assets directory: %v", err))
 		} else {
 			perm := info.Mode().Perm()
-			fmt.Printf("Directory permissions: %v\n", perm)
-			fmt.Printf("Directory owner: %v\n", info.Sys())
-			if perm&0200 == 0 { // Check if directory is writable
-				return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Assets directory is not writable. Current permissions: %v", perm))
-			}
+			fmt.Printf("Debug - Directory permissions: %v\n", perm)
+			fmt.Printf("Debug - Directory owner: %v\n", info.Sys())
 		}
 
 		// Create the destination file with explicit permissions
+		fullPath := filepath.Join(assetsDir, filename)
+		fmt.Printf("Debug - Creating file at: %s\n", fullPath)
+		
 		dst, err := os.OpenFile(
-			filepath.Join(assetsDir, filename),
+			fullPath,
 			os.O_CREATE|os.O_WRONLY,
 			0666,
 		)
 		if err != nil {
-			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Failed to create destination file: %v", err))
+			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Failed to create destination file: %v (path: %s)", err, fullPath))
 		}
 		defer dst.Close()
 

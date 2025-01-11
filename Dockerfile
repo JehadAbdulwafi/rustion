@@ -62,21 +62,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Create app user
-RUN useradd -r -u 1000 -g root appuser
-
 WORKDIR /app
+
+# Create app user and directory structure first
+RUN useradd -r -u 1000 -g root appuser && \
+    mkdir -p /app/assets/images && \
+    chown -R appuser:root /app && \
+    chmod -R 777 /app/assets
 
 COPY --from=builder /app/bin/app .
 COPY --from=builder /app/api/swagger.yml ./api/
 COPY --from=builder /app/assets ./assets/
 COPY --from=builder /app/sql/schema ./migrations/
 COPY --from=builder /app/web ./web/
-
-# Create directory and set permissions
-RUN mkdir -p /app/assets/images && \
-    chown -R appuser:root /app/assets && \
-    chmod -R 777 /app/assets
 
 # Switch to non-root user
 USER appuser
