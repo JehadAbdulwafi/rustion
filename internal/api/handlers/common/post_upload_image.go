@@ -12,6 +12,7 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"github.com/rs/zerolog/log"
 )
 
 func postUploadImageHandler(s *api.Server) echo.HandlerFunc {
@@ -34,66 +35,27 @@ func postUploadImageHandler(s *api.Server) echo.HandlerFunc {
 		// Generate a unique filename
 		filename := uuid.New().String() + filepath.Ext(fileHeader.Filename)
 
-		// Use absolute path for assets directory
+		// Create an uploads directory if it doesn’t exist
 		assetsDir := "/app/assets/images"
-		if err := os.MkdirAll(assetsDir, 0777); err != nil {
-			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Failed to create assets directory: %v", err))
+		if _, err := os.Stat(assetsDir); os.IsNotExist(err) {
+			err = os.Mkdir(assetsDir, 0755)
+			if err != nil {
+				return echo.NewHTTPError(http.StatusInternalServerError, "Failed to create assets directory")
+			}
 		}
 
-		// Debug: Print current working directory and directory info
-		cwd, _ := os.Getwd()
-		fmt.Printf("Debug - Current working directory: %s\n", cwd)
-		fmt.Printf("Debug - Trying to write to directory: %s\n", assetsDir)
-
-		// Test write permissions with a temp file
-		testFile := filepath.Join(assetsDir, "test.txt")
-		if err := os.WriteFile(testFile, []byte("test"), 0666); err != nil {
-			fmt.Printf("Debug - Write test failed: %v\n", err)
-		} else {
-			os.Remove(testFile) // Clean up test file
-			fmt.Printf("Debug - Write test succeeded\n")
-		}
-
-		if info, err := os.Stat(assetsDir); err != nil {
-			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Failed to stat assets directory: %v", err))
-		} else {
-			perm := info.Mode().Perm()
-			fmt.Printf("Debug - Directory permissions: %v\n", perm)
-			fmt.Printf("Debug - Directory owner: %v\n", info.Sys())
-		}
-
-		// Create the destination file with explicit permissions
-		fullPath := filepath.Join(assetsDir, filename)
-		fmt.Printf("Debug - Creating file at: %s\n", fullPath)
-		
-		dst, err := os.OpenFile(
-			fullPath,
-			os.O_CREATE|os.O_WRONLY,
-			0666,
-		)
+		// Create the destination file
+		dst, err := os.Create(filepath.Join(assetsDir, filename))
 		if err != nil {
-			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Failed to create destination file: %v (path: %s)", err, fullPath))
+			log.Error().Err(err).Msg("Failed to create destination file")
+			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to create destination file")
 		}
 		defer dst.Close()
 
-		// Copy the uploaded file to the destination
-		if _, err = file.Seek(0, 0); err != nil {
-			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to seek file")
-		}
-
-		buffer := make([]byte, 1024*1024) // 1MB buffer
-		for {
-			n, err := file.Read(buffer)
-			if err != nil {
-				if err.Error() == "EOF" {
-					break
-				}
-				return echo.NewHTTPError(http.StatusInternalServerError, "Failed to read file")
-			}
-
-			if _, err := dst.Write(buffer[:n]); err != nil {
-				return echo.NewHTTPError(http.StatusInternalServerError, "Failed to write file")
-			}
+		// Copy the uploaded file to the destination file
+		if _, err := dst.ReadFrom(file); err != nil {
+			log.Error().Err(err).Msg("Failed to copy uploaded file")
+			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to save file")
 		}
 
 		// Generate the URL for the uploaded image
