@@ -14,11 +14,11 @@ ARG USER_GID=$USER_UID
 RUN groupadd --gid $USER_GID $USERNAME \
     && useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME
 
-RUN mkdir -p /$GOPATH/pkg && chown -R $USERNAME /$GOPATH
+RUN chown -R $USERNAME /$GOPATH
 
-# Create assets directory and set proper permissions
-RUN mkdir -p /app/assets/images && \
-    chown -R $USERNAME:$USERNAME /app/assets
+# # Create assets directory and set proper permissions
+# RUN mkdir -p /app/assets/images && \
+#     chown -R $USERNAME:$USERNAME /app/assets
 
 WORKDIR /app
 ENV GOBIN /app/bin
@@ -39,10 +39,12 @@ COPY . /app/
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o bin/app main.go
 RUN chmod a+x /app/bin/app
 
-RUN chown -R 65532:65532 /app/assets && \
-    chmod -R 755 /app/assets
+# RUN chown -R 65532:65532 /app/assets && \
+#     chmod -R 755 /app/assets
 
-FROM gcr.io/distroless/static-debian12:nonroot as app
+# FROM gcr.io/distroless/static-debian12:nonroot as app
+
+FROM alpine:latest
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
