@@ -121,7 +121,6 @@ definitions:
       - vhost
       - app
       - stream
-      - param
     properties:
       request_id:
         description: Unique identifier for the request

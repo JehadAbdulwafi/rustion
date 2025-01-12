@@ -35,8 +35,7 @@ type StreamEvent struct {
 
 	// Parameters passed to the stream
 	// Example: ?secret=8f7605d657c74d69b6b48f532c469bc9
-	// Required: true
-	Param *string `json:"param"`
+	Param string `json:"param,omitempty"`
 
 	// Unique identifier for the request
 	// Example: 3ab26a09-59b0-42f7-98e3-a281c7d0712b
@@ -63,10 +62,6 @@ func (m *StreamEvent) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateApp(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateParam(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -100,15 +95,6 @@ func (m *StreamEvent) validateAction(formats strfmt.Registry) error {
 func (m *StreamEvent) validateApp(formats strfmt.Registry) error {
 
 	if err := validate.Required("app", "body", m.App); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *StreamEvent) validateParam(formats strfmt.Registry) error {
-
-	if err := validate.Required("param", "body", m.Param); err != nil {
 		return err
 	}
 

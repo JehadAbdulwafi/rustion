@@ -2214,7 +2214,6 @@ definitions:
             - vhost
             - app
             - stream
-            - param
         type: object
     streamEventResponse:
         properties:
