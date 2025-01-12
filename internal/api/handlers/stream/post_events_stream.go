@@ -37,15 +37,18 @@ func postStreamEventsHandler(s *api.Server) echo.HandlerFunc {
 		log.Debug().Str("password", password).Msg("request password")
 
 		if password == "" {
+		log.Debug().Str("password", password).Msg("password is empty")
 			return echo.NewHTTPError(http.StatusBadRequest, "password is required")
 		}
 
 		stream, err := s.Queries.GetStreamByEndpoint(c.Request().Context(), *body.Stream)
 		if err != nil {
+			log.Error().Err(err).Msg("Failed to get stream")
 			return echo.NewHTTPError(http.StatusNotFound, "Stream not found")
 		}
 
 		if password != stream.Password {
+			log.Error().Msg("Invalid password")
 			return echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized")
 		}
 
@@ -53,11 +56,13 @@ func postStreamEventsHandler(s *api.Server) echo.HandlerFunc {
 		case util.StreamActionPublish:
 			err = s.Queries.PublishStream(c.Request().Context(), stream.ID)
 			if err != nil {
+				log.Error().Err(err).Msg("Failed to publish stream")
 				return echo.NewHTTPError(http.StatusInternalServerError, "Failed to publish stream")
 			}
 		case util.StreamActionUnpublish:
 			err = s.Queries.UnpublishStream(c.Request().Context(), stream.ID)
 			if err != nil {
+				log.Error().Err(err).Msg("Failed to unpublish stream")
 				return echo.NewHTTPError(http.StatusInternalServerError, "Failed to unpublish stream")
 			}
 		default:
@@ -68,6 +73,8 @@ func postStreamEventsHandler(s *api.Server) echo.HandlerFunc {
 		res := &types.StreamEventResponse{
 			Code: &code,
 		}
+
+		log.Debug().Interface("res", res).Msg("response")
 
 		return util.ValidateAndReturn(c, http.StatusOK, res)
 	}
