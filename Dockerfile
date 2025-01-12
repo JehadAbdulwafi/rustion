@@ -16,6 +16,10 @@ RUN groupadd --gid $USER_GID $USERNAME \
 
 RUN mkdir -p /$GOPATH/pkg && chown -R $USERNAME /$GOPATH
 
+# Create assets directory and set proper permissions
+RUN mkdir -p /app/assets/images && \
+    chown -R $USERNAME:$USERNAME /app/assets
+
 WORKDIR /app
 ENV GOBIN /app/bin
 ENV PATH $PATH:$GOBIN
