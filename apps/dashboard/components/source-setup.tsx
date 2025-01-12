@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
 import { Input } from './ui/input'
@@ -9,26 +9,42 @@ import { resetStreamPassword } from '@/api/LiveApi'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 
-const API_SECRET = process.env.API_SECRET;
+interface StreamUrls {
+  srtUrl: string;
+  rtmpUrl: string;
+  rtmpKey: string;
+}
 
-const generateRtmpUrl = (stream: Stream) => {
-  return `rtmp://${stream.host || 'localhost'}/${stream.app || ''}`;
-};
-
-const generateRtmpPassword = (stream: Stream) => {
-  return `/${stream.name}?secret=${API_SECRET}&password=${stream.password}`;
-};
-
-const generateSrtUrl = (stream: Stream) => {
-  const host = stream.host || 'localhost';
-  return `srt://${host + ':10800'}?streamid=#!::r=${stream.app}/${stream.name}?secret=${API_SECRET}&password=${stream.password},m=publish`;
+const fetchStreamUrls = async (stream: Stream): Promise<StreamUrls> => {
+  const response = await fetch('/api/stream-url', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ stream }),
+  });
+  const data = await response.json();
+  return data;
 };
 
 export default function SourceSetup({ stream }: { stream: Stream }) {
   const router = useRouter();
   const [showStreamKey, setShowStreamKey] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
+  const [streamUrls, setStreamUrls] = useState<StreamUrls>({
+    srtUrl: '',
+    rtmpUrl: '',
+    rtmpKey: ''
+  });
   const { toast } = useToast();
+
+  useEffect(() => {
+    const loadStreamUrls = async () => {
+      const urls = await fetchStreamUrls(stream);
+      setStreamUrls(urls);
+    };
+    loadStreamUrls();
+  }, [stream]);
 
   const handleResetPassword = async () => {
     try {
@@ -67,10 +83,10 @@ export default function SourceSetup({ stream }: { stream: Stream }) {
             <div className="flex flex-1 flex-row gap-2 items-center">
               <Input
                 className="w-full disabled:cursor-text disabled:text-current"
-                value={generateRtmpUrl(stream)}
+                value={streamUrls.rtmpUrl}
                 disabled
               />
-              <CopyButton content={generateRtmpUrl(stream)} placeholder="Copy Stream URL" />
+              <CopyButton content={streamUrls.rtmpUrl} placeholder="Copy Stream URL" />
             </div>
             <Label>Stream Key</Label>
             <div className="flex flex-1 flex-row gap-2 items-center">
@@ -79,7 +95,7 @@ export default function SourceSetup({ stream }: { stream: Stream }) {
                   disabled
                   type={showStreamKey ? "text" : "password"}
                   className="w-full disabled:cursor-text disabled:text-current pr-10"
-                  value={generateRtmpPassword(stream)}
+                  value={streamUrls.rtmpKey}
                 />
                 <button
                   onClick={() => setShowStreamKey(!showStreamKey)}
@@ -90,7 +106,7 @@ export default function SourceSetup({ stream }: { stream: Stream }) {
                 </button>
               </div>
               <ResetButton handleClick={handleResetPassword} isResetting={isResetting} placeholder="Reset Stream Password" />
-              <CopyButton content={generateRtmpPassword(stream)} placeholder="Copy Stream Key" />
+              <CopyButton content={streamUrls.rtmpKey} placeholder="Copy Stream Key" />
             </div>
           </TabsContent>
           <TabsContent value="SRT" className='flex flex-col gap-3'>
@@ -98,10 +114,10 @@ export default function SourceSetup({ stream }: { stream: Stream }) {
             <div className="flex flex-1 flex-row gap-2 items-center">
               <Input
                 className="w-full disabled:cursor-text disabled:text-current"
-                value={generateSrtUrl(stream)}
+                value={streamUrls.srtUrl}
                 disabled
               />
-              <CopyButton content={generateSrtUrl(stream)} placeholder="Copy Stream URL" />
+              <CopyButton content={streamUrls.srtUrl} placeholder="Copy Stream URL" />
             </div>
 
             <Label>Stream Key</Label>
