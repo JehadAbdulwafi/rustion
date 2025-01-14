@@ -3,7 +3,6 @@ package stream
 import (
 	"context"
 	"encoding/json"
-	"net/http"
 	"sync"
 	"time"
 
@@ -126,57 +125,61 @@ func GetStreamStatusRoute(s *api.Server) *echo.Route {
 
 func getStreamStatusHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		ws := c.Get("websocket").(*websocket.Conn)
-		streamID, err := uuid.Parse(c.Param("id"))
-		if err != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, "Invalid stream ID")
-		}
-
-		// Add the connection to our connections map
-		addConnection(streamID, ws)
-		defer removeConnection(streamID, ws)
-
-		ctx := c.Request().Context()
-		viewerID := c.QueryParam("viewer_id")
-		if viewerID == "" {
-			log.Error().Msg("No viewer ID provided")
-			return nil
-		}
-
-		log.Info().Msg("new user joining stream")
-
-		// Only increment if this is a new viewer
-		if addViewer(streamID, viewerID) {
-			err = s.Queries.IncrementStreamViewers(ctx, streamID)
+		websocket.Handler(func(ws *websocket.Conn) {
+			defer ws.Close()
+			
+			streamID, err := uuid.Parse(c.Param("id"))
 			if err != nil {
-				log.Error().Err(err).Msg("Error incrementing viewers in DB: ")
+				log.Error().Err(err).Msg("Invalid stream ID")
+				return
 			}
-		}
 
-		// Decrement viewer count on disconnect if viewer exists
-		defer func() {
-			if removeViewer(streamID, viewerID) {
-				log.Info().Msg("Attempting to decrement viewer count")
-				err := s.Queries.DecrementStreamViewers(ctx, streamID)
+			// Add the connection to our connections map
+			addConnection(streamID, ws)
+			defer removeConnection(streamID, ws)
+
+			ctx := c.Request().Context()
+			viewerID := c.QueryParam("viewer_id")
+			if viewerID == "" {
+				log.Error().Msg("No viewer ID provided")
+				return
+			}
+
+			log.Info().Msg("new user joining stream")
+
+			// Only increment if this is a new viewer
+			if addViewer(streamID, viewerID) {
+				err = s.Queries.IncrementStreamViewers(ctx, streamID)
 				if err != nil {
-					log.Error().Err(err).Msg("Error decrementing viewers in DB:")
+					log.Error().Err(err).Msg("Error incrementing viewers in DB: ")
 				}
 			}
-		}()
 
-		// Send initial stream status
-		sendStreamStatus(ws, s, ctx, streamID)
+			// Decrement viewer count on disconnect if viewer exists
+			defer func() {
+				if removeViewer(streamID, viewerID) {
+					log.Info().Msg("Attempting to decrement viewer count")
+					err := s.Queries.DecrementStreamViewers(ctx, streamID)
+					if err != nil {
+						log.Error().Err(err).Msg("Error decrementing viewers in DB:")
+					}
+				}
+			}()
 
-		// Keep connection alive and wait for disconnection
-		for {
-			var msg string
-			err := websocket.Message.Receive(ws, &msg)
-			if err != nil {
-				// WebSocket is closed or error occurred
-				log.Error().Err(err).Msg("WebSocket disconnected")
-				break
+			// Send initial stream status
+			sendStreamStatus(ws, s, ctx, streamID)
+
+			// Keep connection alive and wait for disconnection
+			for {
+				var msg string
+				err := websocket.Message.Receive(ws, &msg)
+				if err != nil {
+					// WebSocket is closed or error occurred
+					log.Error().Err(err).Msg("WebSocket disconnected")
+					break
+				}
 			}
-		}
+		}).ServeHTTP(c.Response(), c.Request())
 		return nil
 	}
 }
