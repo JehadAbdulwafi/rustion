@@ -50,12 +50,16 @@ func postStreamEventsHandler(s *api.Server) echo.HandlerFunc {
 				log.Error().Err(err).Msg("Failed to publish stream")
 				return echo.NewHTTPError(http.StatusInternalServerError, "Failed to publish stream")
 			}
+			// Broadcast status update to all connected clients
+			BroadcastStreamStatus(s, stream.ID)
 		case util.StreamActionUnpublish:
 			err = s.Queries.UnpublishStream(c.Request().Context(), stream.ID)
 			if err != nil {
 				log.Error().Err(err).Msg("Failed to unpublish stream")
 				return echo.NewHTTPError(http.StatusInternalServerError, "Failed to unpublish stream")
 			}
+			// Broadcast status update to all connected clients
+			BroadcastStreamStatus(s, stream.ID)
 		default:
 			log.Info().Str("action", *body.Action).Msg("invalid action")
 		}
