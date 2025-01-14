@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ChannelDialog } from "./channel-dialog";
 import { ChannelItem } from "./channel-item";
 import { Card, CardContent, CardHeader } from "../ui/card";
-import { Edit3Icon, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { useUser } from "@/contexts/user-context";
 
 export default function Channels({ stream }: { stream: Stream }) {
@@ -253,17 +253,6 @@ function ChannelsImpl({ defaultSecrets, stream }: { defaultSecrets?: Channel[], 
                 }}>
                 <PlusIcon className="w-4 h-4" />
                 Add Channel
-              </Button>
-
-              <Button
-                size={'sm'}
-                onClick={() => {
-                  setIsAddingChannel(true);
-                  setIsEditingChannel(false);
-                  setEditingChannel(null);
-                }}>
-                <Edit3Icon className="w-4 h-4" />
-                Update Titles
               </Button>
             </div>
           </div>

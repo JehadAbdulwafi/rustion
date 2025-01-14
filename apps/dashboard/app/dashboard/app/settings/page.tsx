@@ -28,6 +28,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Loader2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import Loader from "@/components/loader"
 
 const formSchema = z.object({
   app_icon_url: z.string().nullish().refine(
@@ -139,8 +140,8 @@ function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      <div className="flex flex-1 items-center justify-center">
+        <Loader />
       </div>
     )
   }

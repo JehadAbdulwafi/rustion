@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Card, CardContent } from "./ui/card";
 import Link from "next/link";
-import { Clock, Eye, Key, Radio, Settings } from "lucide-react";
+import { Clock, Eye, Radio } from "lucide-react";
 import { formatStreamDuration } from "@/utils/format-time";
 
 export default function StreamCard({ live }: { live: Stream }) {

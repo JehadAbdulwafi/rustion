@@ -11,7 +11,7 @@ export default async function AccountPage() {
   const user = await getUser()
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container px-4 space-y-6">
       <Tabs defaultValue="profile" className="space-y-6">
         <TabsList>
           <TabsTrigger value="profile" className="space-x-2">
