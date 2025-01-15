@@ -14,6 +14,7 @@ import { capitalizeFirstLetter } from "@/utils/string";
 import { cn } from "@/lib/utils";
 import { API } from "@/api/axios";
 import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 interface ChannelDialogProps {
   isOpen: boolean;
@@ -27,6 +28,7 @@ interface ChannelDialogProps {
 
 export function ChannelDialog({ isOpen, onOpenChange, submiting, onSubmit, initialData, mode, channels }: ChannelDialogProps) {
   const { toast } = useToast();
+  const router = useRouter();
   const [channel, setChannel] = React.useState<Channel>();
 
   const PlatformsData = [
@@ -59,24 +61,20 @@ export function ChannelDialog({ isOpen, onOpenChange, submiting, onSubmit, initi
   }, [initialData]);
 
   const handleSubmit = async () => {
-    console.log('update channel', channel);
     if (channel?.platform && channel?.label && channel?.server && channel?.secret) {
-      // const files = await checkStreamUrl(channel.platform);
-      // if (files) {
-      //   channel.files = files;
-      // }
       onSubmit(channel);
+      router.refresh();
       onOpenChange(false);
-      // setChannel({ platform: '', server: '', secret: '', label: '', files: [] });
       setChannel(undefined);
     }
   };
 
   const handleDelete = async () => {
     try {
-      API.delete(`/channels/${channel?.id}`);
+      await API.delete(`/channels/${channel?.id}`);
       onOpenChange(false);
       setChannel(undefined);
+      router.refresh();
       toast({
         title: "Success",
         description: "Channel deleted successfully."

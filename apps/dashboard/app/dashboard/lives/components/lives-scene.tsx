@@ -42,6 +42,7 @@ export default function LivesScene({ lives }: { lives: Stream[] }) {
 
     setIsCreating(true);
     const [err] = await catchErrorTyped(createStream(streamName));
+    router.refresh();
     if (err !== undefined) {
       toast({
         title: "Stream Creation Failed",
@@ -54,7 +55,6 @@ export default function LivesScene({ lives }: { lives: Stream[] }) {
         description: "Stream created successfully.",
       });
 
-      router.refresh();
       setIsCreating(false);
       setDialogOpen(false);
       setStreamName('');

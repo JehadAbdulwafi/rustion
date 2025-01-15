@@ -1,25 +1,23 @@
 "use client";
 import Player from "@/components/player/player";
-import StreamInfo from "@/components/stream-info";
 import StreamAnalytics from "@/components/player/stream-analytics";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Check, Pencil, Trash2, X } from "lucide-react";
+import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { deleteStream, updateStreamName } from "@/api/LiveApi";
+import { deleteStream } from "@/api/LiveApi";
 import { useToast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/dialogs/confirm-dialog";
 import useStream from "@/hooks/use-stream";
 import Channels from "@/components/channels/channels";
+import { UpdateInfoDialog } from "../../components/update-info-dialog";
 
-export default function LiveScene({ stream, userID }: { stream: Stream, userID: string }) {
+export default function LiveScene({ stream, userID, channels }: { stream: Stream, userID: string, channels: Channel[] }) {
   const router = useRouter();
   const wsRef = useRef<WebSocket | null>(null);
   const { streamStatus, setStreamStatus, setIsConnected } = useStream();
   const [isEditing, setIsEditing] = useState(false);
-  const [newName, setNewName] = useState(stream?.name || "");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { toast } = useToast();
   const [streamMetrics, setStreamMetrics] = useState({
@@ -43,6 +41,7 @@ export default function LiveScene({ stream, userID }: { stream: Stream, userID: 
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
+      console.log("new event: ", data.payload);
       setStreamStatus(data.payload);
     };
 
@@ -51,7 +50,7 @@ export default function LiveScene({ stream, userID }: { stream: Stream, userID: 
       wsRef.current = null;
     };
 
-    ws.onerror = (event) => {
+    ws.onerror = () => {
       wsRef.current = null;
       setTimeout(connect, 1000);
     };
@@ -75,24 +74,6 @@ export default function LiveScene({ stream, userID }: { stream: Stream, userID: 
     };
   }, []);
 
-  const handleNameUpdate = async () => {
-    try {
-      await updateStreamName(stream.id, { name: newName });
-      setIsEditing(false);
-      toast({
-        title: "Success",
-        description: "Stream name has been updated",
-      });
-      router.refresh();
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update stream name",
-        variant: "destructive",
-      });
-    }
-  };
-
   const handleDelete = async () => {
     try {
       await deleteStream(stream.id);
@@ -112,37 +93,21 @@ export default function LiveScene({ stream, userID }: { stream: Stream, userID: 
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
         <Link href="/dashboard/lives">
           <Button variant="ghost" size="icon">
             <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>
         <div className="flex-1 flex items-center gap-2">
-          {isEditing ? (
-            <div className="flex gap-2 items-center">
-              <Input
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                className="max-w-[300px]"
-              />
-              <Button size={"sm"} onClick={handleNameUpdate}><Check className="h-3.5 w-3.5" /></Button>
-              <Button variant="ghost" size={"sm"} onClick={() => setIsEditing(false)}>
-                <X className="h-3.5 w-3.5" />
-              </Button>
-            </div>
-          ) : (
-            <>
-              <h1 className="text-2xl font-bold tracking-tight">{stream?.name}</h1>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsEditing(true)}
-              >
-                <Pencil className="h-3.5 w-3.5" />
-              </Button>
-            </>
-          )}
+          <h1 className="text-lg sm:text-2xl font-bold tracking-tight">{stream?.name}</h1>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsEditing(true)}
+          >
+            <Pencil className="h-3.5 w-3.5" />
+          </Button>
         </div>
         <Button
           variant="ghost"
@@ -154,13 +119,11 @@ export default function LiveScene({ stream, userID }: { stream: Stream, userID: 
         </Button>
       </div>
 
-      <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
-
+      <div className="grid gap-4 grid-cols-1 xl:grid-cols-3">
         <div className="grid gap-4 grid-cols-1 lg:grid-cols-3 col-span-3 lg:col-span-2 auto-rows-min">
           <div className="w-full aspect-video col-span-1 sm:col-span-3 rounded-xl bg-black">
-            <Player onMetricsUpdate={setStreamMetrics} stream={stream} />
+            <Player onMetricsUpdate={setStreamMetrics} stream={stream} streamStatus={streamStatus} />
           </div>
-
           <div className="w-full col-span-1 sm:col-span-3">
             {streamStatus.status === "published" && (
               <StreamAnalytics
@@ -171,19 +134,8 @@ export default function LiveScene({ stream, userID }: { stream: Stream, userID: 
             )}
           </div>
         </div>
-
-
         <div className="lg:col-span-1 col-span-3 flex flex-col gap-4">
-          <Channels stream={stream} />
-          <StreamInfo
-            id={stream?.id}
-            title={stream?.liveTitle}
-            description={stream?.liveDescription}
-            thumbnail={stream?.thumbnail}
-          />
-        </div>
-
-        <div className="col-span-3 flex flex-col gap-4">
+          <Channels stream={stream} channels={channels} />
         </div>
       </div>
 
@@ -193,6 +145,15 @@ export default function LiveScene({ stream, userID }: { stream: Stream, userID: 
         title="Delete Stream"
         description="This action cannot be undone. This will permanently delete the stream and all its data."
         onConfirm={handleDelete}
+      />
+
+      <UpdateInfoDialog
+        open={isEditing}
+        onOpenChange={setIsEditing}
+        id={stream?.id}
+        title={stream?.liveTitle}
+        description={stream?.liveDescription}
+        thumbnail={stream?.thumbnail}
       />
     </div>
   );

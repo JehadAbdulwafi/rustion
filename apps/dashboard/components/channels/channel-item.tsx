@@ -35,8 +35,8 @@ export function ChannelItem({ channel, onEdit, submiting, onToggle, canToggle }:
   }
 
   return (
-    <div className="flex items-center justify-between p-4 bg-[#2a3142] rounded-lg">
-      <div className="flex items-center gap-4">
+    <div className="flex items-center justify-between p-2 sm:p-4  bg-[#2a3142] rounded-lg">
+      <div className="flex items-center gap-2 sm:gap-4">
         <div className="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center">
           <Image
             src={`/assets/icons/social/${getPlatform()}.svg`}
@@ -48,7 +48,6 @@ export function ChannelItem({ channel, onEdit, submiting, onToggle, canToggle }:
         <div>
           <div className="flex items-center gap-2">
             <span className="font-medium">{capitalizeFirstLetter(channel.label)}</span>
-            <span className="text-xs text-gray-400">Public</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-400">
             <span>{channel.enabled ? ((channel.frame && channel.ready) ? 'Streaming' : 'Waiting') : 'Inactive'}</span>
@@ -56,9 +55,10 @@ export function ChannelItem({ channel, onEdit, submiting, onToggle, canToggle }:
           </div>
         </div>
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
         <Button
           variant="ghost"
+          size={"sm"}
           className="text-gray-400 hover:text-white"
           onClick={() => onEdit(channel)}
         >

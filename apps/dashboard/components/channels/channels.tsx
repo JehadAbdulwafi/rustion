@@ -8,23 +8,8 @@ import { Card, CardContent, CardHeader } from "../ui/card";
 import { PlusIcon } from "lucide-react";
 import { useUser } from "@/contexts/user-context";
 
-export default function Channels({ stream }: { stream: Stream }) {
-  const [init, setInit] = React.useState(false);
-  const [secrets, setSecrets] = React.useState<Channel[]>();
-
-  React.useEffect(() => {
-    API.get('/channels').then(res => {
-      const secrets = res.data;
-      setInit(true);
-      setSecrets(secrets || []);
-    });
-  }, []);
-
-  if (!init) {
-    return null;
-  }
-
-  return <ChannelsImpl defaultSecrets={secrets} stream={stream} />;
+export default function Channels({ stream, channels }: { stream: Stream, channels: Channel[] }) {
+  return <ChannelsImpl defaultSecrets={channels} stream={stream} />;
 }
 
 function ChannelsImpl({ defaultSecrets, stream }: { defaultSecrets?: Channel[], stream: Stream }) {
@@ -92,13 +77,12 @@ function ChannelsImpl({ defaultSecrets, stream }: { defaultSecrets?: Channel[], 
           return newConfigs;
         });
 
-        console.log(data);
 
       }).catch(console.log);
     };
 
     refreshStreams();
-    const timer = setInterval(() => refreshStreams(), 10 * 1000);
+    const timer = setInterval(() => refreshStreams(), 10000);
     return () => clearInterval(timer);
   }, []);
 
@@ -126,7 +110,6 @@ function ChannelsImpl({ defaultSecrets, stream }: { defaultSecrets?: Channel[], 
   // Update the vlive config to server.
   // @ts-ignore
   const updateSecrets = React.useCallback((action, platform, server, secret, enabled, custom, label, files, onSuccess) => {
-    console.log(`Forward: Update secrets ${JSON.stringify({ action, platform, server, secret, enabled, custom, label, files })}`);
     if (!server) {
       toast({
         variant: "destructive",
@@ -161,7 +144,6 @@ function ChannelsImpl({ defaultSecrets, stream }: { defaultSecrets?: Channel[], 
           title: "Error",
           description: "Failed to update forwarding configuration. Please Publish the stream and try again."
         });
-        console.log(error);
       });
     } finally {
       new Promise(resolve => setTimeout(resolve, 3000)).then(() => setSubmiting(false));
@@ -180,13 +162,11 @@ function ChannelsImpl({ defaultSecrets, stream }: { defaultSecrets?: Channel[], 
         url: inputStream,
       });
 
-      console.log(`${'checking stream url'}，${JSON.stringify(res.data.data)}`);
       const streamObj = res.data.data;
       const files = [{ name: streamObj.name, size: 0, uuid: streamObj.uuid, target: streamObj.target, type: "stream" }];
       const ress = await API.post('/streams/vlive/source', {
         platform, files,
       });
-      console.log(`${'chacking files source'}，${JSON.stringify(ress.data.data)}`);
       return ress.data.data.files
     } catch (e) {
       console.log(e)
@@ -196,7 +176,6 @@ function ChannelsImpl({ defaultSecrets, stream }: { defaultSecrets?: Channel[], 
 
   // @ts-ignore
   const updateChannel = React.useCallback((platform, server, secret, enabled, custom, label) => {
-    console.log(`Forward: Update secrets ${JSON.stringify({ platform, server, secret, enabled, custom, label })}`);
     if (!server) {
       toast({
         variant: "destructive",
@@ -230,7 +209,6 @@ function ChannelsImpl({ defaultSecrets, stream }: { defaultSecrets?: Channel[], 
           title: "Error",
           description: "Failed to update forwarding configuration. Please try again."
         });
-        console.log(error);
       });
     } finally {
       new Promise(resolve => setTimeout(resolve, 3000)).then(() => setSubmiting(false));

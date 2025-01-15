@@ -6,6 +6,5 @@ export default async function TvShowsPage() {
 
   return (
     <TvShowsScene tvShows={tvShows} />
-
   )
 }

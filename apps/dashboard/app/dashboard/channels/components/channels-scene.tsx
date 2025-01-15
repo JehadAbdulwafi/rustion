@@ -18,7 +18,7 @@ export default function ChannelsScene({ channels }: { channels: Channel[] }) {
   const router = useRouter();
 
   // @ts-ignore
-  const updateSecrets = React.useCallback((platform, server, secret, enabled, custom, label) => {
+  const updateSecrets = React.useCallback(async (platform, server, secret, enabled, custom, label) => {
     console.log(`Forward: Update secrets ${JSON.stringify({ platform, server, secret, enabled, custom, label })}`);
     if (!server) {
       toast({
@@ -40,9 +40,9 @@ export default function ChannelsScene({ channels }: { channels: Channel[] }) {
 
     try {
       setSubmiting(true);
-      API.post('channels', {
+      await API.post('channels', {
         platform, server, secret, enabled: !!enabled, custom: !!custom, label,
-      })
+      });
 
       router.refresh();
       toast({
@@ -59,7 +59,7 @@ export default function ChannelsScene({ channels }: { channels: Channel[] }) {
     } finally {
       new Promise(resolve => setTimeout(resolve, 3000)).then(() => setSubmiting(false));
     }
-  }, [setSubmiting]);
+  }, [setSubmiting, router]);
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
