@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "../styles/globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { TailwindIndicator } from "@/components/tailwind-indicator";
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
@@ -40,6 +41,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <TailwindIndicator />
         </ThemeProvider>
       </body>
     </html>
