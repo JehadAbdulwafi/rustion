@@ -7,6 +7,7 @@ package database
 import (
 	"database/sql"
 	"database/sql/driver"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -188,6 +189,135 @@ func (ns NullStreamStatusEnum) Value() (driver.Value, error) {
 	return string(ns.StreamStatusEnum), nil
 }
 
+type SubscriptionBillingCycleEnum string
+
+const (
+	SubscriptionBillingCycleEnumMonthly SubscriptionBillingCycleEnum = "monthly"
+	SubscriptionBillingCycleEnumYearly  SubscriptionBillingCycleEnum = "yearly"
+)
+
+func (e *SubscriptionBillingCycleEnum) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = SubscriptionBillingCycleEnum(s)
+	case string:
+		*e = SubscriptionBillingCycleEnum(s)
+	default:
+		return fmt.Errorf("unsupported scan type for SubscriptionBillingCycleEnum: %T", src)
+	}
+	return nil
+}
+
+type NullSubscriptionBillingCycleEnum struct {
+	SubscriptionBillingCycleEnum SubscriptionBillingCycleEnum
+	Valid                        bool // Valid is true if SubscriptionBillingCycleEnum is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullSubscriptionBillingCycleEnum) Scan(value interface{}) error {
+	if value == nil {
+		ns.SubscriptionBillingCycleEnum, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.SubscriptionBillingCycleEnum.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullSubscriptionBillingCycleEnum) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.SubscriptionBillingCycleEnum), nil
+}
+
+type SubscriptionStatusEnum string
+
+const (
+	SubscriptionStatusEnumActive    SubscriptionStatusEnum = "active"
+	SubscriptionStatusEnumCancelled SubscriptionStatusEnum = "cancelled"
+	SubscriptionStatusEnumExpired   SubscriptionStatusEnum = "expired"
+	SubscriptionStatusEnumPending   SubscriptionStatusEnum = "pending"
+)
+
+func (e *SubscriptionStatusEnum) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = SubscriptionStatusEnum(s)
+	case string:
+		*e = SubscriptionStatusEnum(s)
+	default:
+		return fmt.Errorf("unsupported scan type for SubscriptionStatusEnum: %T", src)
+	}
+	return nil
+}
+
+type NullSubscriptionStatusEnum struct {
+	SubscriptionStatusEnum SubscriptionStatusEnum
+	Valid                  bool // Valid is true if SubscriptionStatusEnum is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullSubscriptionStatusEnum) Scan(value interface{}) error {
+	if value == nil {
+		ns.SubscriptionStatusEnum, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.SubscriptionStatusEnum.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullSubscriptionStatusEnum) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.SubscriptionStatusEnum), nil
+}
+
+type TransactionStatusEnum string
+
+const (
+	TransactionStatusEnumPending   TransactionStatusEnum = "pending"
+	TransactionStatusEnumSucceeded TransactionStatusEnum = "succeeded"
+	TransactionStatusEnumFailed    TransactionStatusEnum = "failed"
+)
+
+func (e *TransactionStatusEnum) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = TransactionStatusEnum(s)
+	case string:
+		*e = TransactionStatusEnum(s)
+	default:
+		return fmt.Errorf("unsupported scan type for TransactionStatusEnum: %T", src)
+	}
+	return nil
+}
+
+type NullTransactionStatusEnum struct {
+	TransactionStatusEnum TransactionStatusEnum
+	Valid                 bool // Valid is true if TransactionStatusEnum is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullTransactionStatusEnum) Scan(value interface{}) error {
+	if value == nil {
+		ns.TransactionStatusEnum, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.TransactionStatusEnum.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullTransactionStatusEnum) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.TransactionStatusEnum), nil
+}
+
 type Account struct {
 	ID                int32
 	UserID            uuid.UUID
@@ -276,6 +406,18 @@ type PasswordResetToken struct {
 	UpdatedAt  sql.NullTime
 }
 
+type Plan struct {
+	ID           uuid.UUID
+	Name         string
+	Description  sql.NullString
+	PriceMonthly string
+	PriceYearly  string
+	Features     json.RawMessage
+	IsActive     bool
+	CreatedAt    sql.NullTime
+	UpdatedAt    sql.NullTime
+}
+
 type PushToken struct {
 	ID          uuid.UUID
 	Token       string
@@ -305,12 +447,37 @@ type Stream struct {
 	UpdatedAt       sql.NullTime
 }
 
+type Subscription struct {
+	ID                 uuid.UUID
+	UserID             uuid.UUID
+	PlanID             uuid.UUID
+	Status             SubscriptionStatusEnum
+	BillingCycle       SubscriptionBillingCycleEnum
+	CurrentPeriodStart time.Time
+	CurrentPeriodEnd   time.Time
+	CancelAtPeriodEnd  bool
+	CreatedAt          sql.NullTime
+	UpdatedAt          sql.NullTime
+}
+
 type Tag struct {
 	ID        uuid.UUID
 	Title     string
 	AppID     uuid.UUID
 	CreatedAt sql.NullTime
 	UpdatedAt sql.NullTime
+}
+
+type Transaction struct {
+	ID             uuid.UUID
+	SubscriptionID uuid.UUID
+	Amount         string
+	Currency       string
+	Status         TransactionStatusEnum
+	PaymentMethod  sql.NullString
+	ErrorMessage   sql.NullString
+	CreatedAt      sql.NullTime
+	UpdatedAt      sql.NullTime
 }
 
 type TvShow struct {

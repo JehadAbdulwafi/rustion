@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  title: ""
+  title: github.com/JehadAbdulwafi/rustion
   version: 0.1.0
 parameters:
   StreamIdParam:
@@ -10,7 +10,6 @@ parameters:
     description: ID of Stream
     in: path
     required: true
-
 paths:
   /api/v1/streams:
     get:
@@ -26,7 +25,6 @@ paths:
           description: Success
           schema:
             $ref: "../definitions/stream.yml#/definitions/StreamList"
-
     post:
       security:
         - Bearer: []
@@ -45,7 +43,6 @@ paths:
           description: Success
           schema:
             $ref: "../definitions/stream.yml#/definitions/Stream"
-
   /api/v1/streams/events:
     post:
       description: " Stream event"
@@ -63,7 +60,38 @@ paths:
           description: Success
           schema:
             $ref: "../definitions/stream.yml#/definitions/StreamEventResponse"
-
+  /api/v1/streams/{id}/reset-password:
+    get:
+      security:
+        - Bearer: []
+      description: "Reset the given Stream password"
+      tags:
+        - Stream
+      summary: "Reset the given Stream password"
+      operationId: GetResetStreamPasswordRoute
+      parameters:
+        - $ref: "#/parameters/StreamIdParam"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/stream.yml#/definitions/Stream"
+  /api/v1/streams/{id}/ws:
+    get:
+      security:
+        - Bearer: []
+      description: "websocket stream status"
+      tags:
+        - Stream
+      summary: "websocket stream status"
+      operationId: GetStreamStatusRoute
+      parameters:
+        - $ref: "#/parameters/StreamIdParam"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/stream.yml#/definitions/Stream"
   /api/v1/streams/{id}:
     get:
       security:
@@ -80,7 +108,6 @@ paths:
           description: Success
           schema:
             $ref: "../definitions/stream.yml#/definitions/Stream"
-
     put:
       security:
         - Bearer: []
@@ -100,7 +127,6 @@ paths:
           description: Success
           schema:
             $ref: "../definitions/stream.yml#/definitions/Stream"
-
     delete:
       security:
         - Bearer: []
@@ -114,7 +140,6 @@ paths:
       responses:
         "204":
           description: Success
-
   /api/v1/streams/{id}/name:
     put:
       security:
@@ -130,6 +155,107 @@ paths:
           in: body
           schema:
             $ref: "../definitions/stream.yml#/definitions/UpdateStreamNamePayload"
+      responses:
+        "200":
+          description: Success
+  /api/v1/streams/vlive/secrets:
+    get:
+      security:
+        - Bearer: []
+      description: "Return vlive secrets"
+      tags:
+        - Stream
+      summary: "Return vlive secrets"
+      operationId: GetVLiveSecretsRoute
+      responses:
+        "200":
+          description: Success
+    post:
+      security:
+        - Bearer: []
+      description: "Update vlive secrets"
+      tags:
+        - Stream
+      summary: "Update vlive secrets"
+      operationId: PostVLiveSourceRoute
+      responses:
+        "200":
+          description: Success
+  /api/v1/streams/vlive/streams:
+    get:
+      security:
+        - Bearer: []
+      description: "Return vlive streams"
+      tags:
+        - Stream
+      summary: "Return vlive streams"
+      operationId: GetVLiveStreamsRoute
+      responses:
+        "200":
+          description: Success
+  /api/v1/streams/vlive/source:
+    post:
+      security:
+        - Bearer: []
+      description: "Check the stream source"
+      tags:
+        - Stream
+      summary: "Check the stream source"
+      operationId: PostVLiveSourceRoute
+      responses:
+        "200":
+          description: Success
+  /api/v1/streams/vlive/stream-url:
+    post:
+      security:
+        - Bearer: []
+      description: "Update vlive stream url"
+      tags:
+        - Stream
+      summary: "Update vlive stream url"
+      operationId: PostVLiveStreamUrlRoute
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/stream.yml#/definitions/CreateStreamPayload"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/common.yml#/definitions/MessageResponse"
+  /api/v1/streams/forward/secrets:
+    get:
+      security:
+        - Bearer: []
+      description: ""
+      tags:
+        - Stream
+      summary: "Return secrets"
+      operationId: GetForwardSecretsRoute
+      responses:
+        "200":
+          description: Success
+    post:
+      security:
+        - Bearer: []
+      description: ""
+      tags:
+        - Stream
+      summary: "Return secrets"
+      operationId: PostForwardSecretsRoute
+      responses:
+        "200":
+          description: Success
+  /api/v1/streams/forward/streams:
+    get:
+      security:
+        - Bearer: []
+      description: ""
+      tags:
+        - Stream
+      summary: "Return secrets"
+      operationId: GetForwardStreamsRoute
       responses:
         "200":
           description: Success

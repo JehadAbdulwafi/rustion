@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func GetForwardStreams(s *api.Server) *echo.Route {
+func GetForwardStreamsRoute(s *api.Server) *echo.Route {
 	return s.Router.APIV1Stream.GET("/forward/streams", getForwardStreamsHandler(s))
 }
 

@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  title: ""
+  title: github.com/JehadAbdulwafi/rustion
   version: 0.1.0
 parameters:
   FeedbackIdParam:

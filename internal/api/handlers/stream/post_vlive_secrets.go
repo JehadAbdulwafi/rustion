@@ -10,7 +10,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func PostVLiveSecrets(s *api.Server) *echo.Route {
+func PostVLiveSecretsRoute(s *api.Server) *echo.Route {
 	return s.Router.APIV1Stream.POST("/vlive/secrets", postVLiveSecretsHandler(s))
 }
 func postVLiveSecretsHandler(s *api.Server) echo.HandlerFunc {

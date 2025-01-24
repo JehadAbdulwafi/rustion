@@ -1,0 +1,155 @@
+swagger: "2.0"
+info:
+  title: github.com/JehadAbdulwafi/rustion
+  version: 0.1.0
+parameters:
+  SubscriptionIdParam:
+    type: string
+    format: uuid4
+    name: id
+    description: ID of Subscription
+    in: path
+    required: true
+paths:
+  /api/v1/subscriptions:
+    get:
+      security:
+        - Bearer: []
+      description: "Return active Subscription"
+      tags:
+        - Subscription
+      summary: "Return active Subscription"
+      operationId: GetSubscriptionListRoute
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/subscription.yml#/definitions/Subscription"
+  /api/v1/subscriptions/cancel:
+    delete:
+      security:
+        - Bearer: []
+      description: "Return Cancel active Subscription"
+      tags:
+        - Subscription
+      summary: "Return Cancel active Subscription"
+      operationId: DeleteCancelSubscriptionRoute
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/subscription.yml#/definitions/Subscription"
+  /api/v1/subscriptions/subscribe:
+    post:
+      security:
+        - Bearer: []
+      description: "Subscribe to a plan"
+      tags:
+        - Subscription 
+      summary: "Subscribe to a plan"
+      operationId: PostSubscribeRoute
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/subscription.yml#/definitions/SubscriptionPayload"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/subscription.yml#/definitions/Plan"
+  /api/v1/subscriptions/renew:
+    post:
+      security:
+        - Bearer: []
+      description: ""
+      tags:
+        - Subscription 
+      summary: ""
+      operationId: PostRenewRoute
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/subscription.yml#/definitions/Plan"
+  /api/v1/subscriptions/upgrade:
+    post:
+      security:
+        - Bearer: []
+      description: ""
+      tags:
+        - Subscription 
+      summary: ""
+      operationId: PostUpgradeRoute
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/subscription.yml#/definitions/SubscriptionPayload"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/subscription.yml#/definitions/Plan"
+  /api/v1/subscriptions/plans:
+    get:
+      security:
+        - Bearer: []
+      description: "Return a list of Plan"
+      tags:
+        - Subscription
+      summary: "Return a list of Plan"
+      operationId: GetPlansRoute
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/subscription.yml#/definitions/PlanList"
+    post:
+      security:
+        - Bearer: []
+      description: "create new plan"
+      tags:
+        - Subscription
+      summary: "create new Plan"
+      operationId: PostPlanRoute
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            $ref: "../definitions/subscription.yml#/definitions/PlanPayload"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/subscription.yml#/definitions/PlanList"
+  /api/v1/subscriptions/plans/{id}:
+    get:
+      security:
+        - Bearer: []
+      description: "Return Plan with ID"
+      tags:
+        - Subscription
+      summary: "Return Plan with ID"
+      operationId: GetPlanRoute
+      parameters:
+        - $ref: "#/parameters/SubscriptionIdParam"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/subscription.yml#/definitions/Plan"
+  /api/v1/subscriptions/transactions:
+    get:
+      security:
+        - Bearer: []
+      description: "Return a list of SubscriptionTransaction"
+      tags:
+        - Subscription
+      summary: "Return a list of SubscriptionTransaction"
+      operationId: GetUserTransactionsRoute
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "../definitions/subscription.yml#/definitions/TransactionList"

@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func GetVLiveStreams(s *api.Server) *echo.Route {
+func GetVLiveStreamsRoute(s *api.Server) *echo.Route {
 	return s.Router.APIV1Stream.GET("/vlive/streams", getVLiveStreamsHandler(s))
 }
 

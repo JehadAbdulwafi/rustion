@@ -14,7 +14,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func PostForwardSecrets(s *api.Server) *echo.Route {
+func PostForwardSecretsRoute(s *api.Server) *echo.Route {
 	return s.Router.APIV1Stream.POST("/forward/secrets", postForwardSecretsHandler(s))
 }
 func postForwardSecretsHandler(s *api.Server) echo.HandlerFunc {

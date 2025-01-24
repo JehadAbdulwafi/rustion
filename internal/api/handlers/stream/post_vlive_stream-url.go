@@ -10,7 +10,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func PostVLiveStreamUrl(s *api.Server) *echo.Route {
+func PostVLiveStreamUrlRoute(s *api.Server) *echo.Route {
 	return s.Router.APIV1Stream.POST("/vlive/stream-url", postVLiveStreamUrlHandler(s))
 }
 func postVLiveStreamUrlHandler(s *api.Server) echo.HandlerFunc {

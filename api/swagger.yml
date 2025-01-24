@@ -840,7 +840,7 @@ paths:
             summary: Get healthy
             tags:
                 - common
-    /api/v1/push/notifications:
+    /api/v1/push/send:
         post:
             description: Send push notifications to all users
             operationId: PostPushNotificationsRoute
@@ -871,7 +871,7 @@ paths:
             tags:
                 - test
     /api/v1/push/token:
-        put:
+        post:
             description: |-
                 Adds a push token for the given provider to the current user.
                 If the oldToken is present it will be deleted.
@@ -945,6 +945,104 @@ paths:
                     schema:
                         $ref: '#/definitions/streamEventResponse'
             summary: Stream event
+            tags:
+                - Stream
+    /api/v1/streams/forward/secrets:
+        get:
+            operationId: GetForwardSecretsRoute
+            responses:
+                "200":
+                    description: Success
+            security:
+                - Bearer: []
+            summary: Return secrets
+            tags:
+                - Stream
+        post:
+            operationId: PostForwardSecretsRoute
+            responses:
+                "200":
+                    description: Success
+            security:
+                - Bearer: []
+            summary: Return secrets
+            tags:
+                - Stream
+    /api/v1/streams/forward/streams:
+        get:
+            operationId: GetForwardStreamsRoute
+            responses:
+                "200":
+                    description: Success
+            security:
+                - Bearer: []
+            summary: Return secrets
+            tags:
+                - Stream
+    /api/v1/streams/vlive/secrets:
+        get:
+            description: Return vlive secrets
+            operationId: GetVLiveSecretsRoute
+            responses:
+                "200":
+                    description: Success
+            security:
+                - Bearer: []
+            summary: Return vlive secrets
+            tags:
+                - Stream
+        post:
+            description: Update vlive secrets
+            operationId: PostVLiveSourceRoute
+            responses:
+                "200":
+                    description: Success
+            security:
+                - Bearer: []
+            summary: Update vlive secrets
+            tags:
+                - Stream
+    /api/v1/streams/vlive/source:
+        post:
+            description: Check the stream source
+            operationId: PostVLiveSourceRouteMixin9
+            responses:
+                "200":
+                    description: Success
+            security:
+                - Bearer: []
+            summary: Check the stream source
+            tags:
+                - Stream
+    /api/v1/streams/vlive/stream-url:
+        post:
+            description: Update vlive stream url
+            operationId: PostVLiveStreamUrlRoute
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/createStreamPayload'
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/messageResponse'
+            security:
+                - Bearer: []
+            summary: Update vlive stream url
+            tags:
+                - Stream
+    /api/v1/streams/vlive/streams:
+        get:
+            description: Return vlive streams
+            operationId: GetVLiveStreamsRoute
+            responses:
+                "200":
+                    description: Success
+            security:
+                - Bearer: []
+            summary: Return vlive streams
             tags:
                 - Stream
     /api/v1/streams/{id}:
@@ -1033,6 +1131,191 @@ paths:
             summary: Update the given Stream name
             tags:
                 - Stream
+    /api/v1/streams/{id}/reset-password:
+        get:
+            description: Reset the given Stream password
+            operationId: GetResetStreamPasswordRoute
+            parameters:
+                - description: ID of Stream
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/stream'
+            security:
+                - Bearer: []
+            summary: Reset the given Stream password
+            tags:
+                - Stream
+    /api/v1/streams/{id}/ws:
+        get:
+            description: websocket stream status
+            operationId: GetStreamStatusRoute
+            parameters:
+                - description: ID of Stream
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/stream'
+            security:
+                - Bearer: []
+            summary: websocket stream status
+            tags:
+                - Stream
+    /api/v1/subscriptions:
+        get:
+            description: Return active Subscription
+            operationId: GetSubscriptionListRoute
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/subscription'
+            security:
+                - Bearer: []
+            summary: Return active Subscription
+            tags:
+                - Subscription
+    /api/v1/subscriptions/cancel:
+        delete:
+            description: Return Cancel active Subscription
+            operationId: DeleteCancelSubscriptionRoute
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/subscription'
+            security:
+                - Bearer: []
+            summary: Return Cancel active Subscription
+            tags:
+                - Subscription
+    /api/v1/subscriptions/plans:
+        get:
+            description: Return a list of Plan
+            operationId: GetPlansRoute
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/planList'
+            security:
+                - Bearer: []
+            summary: Return a list of Plan
+            tags:
+                - Subscription
+        post:
+            description: create new plan
+            operationId: PostPlanRoute
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/planPayload'
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/planList'
+            security:
+                - Bearer: []
+            summary: create new Plan
+            tags:
+                - Subscription
+    /api/v1/subscriptions/plans/{id}:
+        get:
+            description: Return Plan with ID
+            operationId: GetPlanRoute
+            parameters:
+                - description: ID of Subscription
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/plan'
+            security:
+                - Bearer: []
+            summary: Return Plan with ID
+            tags:
+                - Subscription
+    /api/v1/subscriptions/renew:
+        post:
+            operationId: PostRenewRoute
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/plan'
+            security:
+                - Bearer: []
+            tags:
+                - Subscription
+    /api/v1/subscriptions/subscribe:
+        post:
+            description: Subscribe to a plan
+            operationId: PostSubscribeRoute
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/subscriptionPayload'
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/plan'
+            security:
+                - Bearer: []
+            summary: Subscribe to a plan
+            tags:
+                - Subscription
+    /api/v1/subscriptions/transactions:
+        get:
+            description: Return a list of SubscriptionTransaction
+            operationId: GetUserTransactionsRoute
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/transactionList'
+            security:
+                - Bearer: []
+            summary: Return a list of SubscriptionTransaction
+            tags:
+                - Subscription
+    /api/v1/subscriptions/upgrade:
+        post:
+            operationId: PostUpgradeRoute
+            parameters:
+                - in: body
+                  name: Payload
+                  schema:
+                    $ref: '#/definitions/subscriptionPayload'
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/plan'
+            security:
+                - Bearer: []
+            tags:
+                - Subscription
     /api/v1/tags:
         get:
             description: Retrieves all tags with their associated articles
@@ -1064,7 +1347,7 @@ paths:
     /api/v1/tags/articles:
         get:
             description: Retrieves a tag with its associated articles
-            operationId: GetTagWithArticlesMixin10
+            operationId: GetTagWithArticlesMixin11
             responses:
                 "200":
                     description: GetTagWithArticlesResponse
@@ -1911,6 +2194,61 @@ definitions:
             - asc
             - desc
         type: string
+    plan:
+        properties:
+            createdAt:
+                type: string
+            description:
+                type: string
+            features:
+                type: string
+            id:
+                format: uuid4
+                type: string
+            isActive:
+                type: boolean
+            name:
+                type: string
+            priceMonthly:
+                type: string
+            priceYearly:
+                type: string
+            updatedAt:
+                type: string
+        required:
+            - id
+            - name
+            - description
+            - priceMonthly
+            - priceYearly
+            - features
+            - isActive
+        type: object
+    planList:
+        items:
+            $ref: '#/definitions/plan'
+        type: array
+    planPayload:
+        properties:
+            description:
+                type: string
+            features:
+                type: string
+            isActive:
+                type: boolean
+            name:
+                type: string
+            priceMonthly:
+                type: string
+            priceYearly:
+                type: string
+        required:
+            - name
+            - description
+            - priceMonthly
+            - priceYearly
+            - features
+        type: object
     postChangePasswordPayload:
         properties:
             currentPassword:
@@ -2228,6 +2566,51 @@ definitions:
         items:
             $ref: '#/definitions/stream'
         type: array
+    subscription:
+        properties:
+            billingCycle:
+                type: string
+            createdAt:
+                type: string
+            currentPeriodEnd:
+                format: date-time
+                type: string
+            currentPeriodStart:
+                format: date-time
+                type: string
+            id:
+                format: uuid4
+                type: string
+            planID:
+                format: uuid4
+                type: string
+            status:
+                type: string
+            updatedAt:
+                type: string
+            userID:
+                format: uuid4
+                type: string
+        required:
+            - id
+            - userID
+            - planID
+            - status
+            - billingCycle
+            - currentPeriodStart
+            - currentPeriodEnd
+        type: object
+    subscriptionPayload:
+        properties:
+            billingCycle:
+                type: string
+            planID:
+                format: uuid4
+                type: string
+        required:
+            - planID
+            - billingCycle
+        type: object
     tVShow:
         properties:
             app_id:
@@ -2336,6 +2719,41 @@ definitions:
             - title
             - app_id
         type: object
+    transaction:
+        properties:
+            amount:
+                type: string
+            createdAt:
+                type: string
+            currency:
+                type: string
+            errorMessage:
+                type: string
+            id:
+                format: uuid4
+                type: string
+            paymentMethod:
+                type: string
+            status:
+                type: string
+            subscriptionID:
+                format: uuid4
+                type: string
+            updatedAt:
+                type: string
+        required:
+            - id
+            - subscriptionID
+            - amount
+            - currency
+            - status
+            - paymentMethod
+            - errorMessage
+        type: object
+    transactionList:
+        items:
+            $ref: '#/definitions/transaction'
+        type: array
     updateArticleRequest:
         properties:
             content:
@@ -2479,6 +2897,13 @@ parameters:
         type: string
     StreamIdParam:
         description: ID of Stream
+        format: uuid4
+        in: path
+        name: id
+        required: true
+        type: string
+    SubscriptionIdParam:
+        description: ID of Subscription
         format: uuid4
         in: path
         name: id

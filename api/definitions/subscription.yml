@@ -1,0 +1,177 @@
+swagger: "2.0"
+info:
+  title: ""
+  version: 0.1.0
+paths: {}
+definitions:
+  Subscription:
+    type: object
+    required:
+      - id
+      - userID
+      - planID
+      - status
+      - billingCycle
+      - currentPeriodStart
+      - currentPeriodEnd
+    properties:
+      id:
+        type: string
+        format: uuid4
+      userID:
+        type: string
+        format: uuid4
+      planID:
+        type: string
+        format: uuid4
+      status:
+        type: string
+      billingCycle:
+        type: string
+      currentPeriodStart:
+        type: string
+        format: date-time
+      currentPeriodEnd:
+        type: string
+        format: date-time
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+
+  SubscriptionPayload:
+    type: object
+    required:
+      - planID
+      - billingCycle
+    properties:
+      planID:
+        type: string
+        format: uuid4
+      billingCycle:
+        type: string
+
+  SubscriptionList:
+    type: array
+    items: 
+      $ref: "#/definitions/Subscription"
+
+  Plan:
+    type: object
+    required:
+      - id
+      - name
+      - description
+      - priceMonthly
+      - priceYearly
+      - features
+      - isActive
+    properties:
+      id:
+        type: string
+        format: uuid4
+      name:
+        type: string
+      description:
+        type: string
+      priceMonthly:
+        type: string
+      priceYearly:
+        type: string
+      features:
+        type: string
+      isActive:
+        type: boolean
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+
+  PlanPayload:
+    type: object
+    required:
+      - name
+      - description
+      - priceMonthly
+      - priceYearly
+      - features
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      priceMonthly:
+        type: string
+      priceYearly:
+        type: string
+      features:
+        type: string
+      isActive:
+        type: boolean
+
+  PlanList:
+    type: array
+    items: 
+      $ref: "#/definitions/Plan"
+
+
+  Transaction:
+    type: object
+    required:
+      - id
+      - subscriptionID
+      - amount
+      - currency
+      - status
+      - paymentMethod
+      - errorMessage
+    properties:
+      id:
+        type: string
+        format: uuid4
+      subscriptionID:
+        type: string
+        format: uuid4
+      amount:
+        type: string
+      currency:
+        type: string
+      status:
+        type: string
+      paymentMethod:
+        type: string
+      errorMessage:
+        type: string
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+
+  TransactionPayload:
+    type: object
+    required:
+      - subscriptionID
+      - amount
+      - currency
+      - status
+      - paymentMethod
+      - errorMessage
+    properties:
+      subscriptionID:
+        type: string
+        format: uuid4
+      amount:
+        type: string
+      currency:
+        type: string
+      status:
+        type: string
+      paymentMethod:
+        type: string
+      errorMessage:
+        type: string
+
+  TransactionList:
+    type: array
+    items: 
+      $ref: "#/definitions/Transaction"

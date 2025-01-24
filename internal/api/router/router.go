@@ -277,7 +277,20 @@ func Init(s *api.Server) {
 			S:    s,
 			Mode: middleware.AuthModeRequired,
 		})),
-	}
 
+		APIV1Subscription: s.Echo.Group("/api/v1/subscriptions", middleware.AuthWithConfig(middleware.AuthConfig{
+			S:    s,
+			Mode: middleware.AuthModeRequired,
+			Skipper: func(c echo.Context) bool {
+				switch c.Path() {
+				case "/api/v1/subscriptions/plans":
+					return true
+				case "/api/v1/subscriptions/plans/:id":
+					return true
+				}
+				return false
+			},
+		})),
+	}
 	handlers.AttachAllRoutes(s)
 }

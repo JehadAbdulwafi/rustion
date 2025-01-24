@@ -12,7 +12,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func GetForwardSecrets(s *api.Server) *echo.Route {
+func GetForwardSecretsRoute(s *api.Server) *echo.Route {
 	return s.Router.APIV1Stream.GET("/forward/secrets", getForwardSecretsHandler(s))
 }
 

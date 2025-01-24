@@ -4,7 +4,7 @@ info:
   version: 0.1.0
 paths:
   /api/v1/push/token:
-    put:
+    post:
       security:
         - Bearer: []
       description: |-
@@ -45,7 +45,7 @@ paths:
           description: OK
       deprecated: true
       
-  /api/v1/push/notifications:
+  /api/v1/push/send:
     post:
       security:
         - Bearer: []
