@@ -71,7 +71,7 @@ func Init(s *api.Server) {
 
 		APIV1Stream: s.Echo.Group("/api/v1/streams", middleware.AuthWithConfig(middleware.AuthConfig{
 			S:    s,
-			Mode: middleware.AuthModeRequired,
+			Mode: middleware.AuthModeSubscriptionRequired,
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
 				case "/api/v1/streams/:id/ws":
@@ -85,7 +85,7 @@ func Init(s *api.Server) {
 
 		APIV1Faq: s.Echo.Group("/api/v1/faqs", middleware.AuthWithConfig(middleware.AuthConfig{
 			S:    s,
-			Mode: middleware.AuthModeRequired,
+			Mode: middleware.AuthModeSubscriptionRequired,
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
 				case "/api/v1/faqs/:id":
@@ -105,7 +105,7 @@ func Init(s *api.Server) {
 
 		APIV1Feedback: s.Echo.Group("/api/v1/feedbacks", middleware.AuthWithConfig(middleware.AuthConfig{
 			S:    s,
-			Mode: middleware.AuthModeRequired,
+			Mode: middleware.AuthModeSubscriptionRequired,
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
 				case "/api/v1/feedbacks/:id":
@@ -125,7 +125,7 @@ func Init(s *api.Server) {
 
 		APIV1App: s.Echo.Group("/api/v1/apps", middleware.AuthWithConfig(middleware.AuthConfig{
 			S:    s,
-			Mode: middleware.AuthModeRequired,
+			Mode: middleware.AuthModeSubscriptionRequired,
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
 				case "/api/v1/apps/:id":
@@ -145,7 +145,7 @@ func Init(s *api.Server) {
 
 		APIV1Articles: s.Echo.Group("/api/v1/articles", middleware.AuthWithConfig(middleware.AuthConfig{
 			S:    s,
-			Mode: middleware.AuthModeRequired,
+			Mode: middleware.AuthModeSubscriptionRequired,
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
 				case "/api/v1/articles/:id":
@@ -165,7 +165,7 @@ func Init(s *api.Server) {
 
 		APIV1Tags: s.Echo.Group("/api/v1/tags", middleware.AuthWithConfig(middleware.AuthConfig{
 			S:    s,
-			Mode: middleware.AuthModeRequired,
+			Mode: middleware.AuthModeSubscriptionRequired,
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
 				case "/api/v1/tags/:id":
@@ -197,7 +197,7 @@ func Init(s *api.Server) {
 
 		APIV1FeaturedSections: s.Echo.Group("/api/v1/featured-sections", middleware.AuthWithConfig(middleware.AuthConfig{
 			S:    s,
-			Mode: middleware.AuthModeRequired,
+			Mode: middleware.AuthModeSubscriptionRequired,
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
 				case "/api/v1/featured-sections/:id":
@@ -227,7 +227,7 @@ func Init(s *api.Server) {
 
 		APIV1TvShows: s.Echo.Group("/api/v1/tv-shows", middleware.AuthWithConfig(middleware.AuthConfig{
 			S:    s,
-			Mode: middleware.AuthModeRequired,
+			Mode: middleware.AuthModeSubscriptionRequired,
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
 				case "/api/v1/tv-shows/:id":
@@ -259,15 +259,11 @@ func Init(s *api.Server) {
 
 		APIV1Push: s.Echo.Group("/api/v1/push", middleware.AuthWithConfig(middleware.AuthConfig{
 			S:    s,
-			Mode: middleware.AuthModeRequired,
+			Mode: middleware.AuthModeSubscriptionRequired,
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
 				case "/api/v1/push/token":
 					return true
-				case "/api/v1/push/test":
-					return true
-				case "/api/v1/push/send":
-					return false
 				}
 				return false
 			},
@@ -275,7 +271,7 @@ func Init(s *api.Server) {
 
 		APIV1Channel: s.Echo.Group("/api/v1/channels", middleware.AuthWithConfig(middleware.AuthConfig{
 			S:    s,
-			Mode: middleware.AuthModeRequired,
+			Mode: middleware.AuthModeSubscriptionRequired,
 		})),
 
 		APIV1Subscription: s.Echo.Group("/api/v1/subscriptions", middleware.AuthWithConfig(middleware.AuthConfig{

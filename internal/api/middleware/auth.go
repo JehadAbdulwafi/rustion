@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"net/http"
@@ -23,6 +24,8 @@ var (
 	ErrForbiddenUserDeactivated                = httperrors.NewHTTPError(http.StatusForbidden, "USER_DEACTIVATED", "User account is deactivated")
 	ErrForbiddenMissingScopes                  = httperrors.NewHTTPError(http.StatusForbidden, "MISSING_SCOPES", "User is missing required scopes")
 	ErrAuthTokenValidationFailed               = errors.New("auth token validation failed")
+	ErrSubscriptionExpired                     = httperrors.NewHTTPError(http.StatusForbidden, "SUBSCRIPTION_EXPIRED", "Your subscription has expired")
+	ErrSubscriptionRequired                    = httperrors.NewHTTPError(http.StatusForbidden, "SUBSCRIPTION_REQUIRED", "This endpoint requires an active subscription")
 )
 
 // AuthMode controls the type of authentication check performed for a specific route or group
@@ -39,6 +42,10 @@ const (
 	AuthModeTry
 	// AuthModeNone does not require an auth token to be present in order to access the route or group and will not attempt to parse any authentication provided
 	AuthModeNone
+	// AuthModeSubscriptionRequired requires an auth token and an active subscription
+	AuthModeSubscriptionRequired
+	// AuthModeSecureSubscriptionRequired requires an auth token, recent authentication, and an active subscription
+	AuthModeSecureSubscriptionRequired
 )
 
 func (m AuthMode) String() string {
@@ -53,6 +60,10 @@ func (m AuthMode) String() string {
 		return "try"
 	case AuthModeNone:
 		return "none"
+	case AuthModeSubscriptionRequired:
+		return "subscription_required"
+	case AuthModeSecureSubscriptionRequired:
+		return "secure_subscription_required"
 	default:
 		return fmt.Sprintf("unknown (%d)", m)
 	}
@@ -232,7 +243,7 @@ type AuthConfig struct {
 }
 
 func (c AuthConfig) CheckLastAuthenticatedAt(user *database.User) bool {
-	if c.Mode != AuthModeSecure {
+	if c.Mode != AuthModeSecure && c.Mode != AuthModeSecureSubscriptionRequired {
 		return true
 	}
 
@@ -352,6 +363,23 @@ func AuthWithConfig(config AuthConfig) echo.MiddlewareFunc {
 
 					log.Debug().Time("valid_until", res.ValidUntil).Str("path", c.Path()).Str("user_id", dbUser.ID.String()).Msg("Auth token is expired, rejecting request")
 					return config.FailureMode.Error()
+				}
+			}
+
+			if config.Mode == AuthModeSubscriptionRequired || config.Mode == AuthModeSecureSubscriptionRequired {
+				subscription, err := config.S.Queries.GetUserActiveSubscription(c.Request().Context(), dbUser.ID)
+				if err != nil {
+					if err == sql.ErrNoRows {
+						log.Debug().Str("user_id", dbUser.ID.String()).Str("path", c.Path()).Msg("No active subscription found, rejecting request")
+						return ErrSubscriptionRequired
+					}
+					log.Error().Err(err).Str("user_id", dbUser.ID.String()).Str("path", c.Path()).Msg("Failed to retrieve subscription")
+					return echo.ErrInternalServerError
+				}
+
+				if subscription.Status != "active" {
+					log.Debug().Str("status", string(subscription.Status)).Str("user_id", dbUser.ID.String()).Str("path", c.Path()).Msg("Subscription is not active, rejecting request")
+					return ErrSubscriptionExpired
 				}
 			}
 
