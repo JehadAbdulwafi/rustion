@@ -9,6 +9,20 @@ info:
     title: github.com/JehadAbdulwafi/rustion
     version: 0.1.0
 paths:
+    /api/v1/active:
+        get:
+            description: Return active Subscription
+            operationId: GetActiveSubscriptionRoute
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/subscription'
+            security:
+                - Bearer: []
+            summary: Return active Subscription
+            tags:
+                - Subscription
     /api/v1/apps:
         get:
             description: Return a list of App
@@ -993,7 +1007,7 @@ paths:
                 - Stream
         post:
             description: Update vlive secrets
-            operationId: PostVLiveSourceRoute
+            operationId: PostVLiveSourceRouteMixin9
             responses:
                 "200":
                     description: Success
@@ -1005,7 +1019,7 @@ paths:
     /api/v1/streams/vlive/source:
         post:
             description: Check the stream source
-            operationId: PostVLiveSourceRouteMixin9
+            operationId: PostVLiveSourceRoute
             responses:
                 "200":
                     description: Success
@@ -1181,7 +1195,7 @@ paths:
                 "200":
                     description: Success
                     schema:
-                        $ref: '#/definitions/subscription'
+                        $ref: '#/definitions/subscriptionList'
             security:
                 - Bearer: []
             summary: Return active Subscription
@@ -2600,6 +2614,10 @@ definitions:
             - currentPeriodStart
             - currentPeriodEnd
         type: object
+    subscriptionList:
+        items:
+            $ref: '#/definitions/subscription'
+        type: array
     subscriptionPayload:
         properties:
             billingCycle:

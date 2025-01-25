@@ -13,11 +13,11 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func GetSubscriptionListRoute(s *api.Server) *echo.Route {
-	return s.Router.APIV1Subscription.GET("", getSubscriptionListHandler(s))
+func GetActiveSubscriptionRoute(s *api.Server) *echo.Route {
+	return s.Router.APIV1Subscription.GET("/active", getActiveSubscriptionHandler(s))
 }
 
-func getSubscriptionListHandler(s *api.Server) echo.HandlerFunc {
+func getActiveSubscriptionHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
 		user := auth.UserFromContext(ctx)

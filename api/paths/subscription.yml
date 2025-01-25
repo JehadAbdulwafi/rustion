@@ -24,6 +24,20 @@ paths:
         "200":
           description: Success
           schema:
+            $ref: "../definitions/subscription.yml#/definitions/SubscriptionList"
+  /api/v1/active:
+    get:
+      security:
+        - Bearer: []
+      description: "Return active Subscription"
+      tags:
+        - Subscription
+      summary: "Return active Subscription"
+      operationId: GetActiveSubscriptionRoute
+      responses:
+        "200":
+          description: Success
+          schema:
             $ref: "../definitions/subscription.yml#/definitions/Subscription"
   /api/v1/subscriptions/cancel:
     delete:

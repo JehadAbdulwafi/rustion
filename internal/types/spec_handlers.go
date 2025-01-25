@@ -46,6 +46,7 @@ func (o *SwaggerSpec) initHandlerCache() {
 	o.Handlers["DELETE"]["/api/v1/streams/{id}"] = true
 	o.Handlers["DELETE"]["/api/v1/tv-shows/{id}"] = true
 	o.Handlers["DELETE"]["/api/v1/tags/{id}"] = true
+	o.Handlers["GET"]["/api/v1/active"] = true
 	o.Handlers["GET"]["/api/v1/articles"] = true
 	o.Handlers["GET"]["/api/v1/featured-sections"] = true
 	o.Handlers["GET"]["/api/v1/tv-shows"] = true
@@ -108,8 +109,8 @@ func (o *SwaggerSpec) initHandlerCache() {
 	o.Handlers["POST"]["/api/v1/subscriptions/subscribe"] = true
 	o.Handlers["POST"]["/api/v1/push/token"] = true
 	o.Handlers["POST"]["/api/v1/subscriptions/upgrade"] = true
-	o.Handlers["POST"]["/api/v1/streams/vlive/secrets"] = true
 	o.Handlers["POST"]["/api/v1/streams/vlive/source"] = true
+	o.Handlers["POST"]["/api/v1/streams/vlive/secrets"] = true
 	o.Handlers["POST"]["/api/v1/streams/vlive/stream-url"] = true
 	o.Handlers["PUT"]["/api/v1/apps/{id}"] = true
 	o.Handlers["PUT"]["/api/v1/channels/{id}"] = true

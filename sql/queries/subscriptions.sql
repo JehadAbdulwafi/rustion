@@ -29,6 +29,17 @@ WHERE s.user_id = $1
 AND s.status = 'active'::subscription_status_enum
 AND s.current_period_end > CURRENT_TIMESTAMP;
 
+-- name: GetUserSubscriptions :many
+SELECT s.*, 
+       p.name as plan_name, 
+       p.price_monthly, 
+       p.price_yearly,
+       p.features as plan_features
+FROM subscriptions s
+JOIN plans p ON s.plan_id = p.id
+WHERE s.user_id = $1 
+AND s.current_period_end > CURRENT_TIMESTAMP;
+
 -- name: UpdateSubscriptionStatus :one
 UPDATE subscriptions
 SET status = $2,

@@ -172,6 +172,73 @@ func (q *Queries) GetUserActiveSubscription(ctx context.Context, userID uuid.UUI
 	return i, err
 }
 
+const getUserSubscriptions = `-- name: GetUserSubscriptions :many
+SELECT s.id, s.user_id, s.plan_id, s.status, s.billing_cycle, s.current_period_start, s.current_period_end, s.cancel_at_period_end, s.created_at, s.updated_at, 
+       p.name as plan_name, 
+       p.price_monthly, 
+       p.price_yearly,
+       p.features as plan_features
+FROM subscriptions s
+JOIN plans p ON s.plan_id = p.id
+WHERE s.user_id = $1 
+AND s.current_period_end > CURRENT_TIMESTAMP
+`
+
+type GetUserSubscriptionsRow struct {
+	ID                 uuid.UUID
+	UserID             uuid.UUID
+	PlanID             uuid.UUID
+	Status             SubscriptionStatusEnum
+	BillingCycle       SubscriptionBillingCycleEnum
+	CurrentPeriodStart time.Time
+	CurrentPeriodEnd   time.Time
+	CancelAtPeriodEnd  bool
+	CreatedAt          sql.NullTime
+	UpdatedAt          sql.NullTime
+	PlanName           string
+	PriceMonthly       string
+	PriceYearly        string
+	PlanFeatures       json.RawMessage
+}
+
+func (q *Queries) GetUserSubscriptions(ctx context.Context, userID uuid.UUID) ([]GetUserSubscriptionsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getUserSubscriptions, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetUserSubscriptionsRow
+	for rows.Next() {
+		var i GetUserSubscriptionsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.PlanID,
+			&i.Status,
+			&i.BillingCycle,
+			&i.CurrentPeriodStart,
+			&i.CurrentPeriodEnd,
+			&i.CancelAtPeriodEnd,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.PlanName,
+			&i.PriceMonthly,
+			&i.PriceYearly,
+			&i.PlanFeatures,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listExpiredSubscriptions = `-- name: ListExpiredSubscriptions :many
 SELECT s.id, s.user_id, s.plan_id, s.status, s.billing_cycle, s.current_period_start, s.current_period_end, s.cancel_at_period_end, s.created_at, s.updated_at, 
        p.name as plan_name, 
