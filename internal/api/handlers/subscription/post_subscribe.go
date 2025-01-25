@@ -62,7 +62,7 @@ func postSubscriptionHandler(s *api.Server) echo.HandlerFunc {
 				UserID:             user.ID,
 				PlanID:             uuid.MustParse(body.PlanID.String()),
 				BillingCycle:       database.SubscriptionBillingCycleEnum(*body.BillingCycle),
-				Status:             database.SubscriptionStatusEnumActive,
+				Status:             database.SubscriptionStatusEnumPending,
 				CurrentPeriodStart: StartDate,
 				CurrentPeriodEnd:   EndDate,
 			},
