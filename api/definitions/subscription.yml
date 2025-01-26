@@ -24,6 +24,8 @@ definitions:
       planID:
         type: string
         format: uuid4
+      PlanName:
+        type: string
       status:
         type: string
       billingCycle:

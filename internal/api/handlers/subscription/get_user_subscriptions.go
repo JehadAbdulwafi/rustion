@@ -38,6 +38,7 @@ func getSubscriptionListHandler(s *api.Server) echo.HandlerFunc {
 				ID:                 (*strfmt.UUID4)(swag.String(sub.ID.String())),
 				UserID:             (*strfmt.UUID4)(swag.String(sub.UserID.String())),
 				PlanID:             (*strfmt.UUID4)(swag.String(sub.PlanID.String())),
+				PlanName:           string(sub.PlanName),
 				Status:             swag.String(string(sub.Status)),
 				BillingCycle:       swag.String(string(sub.BillingCycle)),
 				CurrentPeriodStart: (*strfmt.DateTime)(&sub.CurrentPeriodStart),

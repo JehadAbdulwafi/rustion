@@ -81,6 +81,7 @@ func postRenewHandler(s *api.Server) echo.HandlerFunc {
 			UserID:             (*strfmt.UUID4)(swag.String(renewedSubscription.UserID.String())),
 			PlanID:             (*strfmt.UUID4)(swag.String(renewedSubscription.PlanID.String())),
 			Status:             swag.String(string(renewedSubscription.Status)),
+			PlanName:           string(plan.Name),
 			BillingCycle:       swag.String(string(renewedSubscription.BillingCycle)),
 			CurrentPeriodStart: (*strfmt.DateTime)(&renewedSubscription.CurrentPeriodStart),
 			CurrentPeriodEnd:   (*strfmt.DateTime)(&renewedSubscription.CurrentPeriodEnd),

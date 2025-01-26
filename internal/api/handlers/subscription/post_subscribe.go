@@ -31,7 +31,6 @@ func postSubscriptionHandler(s *api.Server) echo.HandlerFunc {
 			return err
 		}
 
-
 		_, err = s.Queries.GetUserActiveSubscription(ctx, user.ID)
 
 		if err == nil {
@@ -98,6 +97,7 @@ func postSubscriptionHandler(s *api.Server) echo.HandlerFunc {
 			UserID:             (*strfmt.UUID4)(swag.String(subscription.UserID.String())),
 			PlanID:             (*strfmt.UUID4)(swag.String(subscription.PlanID.String())),
 			Status:             swag.String(string(subscription.Status)),
+			PlanName:           string(plan.Name),
 			BillingCycle:       swag.String(string(subscription.BillingCycle)),
 			CurrentPeriodStart: (*strfmt.DateTime)(&subscription.CurrentPeriodStart),
 			CurrentPeriodEnd:   (*strfmt.DateTime)(&subscription.CurrentPeriodEnd),

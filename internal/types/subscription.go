@@ -19,6 +19,9 @@ import (
 // swagger:model subscription
 type Subscription struct {
 
+	// plan name
+	PlanName string `json:"PlanName,omitempty"`
+
 	// billing cycle
 	// Required: true
 	BillingCycle *string `json:"billingCycle"`

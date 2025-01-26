@@ -90,6 +90,7 @@ func postUpgradeHandler(s *api.Server) echo.HandlerFunc {
 			UserID:             (*strfmt.UUID4)(swag.String(upgradedSubscription.UserID.String())),
 			PlanID:             (*strfmt.UUID4)(swag.String(upgradedSubscription.PlanID.String())),
 			Status:             swag.String(string(upgradedSubscription.Status)),
+			PlanName:           string(newPlan.Name),
 			BillingCycle:       swag.String(string(upgradedSubscription.BillingCycle)),
 			CurrentPeriodStart: (*strfmt.DateTime)(&upgradedSubscription.CurrentPeriodStart),
 			CurrentPeriodEnd:   (*strfmt.DateTime)(&upgradedSubscription.CurrentPeriodEnd),

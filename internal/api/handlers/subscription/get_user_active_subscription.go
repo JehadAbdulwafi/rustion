@@ -36,6 +36,7 @@ func getActiveSubscriptionHandler(s *api.Server) echo.HandlerFunc {
 			UserID:             (*strfmt.UUID4)(swag.String(activeSub.UserID.String())),
 			PlanID:             (*strfmt.UUID4)(swag.String(activeSub.PlanID.String())),
 			Status:             swag.String(string(activeSub.Status)),
+			PlanName:           string(activeSub.PlanName),
 			BillingCycle:       swag.String(string(activeSub.BillingCycle)),
 			CurrentPeriodStart: (*strfmt.DateTime)(&activeSub.CurrentPeriodStart),
 			CurrentPeriodEnd:   (*strfmt.DateTime)(&activeSub.CurrentPeriodEnd),

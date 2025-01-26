@@ -109,8 +109,8 @@ func (o *SwaggerSpec) initHandlerCache() {
 	o.Handlers["POST"]["/api/v1/subscriptions/subscribe"] = true
 	o.Handlers["POST"]["/api/v1/push/token"] = true
 	o.Handlers["POST"]["/api/v1/subscriptions/upgrade"] = true
-	o.Handlers["POST"]["/api/v1/streams/vlive/source"] = true
 	o.Handlers["POST"]["/api/v1/streams/vlive/secrets"] = true
+	o.Handlers["POST"]["/api/v1/streams/vlive/source"] = true
 	o.Handlers["POST"]["/api/v1/streams/vlive/stream-url"] = true
 	o.Handlers["PUT"]["/api/v1/apps/{id}"] = true
 	o.Handlers["PUT"]["/api/v1/channels/{id}"] = true

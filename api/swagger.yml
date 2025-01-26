@@ -1007,7 +1007,7 @@ paths:
                 - Stream
         post:
             description: Update vlive secrets
-            operationId: PostVLiveSourceRouteMixin9
+            operationId: PostVLiveSourceRoute
             responses:
                 "200":
                     description: Success
@@ -1019,7 +1019,7 @@ paths:
     /api/v1/streams/vlive/source:
         post:
             description: Check the stream source
-            operationId: PostVLiveSourceRoute
+            operationId: PostVLiveSourceRouteMixin9
             responses:
                 "200":
                     description: Success
@@ -2582,6 +2582,8 @@ definitions:
         type: array
     subscription:
         properties:
+            PlanName:
+                type: string
             billingCycle:
                 type: string
             createdAt:
