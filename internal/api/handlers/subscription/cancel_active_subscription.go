@@ -29,7 +29,7 @@ func deleteCancelSubscriptionHandler(s *api.Server) echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusNotFound, "Subscription not found")
 		}
 
-		if subscription.Status != database.SubscriptionStatusEnumActive {
+		if subscription.Status != database.SubscriptionStatusEnumActive && subscription.Status != database.SubscriptionStatusEnumPending {
 			return echo.NewHTTPError(http.StatusNotFound, "your subscription is not active")
 		}
 
