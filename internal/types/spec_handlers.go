@@ -38,7 +38,7 @@ func (o *SwaggerSpec) initHandlerCache() {
 
 	o.Handlers["DELETE"]["/api/v1/apps/{id}"] = true
 	o.Handlers["DELETE"]["/api/v1/articles/{id}"] = true
-	o.Handlers["DELETE"]["/api/v1/subscriptions/cancel"] = true
+	o.Handlers["DELETE"]["/api/v1/subscriptions/{id}/cancel"] = true
 	o.Handlers["DELETE"]["/api/v1/channels/{id}"] = true
 	o.Handlers["DELETE"]["/api/v1/faqs/{id}"] = true
 	o.Handlers["DELETE"]["/api/v1/featured-sections/{id}"] = true
@@ -46,7 +46,7 @@ func (o *SwaggerSpec) initHandlerCache() {
 	o.Handlers["DELETE"]["/api/v1/streams/{id}"] = true
 	o.Handlers["DELETE"]["/api/v1/tv-shows/{id}"] = true
 	o.Handlers["DELETE"]["/api/v1/tags/{id}"] = true
-	o.Handlers["GET"]["/api/v1/active"] = true
+	o.Handlers["GET"]["/api/v1/subscriptions/active"] = true
 	o.Handlers["GET"]["/api/v1/articles"] = true
 	o.Handlers["GET"]["/api/v1/featured-sections"] = true
 	o.Handlers["GET"]["/api/v1/tv-shows"] = true
@@ -103,7 +103,8 @@ func (o *SwaggerSpec) initHandlerCache() {
 	o.Handlers["POST"]["/api/v1/push/send"] = true
 	o.Handlers["POST"]["/api/v1/auth/refresh"] = true
 	o.Handlers["POST"]["/api/v1/auth/register"] = true
-	o.Handlers["POST"]["/api/v1/subscriptions/renew"] = true
+	o.Handlers["POST"]["/api/v1/subscriptions/{id}/renew"] = true
+	o.Handlers["POST"]["/api/v1/subscriptions/{id}/resubscribe"] = true
 	o.Handlers["POST"]["/api/v1/streams/events"] = true
 	o.Handlers["POST"]["/api/v1/streams"] = true
 	o.Handlers["POST"]["/api/v1/subscriptions/subscribe"] = true

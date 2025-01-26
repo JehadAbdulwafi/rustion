@@ -14,18 +14,18 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// NewDeleteCancelSubscriptionRouteParams creates a new DeleteCancelSubscriptionRouteParams object
+// NewPostResubscribeRouteParams creates a new PostResubscribeRouteParams object
 // no default values defined in spec.
-func NewDeleteCancelSubscriptionRouteParams() DeleteCancelSubscriptionRouteParams {
+func NewPostResubscribeRouteParams() PostResubscribeRouteParams {
 
-	return DeleteCancelSubscriptionRouteParams{}
+	return PostResubscribeRouteParams{}
 }
 
-// DeleteCancelSubscriptionRouteParams contains all the bound params for the delete cancel subscription route operation
+// PostResubscribeRouteParams contains all the bound params for the post resubscribe route operation
 // typically these are obtained from a http.Request
 //
-// swagger:parameters DeleteCancelSubscriptionRoute
-type DeleteCancelSubscriptionRouteParams struct {
+// swagger:parameters PostResubscribeRoute
+type PostResubscribeRouteParams struct {
 
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
@@ -40,8 +40,8 @@ type DeleteCancelSubscriptionRouteParams struct {
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
 // for simple values it will use straight method calls.
 //
-// To ensure default values, the struct must have been initialized with NewDeleteCancelSubscriptionRouteParams() beforehand.
-func (o *DeleteCancelSubscriptionRouteParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
+// To ensure default values, the struct must have been initialized with NewPostResubscribeRouteParams() beforehand.
+func (o *PostResubscribeRouteParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
 	var res []error
 
 	o.HTTPRequest = r
@@ -57,7 +57,7 @@ func (o *DeleteCancelSubscriptionRouteParams) BindRequest(r *http.Request, route
 	return nil
 }
 
-func (o *DeleteCancelSubscriptionRouteParams) Validate(formats strfmt.Registry) error {
+func (o *PostResubscribeRouteParams) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	// id
@@ -75,7 +75,7 @@ func (o *DeleteCancelSubscriptionRouteParams) Validate(formats strfmt.Registry) 
 }
 
 // bindID binds and validates parameter ID from path.
-func (o *DeleteCancelSubscriptionRouteParams) bindID(rawData []string, hasKey bool, formats strfmt.Registry) error {
+func (o *PostResubscribeRouteParams) bindID(rawData []string, hasKey bool, formats strfmt.Registry) error {
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
@@ -99,7 +99,7 @@ func (o *DeleteCancelSubscriptionRouteParams) bindID(rawData []string, hasKey bo
 }
 
 // validateID carries on validations for parameter ID
-func (o *DeleteCancelSubscriptionRouteParams) validateID(formats strfmt.Registry) error {
+func (o *PostResubscribeRouteParams) validateID(formats strfmt.Registry) error {
 
 	if err := validate.FormatOf("id", "path", "uuid4", o.ID.String(), formats); err != nil {
 		return err

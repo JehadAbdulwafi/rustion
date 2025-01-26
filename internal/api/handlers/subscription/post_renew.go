@@ -17,7 +17,7 @@ import (
 )
 
 func PostRenewRoute(s *api.Server) *echo.Route {
-	return s.Router.APIV1Subscription.POST("/id/renew", postRenewHandler(s))
+	return s.Router.APIV1Subscription.POST("/:id/renew", postRenewHandler(s))
 }
 
 func postRenewHandler(s *api.Server) echo.HandlerFunc {

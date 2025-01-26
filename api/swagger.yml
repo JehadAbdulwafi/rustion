@@ -9,20 +9,6 @@ info:
     title: github.com/JehadAbdulwafi/rustion
     version: 0.1.0
 paths:
-    /api/v1/active:
-        get:
-            description: Return active Subscription
-            operationId: GetActiveSubscriptionRoute
-            responses:
-                "200":
-                    description: Success
-                    schema:
-                        $ref: '#/definitions/subscription'
-            security:
-                - Bearer: []
-            summary: Return active Subscription
-            tags:
-                - Subscription
     /api/v1/apps:
         get:
             description: Return a list of App
@@ -1201,10 +1187,10 @@ paths:
             summary: Return active Subscription
             tags:
                 - Subscription
-    /api/v1/subscriptions/cancel:
-        delete:
-            description: Return Cancel active Subscription
-            operationId: DeleteCancelSubscriptionRoute
+    /api/v1/subscriptions/active:
+        get:
+            description: Return active Subscription
+            operationId: GetActiveSubscriptionRoute
             responses:
                 "200":
                     description: Success
@@ -1212,7 +1198,7 @@ paths:
                         $ref: '#/definitions/subscription'
             security:
                 - Bearer: []
-            summary: Return Cancel active Subscription
+            summary: Return active Subscription
             tags:
                 - Subscription
     /api/v1/subscriptions/plans:
@@ -1268,18 +1254,6 @@ paths:
             summary: Return Plan with ID
             tags:
                 - Subscription
-    /api/v1/subscriptions/renew:
-        post:
-            operationId: PostRenewRoute
-            responses:
-                "200":
-                    description: Success
-                    schema:
-                        $ref: '#/definitions/plan'
-            security:
-                - Bearer: []
-            tags:
-                - Subscription
     /api/v1/subscriptions/subscribe:
         post:
             description: Subscribe to a plan
@@ -1328,6 +1302,67 @@ paths:
                         $ref: '#/definitions/plan'
             security:
                 - Bearer: []
+            tags:
+                - Subscription
+    /api/v1/subscriptions/{id}/cancel:
+        delete:
+            description: Return Cancel active Subscription
+            operationId: DeleteCancelSubscriptionRoute
+            parameters:
+                - description: ID of Subscription
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/subscription'
+            security:
+                - Bearer: []
+            summary: Return Cancel active Subscription
+            tags:
+                - Subscription
+    /api/v1/subscriptions/{id}/renew:
+        post:
+            operationId: PostRenewRoute
+            parameters:
+                - description: ID of Subscription
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/plan'
+            security:
+                - Bearer: []
+            tags:
+                - Subscription
+    /api/v1/subscriptions/{id}/resubscribe:
+        post:
+            description: Return Cancel active Subscription
+            operationId: PostResubscribeRoute
+            parameters:
+                - description: ID of Subscription
+                  format: uuid4
+                  in: path
+                  name: id
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    description: Success
+                    schema:
+                        $ref: '#/definitions/subscription'
+            security:
+                - Bearer: []
+            summary: Return Cancel active Subscription
             tags:
                 - Subscription
     /api/v1/tags:
