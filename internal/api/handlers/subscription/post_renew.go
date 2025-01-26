@@ -12,22 +12,38 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
 
 func PostRenewRoute(s *api.Server) *echo.Route {
-	return s.Router.APIV1Subscription.POST("/renew", postRenewHandler(s))
+	return s.Router.APIV1Subscription.POST("/id/renew", postRenewHandler(s))
 }
 
 func postRenewHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
 		user := auth.UserFromContext(ctx)
+		id := c.QueryParam("id")
+
+		_, err := s.Queries.GetUserActiveSubscription(ctx, user.ID)
+		if err == nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "you already have an active subscription")
+		}
 
 		// Get current subscription
-		subscription, err := s.Queries.GetUserActiveSubscription(ctx, user.ID)
+		subscription, err := s.Queries.GetSubscription(ctx, uuid.MustParse(id))
 		if err != nil {
-			return echo.NewHTTPError(http.StatusNotFound, "no active subscription found")
+			return echo.NewHTTPError(http.StatusNotFound, "no subscription found")
+		}
+
+		if subscription.UserID != user.ID {
+			return echo.NewHTTPError(http.StatusForbidden, "you are not authorized to renew this subscription")
+		}
+
+		// if subscription is not active
+		if subscription.Status != database.SubscriptionStatusEnumExpired {
+			return echo.NewHTTPError(http.StatusBadRequest, "subscription is still active")
 		}
 
 		// Calculate new period dates

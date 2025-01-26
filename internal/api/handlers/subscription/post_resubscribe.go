@@ -22,7 +22,12 @@ func PostResubscribeRoute(s *api.Server) *echo.Route {
 func postResubscribeHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
-		_ = auth.UserFromContext(ctx)
+		user := auth.UserFromContext(ctx)
+
+		_, err := s.Queries.GetUserActiveSubscription(ctx, user.ID)
+		if err == nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "you already have an active subscription")
+		}
 
 		id := c.Param("id")
 		subID := uuid.MustParse(id)
