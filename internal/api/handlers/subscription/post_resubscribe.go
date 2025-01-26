@@ -2,6 +2,7 @@ package subscription
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
 	"github.com/JehadAbdulwafi/rustion/internal/api/auth"
@@ -30,6 +31,14 @@ func postResubscribeHandler(s *api.Server) echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusNotFound, "no active subscription found")
 		}
 
+		if subscription.Status != database.SubscriptionStatusEnumCancelled {
+			return echo.NewHTTPError(http.StatusNotFound, "you cannot resubscribe to this plan")
+		}
+
+		if subscription.CurrentPeriodEnd.Before(time.Now()) {
+			return echo.NewHTTPError(http.StatusNotFound, "you cannot resubscribe to this plan, it has expired")
+		}
+
 		resubscribed, err := s.Queries.UpdateSubscriptionStatus(ctx, database.UpdateSubscriptionStatusParams{
 			ID:     subscription.ID,
 			Status: database.SubscriptionStatusEnumActive,
@@ -38,17 +47,11 @@ func postResubscribeHandler(s *api.Server) echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
 
-		// Get plan for transaction amount
-		plan, err := s.Queries.GetPlan(ctx, subscription.PlanID)
-		if err != nil {
-			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-		}
-
 		res := types.Subscription{
 			ID:                 (*strfmt.UUID4)(swag.String(resubscribed.ID.String())),
 			UserID:             (*strfmt.UUID4)(swag.String(resubscribed.UserID.String())),
 			PlanID:             (*strfmt.UUID4)(swag.String(resubscribed.PlanID.String())),
-			PlanName:           plan.Name,
+			PlanName:           subscription.PlanName,
 			Status:             swag.String(string(resubscribed.Status)),
 			BillingCycle:       swag.String(string(resubscribed.BillingCycle)),
 			CurrentPeriodStart: (*strfmt.DateTime)(&resubscribed.CurrentPeriodStart),
