@@ -44,9 +44,24 @@ func postResubscribeHandler(s *api.Server) echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusNotFound, "you cannot resubscribe to this plan, it has expired")
 		}
 
+		// get the transaction to determine the status if paid
+		transaction, err := s.Queries.GetTransactionBySubscriptionID(ctx, subID)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+
+		var status database.SubscriptionStatusEnum
+		if transaction.Status == database.TransactionStatusEnumFailed {
+			return echo.NewHTTPError(http.StatusNotFound, "you cannot resubscribe to this plan")
+		} else if transaction.Status == database.TransactionStatusEnumSucceeded {
+			status = database.SubscriptionStatusEnumActive
+		} else {
+			status = database.SubscriptionStatusEnumPending
+		}
+
 		resubscribed, err := s.Queries.UpdateSubscriptionStatus(ctx, database.UpdateSubscriptionStatusParams{
 			ID:     subscription.ID,
-			Status: database.SubscriptionStatusEnumActive,
+			Status: status,
 		})
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
