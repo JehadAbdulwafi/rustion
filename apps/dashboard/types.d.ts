@@ -263,3 +263,42 @@ type Channel = {
   custom: boolean;
   label: string;
 }
+
+
+type Plan = {
+  CreatedAt: string
+  description: string
+  features: string
+  id: string
+  IsActive: boolean
+  name: string
+  PriceMonthly: string
+  PriceYearly: string
+  UpdatedAt: string
+}
+
+type Subscription = {
+  id: string
+  userID: string
+  planID: string
+  PlanName: string
+  billingCycle: string
+  currentPeriodEnd: string
+  currentPeriodStart: string
+  status: string
+  updatedAt: string
+  createdAt: string
+}
+
+
+type Transaction = {
+  amount: string
+  createdAt: string
+  currency: string
+  errorMessage: string
+  id: string
+  paymentMethod: string
+  status: string
+  subscriptionID: string
+  updatedAt: string
+}

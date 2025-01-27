@@ -11,9 +11,7 @@ interface Props {
 
 export function Pricing({ country }: Props) {
   const [frequency, setFrequency] = useState<IBillingFrequency>(BillingFrequency[0]);
-  const [paddle, setPaddle] = useState<Paddle | undefined>(undefined);
-
-  const { prices, loading } = usePaddlePrices(paddle, country);
+  const { prices, loading } = usePaddlePrices(undefined, country);
 
   return (
     <div className="mx-auto max-w-7xl relative px-[32px] flex flex-col items-center justify-between">

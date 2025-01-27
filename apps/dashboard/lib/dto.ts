@@ -32,6 +32,15 @@ export function getNavigationDTO(user: User, livestreams: Stream[] = []): AppSid
         ],
       }] : []),
       { title: "Analytics", url: "/dashboard/analytics", iconName: "ChartPie" },
+      {
+        title: "Billing",
+        url: "/dashboard/billing/subscriptions",
+        iconName: "CreditCard",
+        items: [
+          { title: "Subscriptions", url: "/dashboard/billing/subscriptions" },
+          { title: "History", url: "/dashboard/billing/history" },
+        ]
+      },
       { title: "Plans", url: "/dashboard/plans", iconName: "BookOpen" },
     ],
     navSecondary: [

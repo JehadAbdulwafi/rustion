@@ -1,10 +1,8 @@
-import { getAppIdSession } from "@/actions";
 import { API } from "./axios";
 import { ApiError } from "./ApiError";
 
 async function getChannels(): Promise<Channel[]> {
   try {
-    const appId = await getAppIdSession();
     const res = await API.get<Channel[]>(`channels`);
     return res.data
   } catch (error) {
@@ -14,5 +12,5 @@ async function getChannels(): Promise<Channel[]> {
 }
 
 export {
-    getChannels
+  getChannels
 }
