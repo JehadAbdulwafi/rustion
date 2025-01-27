@@ -6,6 +6,9 @@ INSERT INTO transactions (
     $1, $2, $3, $4, $5
 ) RETURNING *;
 
+-- name: GetTransactionBySubscriptionID :one
+SELECT * FROM transactions WHERE subscription_id = $1;
+
 -- name: GetTransactions :many
 SELECT * FROM transactions
 WHERE subscription_id = $1

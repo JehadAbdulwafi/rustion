@@ -52,6 +52,27 @@ func (q *Queries) CreateTransaction(ctx context.Context, arg CreateTransactionPa
 	return i, err
 }
 
+const getTransactionBySubscriptionID = `-- name: GetTransactionBySubscriptionID :one
+SELECT id, subscription_id, amount, currency, status, payment_method, error_message, created_at, updated_at FROM transactions WHERE subscription_id = $1
+`
+
+func (q *Queries) GetTransactionBySubscriptionID(ctx context.Context, subscriptionID uuid.UUID) (Transaction, error) {
+	row := q.db.QueryRowContext(ctx, getTransactionBySubscriptionID, subscriptionID)
+	var i Transaction
+	err := row.Scan(
+		&i.ID,
+		&i.SubscriptionID,
+		&i.Amount,
+		&i.Currency,
+		&i.Status,
+		&i.PaymentMethod,
+		&i.ErrorMessage,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const getTransactions = `-- name: GetTransactions :many
 SELECT id, subscription_id, amount, currency, status, payment_method, error_message, created_at, updated_at FROM transactions
 WHERE subscription_id = $1
