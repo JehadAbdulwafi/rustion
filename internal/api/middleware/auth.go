@@ -24,8 +24,6 @@ var (
 	ErrForbiddenUserDeactivated                = httperrors.NewHTTPError(http.StatusForbidden, "USER_DEACTIVATED", "User account is deactivated")
 	ErrForbiddenMissingScopes                  = httperrors.NewHTTPError(http.StatusForbidden, "MISSING_SCOPES", "User is missing required scopes")
 	ErrAuthTokenValidationFailed               = errors.New("auth token validation failed")
-	ErrSubscriptionExpired                     = httperrors.NewHTTPError(http.StatusForbidden, "SUBSCRIPTION_EXPIRED", "Your subscription has expired")
-	ErrSubscriptionRequired                    = httperrors.NewHTTPError(http.StatusForbidden, "SUBSCRIPTION_REQUIRED", "This endpoint requires an active subscription")
 )
 
 // AuthMode controls the type of authentication check performed for a specific route or group
