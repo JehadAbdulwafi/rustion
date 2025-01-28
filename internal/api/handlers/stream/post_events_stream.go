@@ -2,7 +2,7 @@ package stream
 
 import (
 	"net/http"
-	"net/url"
+	// "net/url"
 	// "time"
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
@@ -10,7 +10,7 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/labstack/echo/v4"
-	"github.com/rs/zerolog/log"
+	// "github.com/rs/zerolog/log"
 )
 
 func PostStreamEventsRoute(s *api.Server) *echo.Route {
