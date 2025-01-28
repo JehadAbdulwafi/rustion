@@ -80,6 +80,33 @@ func (q *Queries) GetChannel(ctx context.Context, arg GetChannelParams) (Channel
 	return i, err
 }
 
+const getChannelByPlatform = `-- name: GetChannelByPlatform :one
+SELECT id, user_id, platform, server, secret, enabled, custom, label, created_at, updated_at FROM channels WHERE platform = $1 AND user_id = $2
+`
+
+type GetChannelByPlatformParams struct {
+	Platform string
+	UserID   uuid.UUID
+}
+
+func (q *Queries) GetChannelByPlatform(ctx context.Context, arg GetChannelByPlatformParams) (Channel, error) {
+	row := q.db.QueryRowContext(ctx, getChannelByPlatform, arg.Platform, arg.UserID)
+	var i Channel
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Platform,
+		&i.Server,
+		&i.Secret,
+		&i.Enabled,
+		&i.Custom,
+		&i.Label,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const getChannels = `-- name: GetChannels :many
 SELECT id, user_id, platform, server, secret, enabled, custom, label, created_at, updated_at FROM channels WHERE user_id = $1
 `
@@ -146,5 +173,22 @@ func (q *Queries) UpdateChannel(ctx context.Context, arg UpdateChannelParams) er
 		arg.Custom,
 		arg.Label,
 	)
+	return err
+}
+
+const updateChannelEnabledByPlatform = `-- name: UpdateChannelEnabledByPlatform :exec
+UPDATE channels
+SET enabled = $3, updated_at = CURRENT_TIMESTAMP
+WHERE platform = $1 AND user_id = $2
+`
+
+type UpdateChannelEnabledByPlatformParams struct {
+	Platform string
+	UserID   uuid.UUID
+	Enabled  bool
+}
+
+func (q *Queries) UpdateChannelEnabledByPlatform(ctx context.Context, arg UpdateChannelEnabledByPlatformParams) error {
+	_, err := q.db.ExecContext(ctx, updateChannelEnabledByPlatform, arg.Platform, arg.UserID, arg.Enabled)
 	return err
 }

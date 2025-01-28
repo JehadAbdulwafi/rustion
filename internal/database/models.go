@@ -460,6 +460,18 @@ type Subscription struct {
 	UpdatedAt          sql.NullTime
 }
 
+type SubscriptionUsageDaily struct {
+	ID                   uuid.UUID
+	UserID               uuid.UUID
+	SubscriptionID       uuid.UUID
+	StreamingMinutesUsed int32
+	PlatformsConnected   int32
+	StorageUsedBytes     int64
+	UsageDate            time.Time
+	CreatedAt            sql.NullTime
+	UpdatedAt            sql.NullTime
+}
+
 type Tag struct {
 	ID        uuid.UUID
 	Title     string

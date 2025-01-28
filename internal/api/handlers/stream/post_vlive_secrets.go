@@ -3,9 +3,13 @@ package stream
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
 	"github.com/JehadAbdulwafi/rustion/internal/api/auth"
+	"github.com/JehadAbdulwafi/rustion/internal/api/middleware"
+	"github.com/JehadAbdulwafi/rustion/internal/database"
+	"github.com/JehadAbdulwafi/rustion/internal/util/subscription"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
 )
@@ -22,6 +26,64 @@ func postVLiveSecretsHandler(s *api.Server) echo.HandlerFunc {
 		var requestBody map[string]interface{}
 		if err := c.Bind(&requestBody); err != nil {
 			return handleError(c, "Failed to parse request body", err)
+		}
+
+		activeSub, err := s.Queries.GetUserActiveSubscription(ctx, user.ID)
+		if err != nil {
+			return handleError(c, "Failed to retrieve active subscription", err)
+		}
+
+		planLimits := subscription.GetPlanLimits(strings.ToLower(activeSub.PlanName))
+
+		enabled := requestBody["enabled"].(bool)
+		if enabled {
+			// check the connected platform
+			if err := middleware.CheckPlatformLimits(ctx, s.Queries, user.ID, planLimits); err != nil {
+				// if exeeded the limit return error
+				return handleError(c, "Failed to check platform limits", err)
+			}
+
+			// mark the channel as enabled
+			err = s.Queries.UpdateChannelEnabledByPlatform(ctx, database.UpdateChannelEnabledByPlatformParams{
+				UserID:   user.ID,
+				Enabled:  enabled,
+				Platform: requestBody["platform"].(string),
+			})
+
+			if err != nil {
+				return handleError(c, "Failed to update channel enabled", err)
+			}
+
+			// increase conncected platform
+			err = s.Queries.IncrementPlatformConnections(ctx, database.IncrementPlatformConnectionsParams{
+				UserID:         user.ID,
+				SubscriptionID: activeSub.ID,
+			})
+
+			if err != nil {
+				return handleError(c, "Failed to increase connected platforms", err)
+			}
+		} else {
+			// mark the channel as disabled
+			err = s.Queries.UpdateChannelEnabledByPlatform(ctx, database.UpdateChannelEnabledByPlatformParams{
+				UserID:   user.ID,
+				Enabled:  enabled,
+				Platform: requestBody["platform"].(string),
+			})
+
+			if err != nil {
+				return handleError(c, "Failed to update channel enabled", err)
+			}
+
+			// decrease conncected platform
+			err = s.Queries.DecrementPlatformConnections(ctx, database.DecrementPlatformConnectionsParams{
+				UserID:         user.ID,
+				SubscriptionID: activeSub.ID,
+			})
+
+			if err != nil {
+				return handleError(c, "Failed to decrease connected platforms", err)
+			}
 		}
 
 		log.Debug().Interface("requestBody", requestBody).Msg("Received request body")
