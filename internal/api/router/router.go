@@ -71,7 +71,7 @@ func Init(s *api.Server) {
 
 		APIV1Stream: s.Echo.Group("/api/v1/streams", middleware.AuthWithConfig(middleware.AuthConfig{
 			S:    s,
-			Mode: middleware.AuthModeSubscriptionRequired,
+			Mode: middleware.AuthModeRequired,
 			Skipper: func(c echo.Context) bool {
 				switch c.Path() {
 				case "/api/v1/streams/:id/ws":
