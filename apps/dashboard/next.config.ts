@@ -11,6 +11,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    reactCompiler: true,
+  },
 
   // !! WARN !!
   // Dangerously allow production builds to successfully complete even if
