@@ -107,6 +107,17 @@ func (q *Queries) GetChannelByPlatform(ctx context.Context, arg GetChannelByPlat
 	return i, err
 }
 
+const getChannelEnabled = `-- name: GetChannelEnabled :one
+SELECT COUNT(*) FROM channels WHERE user_id = $1 AND enabled = true
+`
+
+func (q *Queries) GetChannelEnabled(ctx context.Context, userID uuid.UUID) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getChannelEnabled, userID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const getChannels = `-- name: GetChannels :many
 SELECT id, user_id, platform, server, secret, enabled, custom, label, created_at, updated_at FROM channels WHERE user_id = $1
 `

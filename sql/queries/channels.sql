@@ -24,3 +24,5 @@ WHERE platform = $1 AND user_id = $2;
 -- name: DeleteChannel :exec
 DELETE FROM channels WHERE id = $1 AND user_id = $2;
 
+-- name: GetChannelEnabled :one
+SELECT COUNT(*) FROM channels WHERE user_id = $1 AND enabled = true;

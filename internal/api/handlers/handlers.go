@@ -98,6 +98,7 @@ func AttachAllRoutes(s *api.Server) {
 		subscription.PostResubscribeRoute(s),
 		subscription.PostSubscribeRoute(s),
 		subscription.PostUpgradeRoute(s),
+		subscription.GetAnalyticsRoute(s),
 		tags.DeleteTagRoute(s),
 		tags.GetAllTagsRoute(s),
 		tags.GetTagRoute(s),
