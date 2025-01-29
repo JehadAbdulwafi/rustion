@@ -7,6 +7,7 @@ import { ChannelItem } from "./channel-item";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { PlusIcon } from "lucide-react";
 import { useUser } from "@/contexts/user-context";
+import { useRouter } from "next/navigation";
 
 export default function Channels({ stream, channels }: { stream: Stream, channels: Channel[] }) {
   return <ChannelsImpl defaultSecrets={channels} stream={stream} />;
@@ -20,6 +21,7 @@ function ChannelsImpl({ defaultSecrets, stream }: { defaultSecrets?: Channel[], 
   const [isEditingChannel, setIsEditingChannel] = React.useState(false);
   const [editingChannel, setEditingChannel] = React.useState<any>(null);
   const { toast } = useToast();
+  const router = useRouter();
 
   const inputStream = `https://${stream.host}/${stream.app}/${stream.name}.m3u8`;
 
@@ -108,53 +110,56 @@ function ChannelsImpl({ defaultSecrets, stream }: { defaultSecrets?: Channel[], 
   }, [channels, setChannels]);
 
   // Update the vlive config to server.
-  // @ts-ignore
-  const updateSecrets = React.useCallback((action, platform, server, secret, enabled, custom, label, files, onSuccess) => {
-    if (!server) {
+  const updateSecrets = React.useCallback((action: string, platform: string, server: string, secret: string, enabled: boolean, custom: boolean, label: string, files: any[], onSuccess?: () => void) => {
+    if (!server?.trim()) {
       toast({
         variant: "destructive",
-        title: "Server Address Required",
-        description: "Please enter a valid server address to continue."
+        title: "Invalid Server Address",
+        description: "Please enter a valid server address for your channel configuration."
       });
       return;
     }
 
-    if (custom && !label) {
+    if (custom && !label?.trim()) {
       toast({
         variant: "destructive",
-        title: "Label Required",
-        description: "Please provide a label for your custom configuration."
+        title: "Missing Channel Label",
+        description: "A descriptive label is required for custom channel configurations."
       });
       return;
     }
 
-    try {
-      setSubmiting(true);
-      API.post('/streams/vlive/secrets', {
-        action, platform, server, secret, enabled: !!enabled, custom: !!custom, label: `${label}-${user?.id}-${stream?.id}`, files,
-      }).then(() => {
-        toast({
-          title: "Success",
-          description: "Your forwarding configuration has been updated successfully."
-        });
-        onSuccess && onSuccess();
-      }).catch((error) => {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Failed to update forwarding configuration. Please Publish the stream and try again."
-        });
+    setSubmiting(true);
+    API.post('/streams/vlive/secrets', {
+      action, 
+      platform, 
+      server: server.trim(), 
+      secret: secret || '', 
+      enabled, 
+      custom, 
+      label: label ? `${label.trim()}-${user?.id}-${stream?.id}` : '', 
+      files,
+    }).then(() => {
+      toast({
+        title: "Channel Updated",
+        description: `Successfully ${action === 'update' ? 'updated' : 'created'} the channel configuration.`
       });
-    } finally {
-      new Promise(resolve => setTimeout(resolve, 3000)).then(() => setSubmiting(false));
-    }
-  }, [setSubmiting]);
-
+      onSuccess?.();
+    }).catch((error) => {
+      toast({
+        variant: "destructive",
+        title: "Configuration Error",
+        description: error?.response?.data?.message || "Failed to configure channel. Please ensure the stream is published and try again."
+      });
+    }).finally(() => {
+      setTimeout(() => setSubmiting(false), 3000);
+    });
+  }, [setSubmiting, user?.id, stream?.id]);
 
   const checkStreamUrl = React.useCallback(async (platform: string) => {
     if (!inputStream) return alert('plat.tool.stream3');
     const isHTTP = inputStream.startsWith('http://') || inputStream.startsWith('https://');
-    if (!inputStream.startsWith('rtmp://') && !inputStream.startsWith('srt://') && !inputStream.startsWith('rtsp://') && !isHTTP) return alert(t('plat.tool.stream2'));
+    if (!inputStream.startsWith('rtmp://') && !inputStream.startsWith('srt://') && !inputStream.startsWith('rtsp://') && !isHTTP) return alert('plat.tool.stream2');
     if (isHTTP && inputStream.indexOf('.flv') < 0 && inputStream.indexOf('.m3u8') < 0) return alert('plat.tool.stream4');
 
     try {
@@ -175,7 +180,49 @@ function ChannelsImpl({ defaultSecrets, stream }: { defaultSecrets?: Channel[], 
 
 
   // @ts-ignore
-  const updateChannel = React.useCallback((platform, server, secret, enabled, custom, label) => {
+  const updateChannel = React.useCallback((id, platform, server, secret, enabled, custom, label) => {
+    if (!server) {
+      toast({
+        variant: "destructive",
+        title: "Server Address Required",
+        description: "Please enter a valid server address to continue."
+      });
+      return;
+    }
+
+    if (custom && !label) {
+      toast({
+        variant: "destructive",
+        title: "Label Required",
+        description: "Please provide a label for your custom configuration."
+      });
+      return;
+    }
+
+    try {
+      setSubmiting(true);
+      API.put(`channels/${id}`, {
+        platform, server, secret, enabled: !!enabled, custom: !!custom, label,
+      }).then(() => {
+        toast({
+          title: "Success",
+          description: "Your forwarding configuration has been updated successfully."
+        });
+        router.refresh();
+      }).catch((error) => {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to update forwarding configuration. Please try again."
+        });
+      });
+    } finally {
+      new Promise(resolve => setTimeout(resolve, 3000)).then(() => setSubmiting(false));
+    }
+  }, [setSubmiting]);
+
+  // @ts-ignore
+  const addChannel = React.useCallback((platform, server, secret, enabled, custom, label) => {
     if (!server) {
       toast({
         variant: "destructive",
@@ -203,6 +250,7 @@ function ChannelsImpl({ defaultSecrets, stream }: { defaultSecrets?: Channel[], 
           title: "Success",
           description: "Your forwarding configuration has been updated successfully."
         });
+        router.refresh();
       }).catch((error) => {
         toast({
           variant: "destructive",
@@ -246,7 +294,10 @@ function ChannelsImpl({ defaultSecrets, stream }: { defaultSecrets?: Channel[], 
                 onEdit={(channel) => {
                   setIsEditingChannel(true);
                   setIsAddingChannel(false);
-                  setEditingChannel(channel);
+                  setEditingChannel({
+                    ...channel,
+                    platform: channel.platform.split('-')[1] || channel.platform
+                  });
                 }}
                 canToggle
                 onToggle={(enabled) => handleToggleChannel(channel, enabled)}
@@ -267,10 +318,16 @@ function ChannelsImpl({ defaultSecrets, stream }: { defaultSecrets?: Channel[], 
           }
         }}
         onSubmit={(conf) => {
-          updateChannel(conf.platform, conf.server, conf.secret, conf.enabled, true, conf.label);
+          console.log(conf)
+          if (isAddingChannel) {
+            console.log("adding")
+            addChannel(conf.platform, conf.server, conf.secret, conf.enabled, true, conf.label);
+          } else if (isEditingChannel) {
+            console.log("editing")
+            updateChannel(conf.id, conf.platform, conf.server, conf.secret, conf.enabled, true, conf.label);
+          }
         }}
         submiting={submiting}
-
         channels={defaultSecrets!}
         initialData={editingChannel}
         mode={isAddingChannel ? 'add' : 'edit'}

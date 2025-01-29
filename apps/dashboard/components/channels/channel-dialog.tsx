@@ -26,10 +26,21 @@ interface ChannelDialogProps {
   submiting: boolean
 }
 
+const defaultChannel: Channel = {
+  id: '',
+  user_id: '',
+  platform: '',
+  server: '',
+  secret: '',
+  label: '',
+  enabled: false,
+  custom: true,
+};
+
 export function ChannelDialog({ isOpen, onOpenChange, submiting, onSubmit, initialData, mode, channels }: ChannelDialogProps) {
   const { toast } = useToast();
   const router = useRouter();
-  const [channel, setChannel] = React.useState<Channel>();
+  const [channel, setChannel] = React.useState<Channel>(defaultChannel);
 
   const PlatformsData = [
     {
@@ -55,9 +66,7 @@ export function ChannelDialog({ isOpen, onOpenChange, submiting, onSubmit, initi
   ]
 
   React.useEffect(() => {
-    if (initialData) {
-      setChannel(initialData);
-    }
+    setChannel(initialData || defaultChannel);
   }, [initialData]);
 
   const handleSubmit = async () => {
@@ -65,7 +74,7 @@ export function ChannelDialog({ isOpen, onOpenChange, submiting, onSubmit, initi
       onSubmit(channel);
       router.refresh();
       onOpenChange(false);
-      setChannel(undefined);
+      setChannel(defaultChannel);
     }
   };
 
@@ -73,7 +82,7 @@ export function ChannelDialog({ isOpen, onOpenChange, submiting, onSubmit, initi
     try {
       await API.delete(`/channels/${channel?.id}`);
       onOpenChange(false);
-      setChannel(undefined);
+      setChannel(defaultChannel);
       router.refresh();
       toast({
         title: "Success",
@@ -107,7 +116,6 @@ export function ChannelDialog({ isOpen, onOpenChange, submiting, onSubmit, initi
               value={channel?.platform}
               defaultValue={initialData?.platform}
               onValueChange={(value) => {
-                // setChannel({ ...channel, platform: value, label: capitalizeFirstLetter(value.split('-')[1]) })
                 setChannel({ ...channel, platform: value, label: capitalizeFirstLetter(value) })
               }}
             >

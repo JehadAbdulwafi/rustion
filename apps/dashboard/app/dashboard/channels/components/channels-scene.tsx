@@ -17,23 +17,83 @@ export default function ChannelsScene({ channels }: { channels: Channel[] }) {
   const { toast } = useToast();
   const router = useRouter();
 
-  // @ts-ignore
-  const updateSecrets = React.useCallback(async (platform, server, secret, enabled, custom, label) => {
-    console.log(`Forward: Update secrets ${JSON.stringify({ platform, server, secret, enabled, custom, label })}`);
-    if (!server) {
+  const updateChannel = React.useCallback(async (
+    id: string,
+    platform: string,
+    server: string,
+    secret: string,
+    enabled: boolean,
+    custom: boolean,
+    label: string
+  ) => {
+    if (!server?.trim()) {
       toast({
         variant: "destructive",
-        title: "Server Address Required",
-        description: "Please enter a valid server address to continue."
+        title: "Invalid Server Address",
+        description: "Please enter a valid server address for your channel configuration."
       });
       return;
     }
 
-    if (custom && !label) {
+    if (custom && !label?.trim()) {
       toast({
         variant: "destructive",
-        title: "Label Required",
-        description: "Please provide a label for your custom configuration."
+        title: "Missing Channel Label",
+        description: "A descriptive label is required for custom channel configurations."
+      });
+      return;
+    }
+
+    try {
+      setSubmiting(true);
+      await API.put(`channels/${id}`, {
+        platform,
+        server: server.trim(),
+        secret: secret || '',
+        enabled,
+        custom,
+        label: label?.trim() || '',
+      });
+
+      router.refresh();
+      toast({
+        title: "Channel Updated",
+        description: "Channel configuration has been successfully updated."
+      });
+
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Update Failed",
+        description: error?.response?.data?.message || "Failed to update channel configuration. Please try again."
+      });
+    } finally {
+      setTimeout(() => setSubmiting(false), 3000);
+    }
+  }, [setSubmiting, router]);
+
+  const addChannel = React.useCallback(async (
+    platform: string,
+    server: string,
+    secret: string,
+    enabled: boolean,
+    custom: boolean,
+    label: string
+  ) => {
+    if (!server?.trim()) {
+      toast({
+        variant: "destructive",
+        title: "Invalid Server Address",
+        description: "Please enter a valid server address for your channel configuration."
+      });
+      return;
+    }
+
+    if (custom && !label?.trim()) {
+      toast({
+        variant: "destructive",
+        title: "Missing Channel Label",
+        description: "A descriptive label is required for custom channel configurations."
       });
       return;
     }
@@ -41,23 +101,28 @@ export default function ChannelsScene({ channels }: { channels: Channel[] }) {
     try {
       setSubmiting(true);
       await API.post('channels', {
-        platform, server, secret, enabled: !!enabled, custom: !!custom, label,
+        platform,
+        server: server.trim(),
+        secret: secret || '',
+        enabled,
+        custom,
+        label: label?.trim() || '',
       });
 
       router.refresh();
       toast({
-        title: "Success",
-        description: "Your forwarding configuration has been updated successfully."
+        title: "Channel Created",
+        description: "New channel has been successfully created."
       });
 
-    } catch (error) {
+    } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to update forwarding configuration. Please try again."
+        title: "Creation Failed",
+        description: error?.response?.data?.message || "Failed to create channel. Please try again."
       });
     } finally {
-      new Promise(resolve => setTimeout(resolve, 3000)).then(() => setSubmiting(false));
+      setTimeout(() => setSubmiting(false), 3000);
     }
   }, [setSubmiting, router]);
 
@@ -100,6 +165,7 @@ export default function ChannelsScene({ channels }: { channels: Channel[] }) {
       </div>
 
       <ChannelDialog
+        key={editingChannel ? editingChannel.id : 'add'}
         isOpen={isAddingChannel || isEditingChannel}
         onOpenChange={(open) => {
           if (!open) {
@@ -109,7 +175,14 @@ export default function ChannelsScene({ channels }: { channels: Channel[] }) {
           }
         }}
         onSubmit={(conf) => {
-          updateSecrets(conf.platform, conf.server, conf.secret, conf.enabled, true, conf.label);
+          if (isAddingChannel) {
+            addChannel(conf.platform, conf.server, conf.secret, false, true, conf.label);
+          } else if (isEditingChannel) {
+            updateChannel(conf.id, conf.platform, conf.server, conf.secret, false, true, conf.label);
+          }
+          setIsAddingChannel(false);
+          setIsEditingChannel(false);
+          setEditingChannel(null);
         }}
         submiting={submiting}
         channels={channels}
