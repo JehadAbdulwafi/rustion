@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -13,6 +14,7 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/mailer"
 	"github.com/JehadAbdulwafi/rustion/internal/mailer/transport"
 	"github.com/JehadAbdulwafi/rustion/internal/push"
+	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/JehadAbdulwafi/rustion/internal/util/subscription"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
@@ -207,17 +209,44 @@ func (s *Server) checkStreamUsage(ctx context.Context, stream database.Stream) {
 	})
 	if err == nil && usage >= int32(planLimits.MaxStreamingMinutesPerDay) {
 		// Unpublish the stream
+		s.KickoffStream(ctx, stream)
 		err = s.Queries.UnpublishStream(ctx, stream.ID)
 		if err != nil {
 			log.Error().Err(err).Msg("Failed to unpublish stream")
 			return
 		}
-		// stream.BroadcastStreamStatus(s, stream.ID)
 	}
 
-	// Update last checked time
 	s.Queries.UpdateStreamCheckTime(ctx, database.UpdateStreamCheckTimeParams{
 		ID:              stream.ID,
 		LastCheckedTime: now,
 	})
+}
+
+func (s *Server) KickoffStream(c context.Context, stream database.Stream) {
+	token, err := util.GetAuthToken(s.Config.Auth.StreamApiSecret, stream.Host)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to retrieve authentication token")
+		return
+	}
+
+	requestBody := map[string]string{
+		"vhost":  stream.Host,
+		"app":    stream.App,
+		"stream": stream.Endpoint,
+	}
+
+	jsonPayload, err := json.Marshal(requestBody)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to encode request body")
+		return
+	}
+
+	responseData, err := util.RequestWithBody(token, stream.Host, "/terraform/v1/mgmt/streams/kickoff", jsonPayload)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to kick off stream")
+		return
+	}
+
+	log.Debug().Interface("responseData", responseData).Msg("kickoff stream Response data")
 }
