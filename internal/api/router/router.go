@@ -78,6 +78,8 @@ func Init(s *api.Server) {
 					return true
 				case "/api/v1/streams/events":
 					return true
+				case "/api/v1/streams/player-events":
+					return true
 				}
 				return false
 			},

@@ -87,6 +87,7 @@ func AttachAllRoutes(s *api.Server) {
 		stream.PostVLiveStreamUrlRoute(s),
 		stream.PutStreamNameRoute(s),
 		stream.PutStreamRoute(s),
+		stream.PostPlayerEventsRoute(s),
 		subscription.DeleteCancelSubscriptionRoute(s),
 		subscription.GetActiveSubscriptionRoute(s),
 		subscription.GetPlanRoute(s),
