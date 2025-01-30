@@ -5,12 +5,15 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strings"
+	"time"
 
 	"github.com/JehadAbdulwafi/rustion/internal/config"
 	"github.com/JehadAbdulwafi/rustion/internal/database"
 	"github.com/JehadAbdulwafi/rustion/internal/mailer"
 	"github.com/JehadAbdulwafi/rustion/internal/mailer/transport"
 	"github.com/JehadAbdulwafi/rustion/internal/push"
+	"github.com/JehadAbdulwafi/rustion/internal/util/subscription"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
 
@@ -144,4 +147,77 @@ func (s *Server) Shutdown(ctx context.Context) error {
 	log.Debug().Msg("Shutting down echo server")
 
 	return s.Echo.Shutdown(ctx)
+}
+
+func (s *Server) StartBackgroundTasks() {
+	go s.monitorStreamUsage()
+}
+
+func (s *Server) monitorStreamUsage() {
+	ticker := time.NewTicker(1 * time.Minute)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		ctx := context.Background()
+		streams, err := s.Queries.GetActiveStreams(ctx)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to get active streams")
+			continue
+		}
+
+		for _, stream := range streams {
+			s.checkStreamUsage(ctx, stream)
+		}
+	}
+}
+
+func (s *Server) checkStreamUsage(ctx context.Context, stream database.Stream) {
+	// Get subscription details
+	sub, err := s.Queries.GetUserActiveSubscription(ctx, stream.UserID)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to get subscription")
+		return
+	}
+
+	// Calculate time since last check
+	now := time.Now()
+	duration := now.Sub(stream.LastCheckedTime)
+	minutes := int32(duration.Minutes())
+
+	// Get user's current date
+	usageDate := now.Truncate(24 * time.Hour)
+
+	// Update usage
+	err = s.Queries.UpdateDailyStreamingUsage(ctx, database.UpdateDailyStreamingUsageParams{
+		UserID:               stream.UserID,
+		SubscriptionID:       sub.ID,
+		StreamingMinutesUsed: minutes,
+		UsageDate:            usageDate,
+	})
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to update streaming usage")
+	}
+
+	planLimits := subscription.GetPlanLimits(strings.ToLower(sub.PlanName))
+
+	// Check limit
+	usage, err := s.Queries.GetDailyStreamingUsage(ctx, database.GetDailyStreamingUsageParams{
+		UserID:    stream.UserID,
+		UsageDate: usageDate,
+	})
+	if err == nil && usage >= int32(planLimits.MaxStreamingMinutesPerDay) {
+		// Unpublish the stream
+		err = s.Queries.UnpublishStream(ctx, stream.ID)
+		if err != nil {
+			log.Error().Err(err).Msg("Failed to unpublish stream")
+			return
+		}
+		// stream.BroadcastStreamStatus(s, stream.ID)
+	}
+
+	// Update last checked time
+	s.Queries.UpdateStreamCheckTime(ctx, database.UpdateStreamCheckTimeParams{
+		ID:              stream.ID,
+		LastCheckedTime: now,
+	})
 }
