@@ -5,6 +5,7 @@ import (
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
 	"github.com/JehadAbdulwafi/rustion/internal/api/auth"
+	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/labstack/echo/v4"
 )
 
@@ -19,19 +20,19 @@ func getVLiveStreamsHandler(s *api.Server) echo.HandlerFunc {
 
 		stream, err := s.Queries.GetStreamByUserId(ctx, user.ID)
 		if err != nil {
-			return handleError(c, "Failed to retrieve streams", err)
+			return util.HandleError(c, "Failed to retrieve streams", err)
 		}
 
 		// Retrieve authentication token
-		token, err := getAuthToken(s.Config.Auth.StreamApiSecret, stream.Host)
+		token, err := util.GetAuthToken(s.Config.Auth.StreamApiSecret, stream.Host)
 		if err != nil {
-			return handleError(c, "Failed to retrieve auth token", err)
+			return util.HandleError(c, "Failed to retrieve auth token", err)
 		}
 
 		// Forward the request using the token
-		responseData, err := forwardRequest(token, stream.Host, "terraform/v1/ffmpeg/vlive/streams")
+		responseData, err := util.Request(token, stream.Host, "terraform/v1/ffmpeg/vlive/streams")
 		if err != nil {
-			return handleError(c, "Failed to forward request", err)
+			return util.HandleError(c, "Failed to forward request", err)
 		}
 
 		// Respond to the client

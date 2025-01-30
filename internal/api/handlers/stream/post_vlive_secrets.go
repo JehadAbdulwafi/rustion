@@ -9,6 +9,7 @@ import (
 	"github.com/JehadAbdulwafi/rustion/internal/api/auth"
 	"github.com/JehadAbdulwafi/rustion/internal/api/middleware"
 	"github.com/JehadAbdulwafi/rustion/internal/database"
+	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/JehadAbdulwafi/rustion/internal/util/subscription"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
@@ -25,12 +26,12 @@ func postVLiveSecretsHandler(s *api.Server) echo.HandlerFunc {
 		// Retrieve the request body
 		var requestBody map[string]interface{}
 		if err := c.Bind(&requestBody); err != nil {
-			return handleError(c, "Failed to parse request body", err)
+			return util.HandleError(c, "Failed to parse request body", err)
 		}
 
 		activeSub, err := s.Queries.GetUserActiveSubscription(ctx, user.ID)
 		if err != nil {
-			return handleError(c, "Failed to retrieve active subscription", err)
+			return util.HandleError(c, "Failed to retrieve active subscription", err)
 		}
 
 		planLimits := subscription.GetPlanLimits(strings.ToLower(activeSub.PlanName))
@@ -40,7 +41,7 @@ func postVLiveSecretsHandler(s *api.Server) echo.HandlerFunc {
 			// check the connected platform
 			if err := middleware.CheckPlatformLimits(ctx, s.Queries, user.ID, planLimits); err != nil {
 				// if exeeded the limit return error
-				return handleError(c, "Failed to check platform limits", err)
+				return util.HandleError(c, "Failed to check platform limits", err)
 			}
 
 			// mark the channel as enabled
@@ -51,7 +52,7 @@ func postVLiveSecretsHandler(s *api.Server) echo.HandlerFunc {
 			})
 
 			if err != nil {
-				return handleError(c, "Failed to update channel enabled", err)
+				return util.HandleError(c, "Failed to update channel enabled", err)
 			}
 
 			// increase conncected platform
@@ -61,7 +62,7 @@ func postVLiveSecretsHandler(s *api.Server) echo.HandlerFunc {
 			})
 
 			if err != nil {
-				return handleError(c, "Failed to increase connected platforms", err)
+				return util.HandleError(c, "Failed to increase connected platforms", err)
 			}
 		} else {
 			// mark the channel as disabled
@@ -72,7 +73,7 @@ func postVLiveSecretsHandler(s *api.Server) echo.HandlerFunc {
 			})
 
 			if err != nil {
-				return handleError(c, "Failed to update channel enabled", err)
+				return util.HandleError(c, "Failed to update channel enabled", err)
 			}
 
 			// decrease conncected platform
@@ -82,7 +83,7 @@ func postVLiveSecretsHandler(s *api.Server) echo.HandlerFunc {
 			})
 
 			if err != nil {
-				return handleError(c, "Failed to decrease connected platforms", err)
+				return util.HandleError(c, "Failed to decrease connected platforms", err)
 			}
 		}
 
@@ -90,25 +91,25 @@ func postVLiveSecretsHandler(s *api.Server) echo.HandlerFunc {
 
 		stream, err := s.Queries.GetStreamByUserId(ctx, user.ID)
 		if err != nil {
-			return handleError(c, "Failed to retrieve streams", err)
+			return util.HandleError(c, "Failed to retrieve streams", err)
 		}
 
 		// Retrieve authentication token
-		token, err := getAuthToken(s.Config.Auth.StreamApiSecret, stream.Host)
+		token, err := util.GetAuthToken(s.Config.Auth.StreamApiSecret, stream.Host)
 		if err != nil {
-			return handleError(c, "Failed to retrieve auth token", err)
+			return util.HandleError(c, "Failed to retrieve auth token", err)
 		}
 
 		// Encode the request body as JSON
 		jsonPayload, err := json.Marshal(requestBody)
 		if err != nil {
-			return handleError(c, "Failed to encode request body as JSON", err)
+			return util.HandleError(c, "Failed to encode request body as JSON", err)
 		}
 
 		// Forward the request using the token
-		responseData, err := forwardRequestWithBody(token, stream.Host, "terraform/v1/ffmpeg/vlive/secret", jsonPayload)
+		responseData, err := util.RequestWithBody(token, stream.Host, "terraform/v1/ffmpeg/vlive/secret", jsonPayload)
 		if err != nil {
-			return handleError(c, "Failed to forward request", err)
+			return util.HandleError(c, "Failed to forward request", err)
 		}
 
 		// Respond to the client
