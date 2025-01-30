@@ -6,7 +6,7 @@ VALUES ($1, $2, $3, $4, $5, $6, $7);
 SELECT * FROM streams WHERE id = $1;
 
 -- name: GetStream :one
-SELECT id, user_id, app, name, url, status, viewers, thumbnail, live_title, live_description, last_published_at FROM streams where id = $1;
+SELECT id, user_id, app, name, url, status, viewers, thumbnail, live_title, live_description, last_published_at, last_checked_time FROM streams where id = $1;
 
 -- name: GetStreams :many
 SELECT id, user_id, app, name, url, status, viewers, thumbnail, last_published_at FROM streams;
@@ -43,12 +43,12 @@ DELETE FROM streams WHERE id = $1;
 
 -- name: PublishStream :exec
 UPDATE streams
-SET status = 'published', last_published_at = CURRENT_TIMESTAMP
+SET status = 'published', last_published_at = CURRENT_TIMESTAMP, last_checked_time = CURRENT_TIMESTAMP
 WHERE id = $1;
 
 -- name: UnpublishStream :exec
 UPDATE streams
-SET status = 'unpublished', last_published_at = CURRENT_TIMESTAMP
+SET status = 'unpublished', last_published_at = CURRENT_TIMESTAMP, last_checked_time = CURRENT_TIMESTAMP
 WHERE id = $1;
 
 -- name: UpdateStreamInfo :one
@@ -70,4 +70,12 @@ WHERE id = $1;
 -- name: DecrementStreamViewers :exec
 UPDATE streams
 SET viewers = viewers - 1
+WHERE id = $1;
+
+-- name: GetActiveStreams :many
+SELECT * FROM streams WHERE status = 'published';
+
+-- name: UpdateStreamCheckTime :exec
+UPDATE streams 
+SET last_checked_time = $2 
 WHERE id = $1;

@@ -445,6 +445,7 @@ type Stream struct {
 	LiveDescription sql.NullString
 	CreatedAt       sql.NullTime
 	UpdatedAt       sql.NullTime
+	LastCheckedTime time.Time
 }
 
 type Subscription struct {
