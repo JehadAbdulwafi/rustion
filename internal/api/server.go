@@ -178,6 +178,7 @@ func (s *Server) checkStreamUsage(ctx context.Context, stream database.Stream) {
 	sub, err := s.Queries.GetUserActiveSubscription(ctx, stream.UserID)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to get subscription")
+		s.KickoffStream(ctx, stream)
 		return
 	}
 
@@ -224,6 +225,7 @@ func (s *Server) checkStreamUsage(ctx context.Context, stream database.Stream) {
 }
 
 func (s *Server) KickoffStream(c context.Context, stream database.Stream) {
+	log.Debug().Interface("stream", stream).Msg("Kickoff stream")
 	token, err := util.GetAuthToken(s.Config.Auth.StreamApiSecret, stream.Host)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to retrieve authentication token")
