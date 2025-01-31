@@ -302,3 +302,8 @@ type Transaction = {
   subscriptionID: string
   updatedAt: string
 }
+
+type StreamViewers = {
+  date: string;
+  viewers: string;
+}

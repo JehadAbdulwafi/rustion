@@ -74,6 +74,26 @@ async function createStream(name: string): Promise<Stream> {
   }
 }
 
+async function getStreamsViewers(): Promise<StreamViewers[]> {
+  try {
+    const res = await API.get('streams/viewers');
+    return res.data.Data as StreamViewers[]
+  } catch (error) {
+    console.log(`LIVES_API GET_STREAMS_VIEWERS, ERR: ${error}`)
+    throw new ApiError("FAILED TO GET STREAMS VIEWERS")
+  }
+}
+
+async function getStreamViewers(id: string): Promise<StreamViewers[]> {
+  try {
+    const res = await API.get(`streams/viewers/${id}`);
+    return res.data.Data as StreamViewers[]
+  } catch (error) {
+    console.log(`LIVES_API GET_STREAMS_VIEWERS, ERR: ${error}`)
+    throw new ApiError("FAILED TO GET STREAMS VIEWERS")
+  }
+}
+
 export {
   getLiveStream,
   getLiveStreams,
@@ -82,4 +102,6 @@ export {
   updateStreamName,
   deleteStream,
   createStream,
+  getStreamsViewers,
+  getStreamViewers
 };
