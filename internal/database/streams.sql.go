@@ -41,6 +41,22 @@ func (q *Queries) CreateStream(ctx context.Context, arg CreateStreamParams) erro
 	return err
 }
 
+const decrementStreamDailyViewers = `-- name: DecrementStreamDailyViewers :exec
+UPDATE stream_viewers
+SET viewer_count = GREATEST(viewer_count - 1, 0)
+WHERE stream_id = $1 AND date = $2
+`
+
+type DecrementStreamDailyViewersParams struct {
+	StreamID uuid.UUID
+	Date     time.Time
+}
+
+func (q *Queries) DecrementStreamDailyViewers(ctx context.Context, arg DecrementStreamDailyViewersParams) error {
+	_, err := q.db.ExecContext(ctx, decrementStreamDailyViewers, arg.StreamID, arg.Date)
+	return err
+}
+
 const decrementStreamViewers = `-- name: DecrementStreamViewers :exec
 UPDATE streams
 SET viewers = viewers - 1
@@ -261,6 +277,164 @@ func (q *Queries) GetStreamByUserId(ctx context.Context, userID uuid.UUID) (Stre
 	return i, err
 }
 
+const getStreamViewers = `-- name: GetStreamViewers :many
+SELECT date, viewer_count 
+FROM stream_viewers 
+WHERE stream_id = $1
+ORDER BY date DESC
+`
+
+type GetStreamViewersRow struct {
+	Date        time.Time
+	ViewerCount int32
+}
+
+func (q *Queries) GetStreamViewers(ctx context.Context, streamID uuid.UUID) ([]GetStreamViewersRow, error) {
+	rows, err := q.db.QueryContext(ctx, getStreamViewers, streamID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetStreamViewersRow
+	for rows.Next() {
+		var i GetStreamViewersRow
+		if err := rows.Scan(&i.Date, &i.ViewerCount); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getStreamViewersByDateRange = `-- name: GetStreamViewersByDateRange :many
+SELECT date, viewer_count 
+FROM stream_viewers 
+WHERE stream_id = $1
+    AND date BETWEEN $2 AND $3
+ORDER BY date DESC
+`
+
+type GetStreamViewersByDateRangeParams struct {
+	StreamID uuid.UUID
+	Date     time.Time
+	Date_2   time.Time
+}
+
+type GetStreamViewersByDateRangeRow struct {
+	Date        time.Time
+	ViewerCount int32
+}
+
+func (q *Queries) GetStreamViewersByDateRange(ctx context.Context, arg GetStreamViewersByDateRangeParams) ([]GetStreamViewersByDateRangeRow, error) {
+	rows, err := q.db.QueryContext(ctx, getStreamViewersByDateRange, arg.StreamID, arg.Date, arg.Date_2)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetStreamViewersByDateRangeRow
+	for rows.Next() {
+		var i GetStreamViewersByDateRangeRow
+		if err := rows.Scan(&i.Date, &i.ViewerCount); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getStreamViewersByUserID = `-- name: GetStreamViewersByUserID :many
+SELECT s.name, sva.date, sva.viewer_count
+FROM stream_viewers sva
+JOIN streams s ON sva.stream_id = s.id
+WHERE s.user_id = $1
+ORDER BY sva.date DESC
+`
+
+type GetStreamViewersByUserIDRow struct {
+	Name        string
+	Date        time.Time
+	ViewerCount int32
+}
+
+func (q *Queries) GetStreamViewersByUserID(ctx context.Context, userID uuid.UUID) ([]GetStreamViewersByUserIDRow, error) {
+	rows, err := q.db.QueryContext(ctx, getStreamViewersByUserID, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetStreamViewersByUserIDRow
+	for rows.Next() {
+		var i GetStreamViewersByUserIDRow
+		if err := rows.Scan(&i.Name, &i.Date, &i.ViewerCount); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getStreamViewersByUserIDAndDateRange = `-- name: GetStreamViewersByUserIDAndDateRange :many
+SELECT s.name, sva.date, sva.viewer_count
+FROM stream_viewers sva
+JOIN streams s ON sva.stream_id = s.id
+WHERE s.user_id = $1
+    AND sva.date BETWEEN $2 AND $3
+ORDER BY sva.date DESC
+`
+
+type GetStreamViewersByUserIDAndDateRangeParams struct {
+	UserID uuid.UUID
+	Date   time.Time
+	Date_2 time.Time
+}
+
+type GetStreamViewersByUserIDAndDateRangeRow struct {
+	Name        string
+	Date        time.Time
+	ViewerCount int32
+}
+
+func (q *Queries) GetStreamViewersByUserIDAndDateRange(ctx context.Context, arg GetStreamViewersByUserIDAndDateRangeParams) ([]GetStreamViewersByUserIDAndDateRangeRow, error) {
+	rows, err := q.db.QueryContext(ctx, getStreamViewersByUserIDAndDateRange, arg.UserID, arg.Date, arg.Date_2)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetStreamViewersByUserIDAndDateRangeRow
+	for rows.Next() {
+		var i GetStreamViewersByUserIDAndDateRangeRow
+		if err := rows.Scan(&i.Name, &i.Date, &i.ViewerCount); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getStreams = `-- name: GetStreams :many
 SELECT id, user_id, app, name, url, status, viewers, thumbnail, last_published_at FROM streams
 `
@@ -357,6 +531,24 @@ func (q *Queries) GetStreamsByUserId(ctx context.Context, userID uuid.UUID) ([]G
 		return nil, err
 	}
 	return items, nil
+}
+
+const incrementStreamDailyViewers = `-- name: IncrementStreamDailyViewers :exec
+INSERT INTO stream_viewers (stream_id, date, viewer_count)
+VALUES ($1, $2, 1)
+ON CONFLICT (stream_id, date)
+DO UPDATE SET
+  viewer_count = stream_viewers.viewer_count + 1
+`
+
+type IncrementStreamDailyViewersParams struct {
+	StreamID uuid.UUID
+	Date     time.Time
+}
+
+func (q *Queries) IncrementStreamDailyViewers(ctx context.Context, arg IncrementStreamDailyViewersParams) error {
+	_, err := q.db.ExecContext(ctx, incrementStreamDailyViewers, arg.StreamID, arg.Date)
+	return err
 }
 
 const incrementStreamViewers = `-- name: IncrementStreamViewers :exec

@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/JehadAbdulwafi/rustion/internal/api"
+	"github.com/JehadAbdulwafi/rustion/internal/database"
 	"github.com/JehadAbdulwafi/rustion/internal/types"
 	"github.com/JehadAbdulwafi/rustion/internal/util"
 	"github.com/labstack/echo/v4"
@@ -44,6 +46,7 @@ const (
 
 func postPlayerEventsHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
+		ctx := c.Request().Context()
 		b, err := io.ReadAll(c.Request().Body)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest,
@@ -63,13 +66,28 @@ func postPlayerEventsHandler(s *api.Server) echo.HandlerFunc {
 		}
 
 		action := request.Action
-		stream := request.Stream
 
-		log.Debug().
-			Str("action", string(action)).
-			Interface("stream", stream).
-			Msg("Parsed request")
+		switch action {
+		case ActionOnPlay:
+			stream, err := s.Queries.GetStreamByEndpoint(ctx, request.Stream.Stream)
+			if err != nil {
+				log.Error().Err(err).Msg("Failed to get stream")
+				return echo.NewHTTPError(http.StatusNotFound, "Stream not found")
+			}
 
+			err = s.Queries.IncrementStreamDailyViewers(ctx, database.IncrementStreamDailyViewersParams{
+				StreamID: stream.ID,
+				Date:     time.Now().UTC().Truncate(24 * time.Hour), // Today's date
+			})
+			if err != nil {
+				log.Error().Err(err).Msg("Failed to update viewer count")
+				return echo.NewHTTPError(http.StatusInternalServerError, "Failed to track viewer")
+			}
+
+		default:
+			return echo.NewHTTPError(http.StatusBadRequest,
+				fmt.Sprintf("Invalid action: %v", action))
+		}
 		// Return response
 		code := int64(0)
 		res := &types.StreamEventResponse{

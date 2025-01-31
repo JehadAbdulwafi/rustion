@@ -448,6 +448,12 @@ type Stream struct {
 	LastCheckedTime time.Time
 }
 
+type StreamViewer struct {
+	StreamID    uuid.UUID
+	Date        time.Time
+	ViewerCount int32
+}
+
 type Subscription struct {
 	ID                 uuid.UUID
 	UserID             uuid.UUID

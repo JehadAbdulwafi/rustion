@@ -79,3 +79,44 @@ SELECT * FROM streams WHERE status = 'published';
 UPDATE streams 
 SET last_checked_time = $2 
 WHERE id = $1;
+
+-- name: IncrementStreamDailyViewers :exec
+INSERT INTO stream_viewers (stream_id, date, viewer_count)
+VALUES ($1, $2, 1)
+ON CONFLICT (stream_id, date)
+DO UPDATE SET
+  viewer_count = stream_viewers.viewer_count + 1;
+
+-- name: DecrementStreamDailyViewers :exec
+UPDATE stream_viewers
+SET viewer_count = GREATEST(viewer_count - 1, 0)
+WHERE stream_id = $1 AND date = $2;
+
+-- name: GetStreamViewersByDateRange :many
+SELECT date, viewer_count 
+FROM stream_viewers 
+WHERE stream_id = $1
+    AND date BETWEEN $2 AND $3
+ORDER BY date DESC;
+
+-- name: GetStreamViewers :many
+SELECT date, viewer_count 
+FROM stream_viewers 
+WHERE stream_id = $1
+ORDER BY date DESC;
+
+-- name: GetStreamViewersByUserID :many
+SELECT s.name, sva.date, sva.viewer_count
+FROM stream_viewers sva
+JOIN streams s ON sva.stream_id = s.id
+WHERE s.user_id = $1
+ORDER BY sva.date DESC;
+
+-- name: GetStreamViewersByUserIDAndDateRange :many
+SELECT s.name, sva.date, sva.viewer_count
+FROM stream_viewers sva
+JOIN streams s ON sva.stream_id = s.id
+WHERE s.user_id = $1
+    AND sva.date BETWEEN $2 AND $3
+ORDER BY sva.date DESC;
+
