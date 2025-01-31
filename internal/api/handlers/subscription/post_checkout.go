@@ -20,12 +20,15 @@ func PostCheckoutRoute(s *api.Server) *echo.Route {
 func postCheckoutHandler(s *api.Server) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
+		tx, err := s.DB.Begin()
 
 		b, err := io.ReadAll(c.Request().Body)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest,
 				fmt.Sprintf("Failed to read request body: %v", err))
 		}
+		defer tx.Rollback()
+		qtx := s.Queries.WithTx(tx)
 
 		var webhookData struct {
 			SubscriptionID string `json:"subscription_id"`
@@ -56,7 +59,7 @@ func postCheckoutHandler(s *api.Server) echo.HandlerFunc {
 		}
 
 		// Update transaction first
-		tx, err := s.Queries.UpdateTransactionStatus(ctx, database.UpdateTransactionStatusParams{
+		trans, err := qtx.UpdateTransactionStatus(ctx, database.UpdateTransactionStatusParams{
 			ID:     uuid.MustParse(webhookData.TransactionID),
 			Status: database.TransactionStatusEnumSucceeded,
 		})
@@ -66,7 +69,7 @@ func postCheckoutHandler(s *api.Server) echo.HandlerFunc {
 		}
 
 		// Then update subscription
-		updatedSub, err := s.Queries.UpdateSubscriptionStatus(ctx, database.UpdateSubscriptionStatusParams{
+		updatedSub, err := qtx.UpdateSubscriptionStatus(ctx, database.UpdateSubscriptionStatusParams{
 			ID:     subscription.ID,
 			Status: database.SubscriptionStatusEnumActive,
 		})
@@ -79,7 +82,7 @@ func postCheckoutHandler(s *api.Server) echo.HandlerFunc {
 		// Update response data format as needed
 		return c.JSON(http.StatusOK, map[string]interface{}{
 			"subscription": updatedSub,
-			"transaction":  tx,
+			"transaction":  trans,
 		})
 	}
 }
