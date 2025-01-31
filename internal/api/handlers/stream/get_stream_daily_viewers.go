@@ -11,7 +11,7 @@ import (
 )
 
 func GetStreamDailyViewersRoute(s *api.Server) *echo.Route {
-	return s.Router.APIV1Subscription.GET("/viewers/:stream_id", getStreamDailyViewersHandler(s))
+	return s.Router.APIV1Stream.GET("/viewers/:stream_id", getStreamDailyViewersHandler(s))
 }
 
 func getStreamDailyViewersHandler(s *api.Server) echo.HandlerFunc {
@@ -36,17 +36,17 @@ func getStreamDailyViewersHandler(s *api.Server) echo.HandlerFunc {
 
 		response := AnalyticsResponse{}
 		response.Data = make([]struct {
-			Date       string `json:"date"`
-			Viewers    int    `json:"viewers"`
+			Date    string `json:"date"`
+			Viewers int    `json:"viewers"`
 		}, len(usageData))
 
 		for i, usage := range usageData {
 			response.Data[i] = struct {
-				Date       string `json:"date"`
-				Viewers    int    `json:"viewers"`
+				Date    string `json:"date"`
+				Viewers int    `json:"viewers"`
 			}{
-				Date:       usage.Date.Format("2006-01-02"),
-				Viewers:    int(usage.ViewerCount),
+				Date:    usage.Date.Format("2006-01-02"),
+				Viewers: int(usage.ViewerCount),
 			}
 		}
 

@@ -18,7 +18,7 @@ type AnalyticsResponse struct {
 }
 
 func GetStreamsDailyViewersRoute(s *api.Server) *echo.Route {
-	return s.Router.APIV1Subscription.GET("/viewers", getStreamsDailyViewersHandler(s))
+	return s.Router.APIV1Stream.GET("/viewers", getStreamsDailyViewersHandler(s))
 }
 
 func getStreamsDailyViewersHandler(s *api.Server) echo.HandlerFunc {
