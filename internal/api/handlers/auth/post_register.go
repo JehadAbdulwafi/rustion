@@ -79,9 +79,21 @@ func postRegisterHandler(s *api.Server) echo.HandlerFunc {
 			RefreshToken:      refreshToken,
 			ValidUntil:        time.Now().Add(s.Config.Auth.AccessTokenValidity),
 		})
-
 		if err != nil {
 			log.Debug().Err(err).Msg("Failed to insert account")
+			return err
+		}
+
+		emailVerifyToken, err := s.Queries.CreateEmailVerificationToken(c.Request().Context(), user.ID)
+
+		if err != nil {
+			log.Debug().Err(err).Msg("Failed to insert email verification token")
+			return err
+		}
+		err = s.Mailer.SendPasswordReset(c.Request().Context(), user.Email, emailVerifyToken.Token)
+
+		if err != nil {
+			log.Debug().Err(err).Msg("Failed to send Email verification")
 			return err
 		}
 

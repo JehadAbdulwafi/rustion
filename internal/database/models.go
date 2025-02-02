@@ -364,6 +364,13 @@ type Channel struct {
 	UpdatedAt sql.NullTime
 }
 
+type EmailVerificationToken struct {
+	Token     uuid.UUID
+	UserID    uuid.UUID
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
+}
+
 type Faq struct {
 	ID        uuid.UUID
 	Question  string
