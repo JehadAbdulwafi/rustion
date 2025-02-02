@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Password Reset</title>
+    <title>Email Verification</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -19,7 +19,7 @@
       }
       .button {
         display: inline-block;
-        background: #007BFF;
+        background: #28a745;
         color: #fff;
         padding: 10px 20px;
         text-decoration: none;
@@ -27,17 +27,23 @@
         margin-top: 20px;
       }
       .button:hover {
-        background: #0056b3;
+        background: #218838;
+      }
+      h1 {
+        margin-bottom: 20px;
+      }
+      p {
+        line-height: 1.6;
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>Password Reset</h1>
-      <p>You recently requested to reset your password. Click the button below to proceed:</p>
-      <a class="button" href="{{ .passwordResetLink }}">Reset Password</a>
-      <p>If you did not request a password reset, please ignore this email.</p>
-      <p>Thank you!</p>
+      <h1>Email Verification</h1>
+      <p>Thank you for signing up! Please verify your email address by clicking the button below.</p>
+      <a class="button" href="{{ .emailVerificationLink }}">Verify Email</a>
+      <p>If you did not sign up for this account, please ignore this email.</p>
+      <p>Best regards,<br>The Team</p>
     </div>
   </body>
 </html>

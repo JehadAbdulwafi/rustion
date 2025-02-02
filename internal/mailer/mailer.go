@@ -18,6 +18,7 @@ import (
 var (
 	ErrEmailTemplateNotFound   = errors.New("email template not found")
 	emailTemplatePasswordReset = "password_reset" // /app/templates/email/password_reset/**.
+	verifyEmailTemplate        = "verify_email"
 )
 
 type Mailer struct {
@@ -95,6 +96,47 @@ func (m *Mailer) SendPasswordReset(ctx context.Context, to string, passwordReset
 	}
 
 	log.Debug().Msg("Successfully sent password reset email")
+
+	return nil
+}
+
+func (m *Mailer) SendVerifyEmail(ctx context.Context, to string, emailVerificationLink string) error {
+	log := util.LogFromContext(ctx).With().Str("component", "mailer").Str("email_template", verifyEmailTemplate).Logger()
+
+	t, ok := m.Templates[verifyEmailTemplate]
+	if !ok {
+		log.Error().Msg("Verify email template not found")
+		return ErrEmailTemplateNotFound
+	}
+
+	data := map[string]interface{}{
+		"emailVerificationLink": emailVerificationLink,
+	}
+
+	var buf bytes.Buffer
+	if err := t.Execute(&buf, data); err != nil {
+		log.Error().Err(err).Msg("Failed to execute verify email template")
+		return err
+	}
+
+	e := email.NewEmail()
+
+	e.From = m.Config.DefaultSender
+	e.To = []string{to}
+	e.Subject = "Email verification"
+	e.HTML = buf.Bytes()
+
+	if !m.Config.Send {
+		log.Warn().Str("to", to).Str("emailVerificationLink", emailVerificationLink).Msg("Sending has been disabled in mailer config, skipping password reset email")
+		return nil
+	}
+
+	if err := m.Transport.Send(e); err != nil {
+		log.Debug().Err(err).Msg("Failed to send Email verification email")
+		return err
+	}
+
+	log.Debug().Msg("Successfully sent Email verification email")
 
 	return nil
 }
