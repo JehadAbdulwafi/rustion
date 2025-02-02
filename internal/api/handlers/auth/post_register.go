@@ -90,7 +90,7 @@ func postRegisterHandler(s *api.Server) echo.HandlerFunc {
 			log.Debug().Err(err).Msg("Failed to insert email verification token")
 			return err
 		}
-		err = s.Mailer.SendPasswordReset(c.Request().Context(), user.Email, emailVerifyToken.Token)
+		err = s.Mailer.SendPasswordReset(c.Request().Context(), user.Email, emailVerifyToken.Token.String())
 
 		if err != nil {
 			log.Debug().Err(err).Msg("Failed to send Email verification")
